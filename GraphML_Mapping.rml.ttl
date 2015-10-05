@@ -6,11 +6,13 @@
 
 <#GraphML_EdgeInput>
 	rml:source "/home/pheyvaer/Developer/rmlp_server/graphML.xml" ;
+	#rml:source "/media/andimou/723A1FC53A1F856F/Ubuntu_Documents/MappingDocs/GraphML/graphML.xml" ;
 	rml:iterator "/graphml/graph/edge";
 	rml:referenceFormulation ql:XPath.
 
 <#GraphML_NodeInput>
 	rml:source "/home/pheyvaer/Developer/rmlp_server/graphML.xml" ;
+	#rml:source "/media/andimou/723A1FC53A1F856F/Ubuntu_Documents/MappingDocs/GraphML/graphML.xml";
 	rml:iterator "/graphml/graph/node";
 	rml:referenceFormulation ql:XPath.
 
@@ -36,8 +38,11 @@
 
 	rr:predicateObjectMap [
 		rr:predicate rml:logicalSource ;
-		rr:objectMap [ rr:parentTriplesMap <#LogicalSourceGenerator_Mapping> ]
-	].
+		rr:objectMap [ 
+			rr:parentTriplesMap <#LogicalSourceGenerator_Mapping> ;
+			rr:joinCondition [
+				rr:child "@source";
+				rr:parent "@id" ] ] ].
 
 
 <#SubjectMapGenerator_Mapping>
@@ -49,9 +54,7 @@
 
 	rr:predicateObjectMap <#TemplateGenerator_Mapping> ;
 	rr:predicateObjectMap <#ReferenceGenerator_Mapping> ;
-	rr:predicateObjectMap <#ConstantGenerator_Mapping> ;
-	rr:predicateObjectMap <#LogicalSourceGenerator_Mapping> ;
-	rr:predicateObjectMap <#ReferenceFormulationGenerator_Mapping> .
+	rr:predicateObjectMap <#ConstantGenerator_Mapping> .
 
 <#PredicateObjectMapGenerator_Mapping>
 	rml:logicalSource <#GraphML_EdgeInput> ;
@@ -89,17 +92,15 @@
 	rml:logicalSource <#GraphML_NodeInput> ;
 
 	rr:subjectMap [
-		rr:template "http://ex.com/subjectMap/ObjMap_{@id}" ;
+		rr:template "http://ex.com/objectMap/ObjMap_{@id}" ;
 		rr:class rr:ObjectMap ] ;
 	rr:predicateObjectMap <#TemplateGenerator_Mapping> ;
 	rr:predicateObjectMap <#ReferenceGenerator_Mapping> ;
-	rr:predicateObjectMap <#ConstantGenerator_Mapping> ;
-	rr:predicateObjectMap <#LogicalSourceGenerator_Mapping> ;
-	rr:predicateObjectMap <#ReferenceFormulationGenerator_Mapping> .
+	rr:predicateObjectMap <#ConstantGenerator_Mapping> .
 
 
 <#TemplateGenerator_Mapping>
-	rr:predicate rr:constant ;
+	rr:predicate rr:template ;
 	rr:objectMap [ rml:reference "data[@key=\"d4\"]" ].
 
 <#ReferenceGenerator_Mapping>
@@ -119,13 +120,13 @@
 	rr:objectMap [ rml:reference "data[@key=\"d7\"]" ].
 
 <#ReferenceFormulationGenerator_Mapping>
-	rr:predicate rml:referenceFormulation ;
-	rr:objectMap  [ rr:constant ql:CSV ].
-
+	rr:predicate rml:referenceFormulation ; 
+	rr:objectMap  [ rr:constant ql:CSV ]. # that's also rr:object ql:CSV
+ 
 <#LogicalSourceGenerator_Mapping>
-	rml:logicalSource <#Graph_EdgeInput>;
+	rml:logicalSource <#GraphML_NodeInput>;
 	rr:subjectMap [ 
 		rr:template "http://ex.com/logicalSource/LogicalSource_{@id}" ;
-                rr:class rml:LogicalSource ] ;
+		rr:class rml:LogicalSource ] ;
 	rr:predicateObjectMap <#SourceGenerator_Mapping> ;
-	rr:predicateObjectMap <#ReferenceGeneration_Map> .
+	rr:predicateObjectMap <#ReferenceFormulationGenerator_Mapping> .

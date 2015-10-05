@@ -9,10 +9,10 @@ router.post('/process', function(req, res) {
 	var mappingFile = dir + path.sep + "mapdoc.rml";
 
 	var child = exec('echo \'' + req.body.rml + '\' > ' + mappingFile, function(error, stdout, stderr) {
-	  var format = "turtle";
+	  var format = "rdfjson";
 	  var outputFile = dir + path.sep + "result.ttl";
 
-		var child = exec('java -jar RML-Processor-0.2.jar -m ' + mappingFile + ' -f ' + format + ' -o ' + outputFile, function(error, stdout, stderr) {
+		var child = exec('cd /home/pheyvaer/Developer/RML-Mapper; bin/RML-Mapper -m ' + mappingFile + ' -f ' + format + ' -o ' + outputFile, function(error, stdout, stderr) {
 			console.log(stdout);
 
 	    var child = exec('cat ' + outputFile, function(error, stdout, stderr) {
@@ -26,11 +26,13 @@ router.post('/graphml2rml', function(req, res) {
 	var graphML = dir + path.sep + "graphML.xml";
 
 	var child = exec('echo \'' + req.body.graphml + '\' > ' + graphML, function(error, stdout, stderr) {
-	  var mappingFile = dir + path.sep + "graphml2rml.rml";
+	  var mappingFile = dir + path.sep + "GraphML_Mapping.rml.ttl";
 	  var format = "turtle";
 	  var outputFile = dir + path.sep + "graphml2rml-result.rml";
 
-		var child = exec('java -jar RML-Processor-0.2.jar -m ' + mappingFile + ' -f ' + format + ' -o ' + outputFile, function(error, stdout, stderr) {
+	  //console.log('/home/pheyvaer/Developer/RML-Mapper/bin/RML-Mapper -m ' + mappingFile + ' -f ' + format + ' -o ' + outputFile + ' -tm TriplesMapGenerator_Mapping');
+
+		var child = exec('cd /home/pheyvaer/Developer/RML-Mapper; bin/RML-Mapper -m ' + mappingFile + ' -f ' + format + ' -o ' + outputFile + ' -tm TriplesMapGenerator_Mapping', function(error, stdout, stderr) {
 			console.log(stdout);
 
 	    var child = exec('cat ' + outputFile, function(error, stdout, stderr) {
