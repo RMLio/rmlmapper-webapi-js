@@ -1,3 +1,8 @@
+/*
+CHANGE TO YOUR OWN RML-MAPPER DIRECTORY
+*/
+var rmwd = "/home/pheyvaer/Developer/RML-Mapper";
+
 var express = require('express');
 var router = express.Router();
 var exec = require('child_process').exec;
@@ -12,7 +17,7 @@ router.post('/process', function(req, res) {
 	  var format = "rdfjson";
 	  var outputFile = dir + path.sep + "result.ttl";
 
-		var child = exec('cd /home/pheyvaer/Developer/RML-Mapper; bin/RML-Mapper -m ' + mappingFile + ' -f ' + format + ' -o ' + outputFile, function(error, stdout, stderr) {
+		var child = exec('cd ' + rmwd + '; bin/RML-Mapper -m ' + mappingFile + ' -f ' + format + ' -o ' + outputFile, function(error, stdout, stderr) {
 			console.log(stdout);
 
 	    var child = exec('cat ' + outputFile, function(error, stdout, stderr) {
@@ -32,7 +37,7 @@ router.post('/graphml2rml', function(req, res) {
 
 	  //console.log('/home/pheyvaer/Developer/RML-Mapper/bin/RML-Mapper -m ' + mappingFile + ' -f ' + format + ' -o ' + outputFile + ' -tm TriplesMapGenerator_Mapping');
 
-		var child = exec('cd /home/pheyvaer/Developer/RML-Mapper; bin/RML-Mapper -m ' + mappingFile + ' -f ' + format + ' -o ' + outputFile + ' -tm TriplesMapGenerator_Mapping', function(error, stdout, stderr) {
+		var child = exec('cd ' + rmwd + '; bin/RML-Mapper -m ' + mappingFile + ' -f ' + format + ' -o ' + outputFile + ' -tm TriplesMapGenerator_Mapping', function(error, stdout, stderr) {
 			console.log(stdout);
 
 	    var child = exec('cat ' + outputFile, function(error, stdout, stderr) {
