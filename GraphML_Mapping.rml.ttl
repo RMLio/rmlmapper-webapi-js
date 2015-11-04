@@ -5,13 +5,13 @@
 
 
 <#GraphML_EdgeInput>
-	rml:source "/home/pheyvaer/Developer/rmlp_server/graphML.xml" ;
+	rml:source "/home/pieter/Developer/rmlp_server/graphML.xml" ;
 	#rml:source "/media/andimou/723A1FC53A1F856F/Ubuntu_Documents/MappingDocs/GraphML/graphML.xml" ;
 	rml:iterator "/graphml/graph/edge";
 	rml:referenceFormulation ql:XPath.
 
 <#GraphML_NodeInput>
-	rml:source "/home/pheyvaer/Developer/rmlp_server/graphML.xml" ;
+	rml:source "/home/pieter/Developer/rmlp_server/graphML.xml" ;
 	#rml:source "/media/andimou/723A1FC53A1F856F/Ubuntu_Documents/MappingDocs/GraphML/graphML.xml";
 	rml:iterator "/graphml/graph/node";
 	rml:referenceFormulation ql:XPath.
