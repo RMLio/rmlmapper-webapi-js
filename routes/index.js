@@ -41,11 +41,18 @@ function saveSources(sources, callback) {
 };
 
 function setSourcesMappingFile(rml) {
-  console.log(rml);
-  var regex = /(<http:\/\/semweb.mmlab.be\/ns\/rml#source>) "(.*)"/;
-  newRML = rml.replace(regex, '$1 "' + tempDir + path.sep + sourceFilePrefix + '$2\.csv"');
+  //console.log(rml);
+  var regex = /(<http:\/\/semweb.mmlab.be\/ns\/rml#source>) "(.*)" ;/;
+  newRML = rml.replace(regex, '$1 "' + tempDir + path.sep + sourceFilePrefix + '$2\.csv" ;');
   console.log(newRML);
   return newRML;
+};
+
+function setSourceGraphmlFile(original, path) {
+  var regex = /rml:source .* ;/g;
+  updated = original.replace(regex, 'rml:source "' + path + '" ;');
+  //console.log(updated);
+  return updated;
 };
 
 router.post('/process', function(req, res) {
@@ -69,7 +76,7 @@ router.post('/process', function(req, res) {
     });
   };
 
-  console.log(JSON.parse(req.body.sources));
+  //console.log(JSON.parse(req.body.sources));
 
   saveSources(JSON.parse(req.body.sources), callback);
 });
@@ -77,23 +84,31 @@ router.post('/process', function(req, res) {
 router.post('/graphml2rml', function(req, res) {
   var ms = new Date().getTime();
 	var graphML = tempDir + path.sep + "graphML_" + ms + ".xml";
+    var originalMappingFile = dir + path.sep + "GraphML_Mapping.rml.ttl";
+    var mappingFile = tempDir + path.sep + "GraphML_Mapping_" + ms + ".rml.ttl";
 
-	var child = exec('echo \'' + req.body.graphml + '\' > ' + graphML, function(error, stdout, stderr) {
-	  var mappingFile = dir + path.sep + "GraphML_Mapping.rml.ttl";
-	  var format = "turtle";
-	  var outputFile = tempDir + path.sep + "graphml2rml-result_" + ms + ".rml";
+    var child = exec('cat ' + originalMappingFile, function(error, stdout, stderr){
+      updated = setSourceGraphmlFile(stdout, graphML);
 
-	  //console.log('/home/pheyvaer/Developer/RML-Mapper/bin/RML-Mapper -m ' + mappingFile + ' -f ' + format + ' -o ' + outputFile + ' -tm TriplesMapGenerator_Mapping');
+      fs.writeFile(mappingFile, updated, function (err) {
+        //console.log(err);
 
-		var child = exec('cd ' + rmwd + '; bin/RML-Mapper -m ' + mappingFile + ' -f ' + format + ' -o ' + outputFile + ' -tm TriplesMapGenerator_Mapping', function(error, stdout, stderr) {
-			console.log(stdout);
+        var child = exec('echo \'' + req.body.graphml + '\' > ' + graphML, function(error, stdout, stderr) {
+          var format = "turtle";
+          var outputFile = tempDir + path.sep + "graphml2rml-result_" + ms + ".rml.ttl";
 
-	    var child = exec('cat ' + outputFile, function(error, stdout, stderr) {
-	    	res.send(stdout);
-	  	});
-	  });
-  });
+          //console.log('/home/pheyvaer/Developer/RML-Mapper/bin/RML-Mapper -m ' + mappingFile + ' -f ' + format + ' -o ' + outputFile + ' -tm TriplesMapGenerator_Mapping');
 
+          var child = exec('cd ' + rmwd + '; bin/RML-Mapper -m ' + mappingFile + ' -f ' + format + ' -o ' + outputFile + ' -tm TriplesMapGenerator_Mapping', function(error, stdout, stderr) {
+            //console.log(stdout);
+
+            var child = exec('cat ' + outputFile, function(error, stdout, stderr) {
+              res.send(stdout);
+            });
+          });
+        });
+      })
+    });
 });
 
 module.exports = router;
