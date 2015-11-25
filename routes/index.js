@@ -18,17 +18,17 @@ if (!fs.existsSync(tempDir)){
     fs.mkdirSync(tempDir);
 }
 
-function writeSource(names, index, sources, callback) {
-  var child = exec('echo \'' + sources[names[index]] + '\' > ' + tempDir + path.sep + sourceFilePrefix + names[index] + '.csv', function(error, stdout, stderr) {
+function writeSource(names, index, sources, prefix, callback) {
+  var child = exec('echo \'' + sources[names[index]] + '\' > ' + tempDir + path.sep + prefix + names[index] + '.csv', function(error, stdout, stderr) {
     if (index < names.length) {
-      writeSource(names, index + 1, sources, callback);
+      writeSource(names, index + 1, sources, prefix, callback);
     } else {
       callback();
     }
   });
 };
 
-function saveSources(sources, callback) {
+function saveSources(sources, prefix, callback) {
   var names = [];
 
   for(var name in sources) {
@@ -37,36 +37,39 @@ function saveSources(sources, callback) {
 
   console.log(names);
 
-  writeSource(names, 0, sources, callback);
+  writeSource(names, 0, sources, prefix, callback);
 };
 
-function setSourcesMappingFile(rml) {
+function setSourcesMappingFile(rml, prefix) {
   //console.log(rml);
-  var regex = /(<http:\/\/semweb.mmlab.be\/ns\/rml#source>) "(.*)" ;/;
-  newRML = rml.replace(regex, '$1 "' + tempDir + path.sep + sourceFilePrefix + '$2\.csv" ;');
+  var regex = /(<http:\/\/semweb.mmlab.be\/ns\/rml#source>) "(.*)" ([;\.])/g;
+  newRML = rml.replace(regex, '$1 "' + tempDir + path.sep + prefix + '$2\.csv" $3');
   console.log(newRML);
   return newRML;
 };
 
 function setSourceGraphmlFile(original, path) {
-  var regex = /rml:source .* ;/g;
+  var regex = /rml:source .+;/g;
   updated = original.replace(regex, 'rml:source "' + path + '" ;');
   //console.log(updated);
   return updated;
 };
 
 router.post('/process', function(req, res) {
+  var ms = new Date().getTime();
+  var prefix = sourceFilePrefix + ms +"_";
+  var logFile = tempDir + path.sep + "log_" + ms + ".log";
+
   var callback = function() {
-    var ms = new Date().getTime();
     var mappingFile = tempDir + path.sep + "mapdoc_" + ms + ".rml";
 
-    var rml = setSourcesMappingFile(req.body.rml);
+    var rml = setSourcesMappingFile(req.body.rml, prefix);
 
     var child = exec('echo \'' + rml + '\' > ' + mappingFile, function(error, stdout, stderr) {
       var format = "rdfjson";
       var outputFile = tempDir + path.sep + "result_" + ms + ".ttl";
 
-      var child = exec('cd ' + rmwd + '; bin/RML-Mapper -m ' + mappingFile + ' -f ' + format + ' -o ' + outputFile, function(error, stdout, stderr) {
+      var child = exec('cd ' + rmwd + '; bin/RML-Mapper -m ' + mappingFile + ' -f ' + format + ' -o ' + outputFile + ' > ' + logFile, function(error, stdout, stderr) {
         console.log(stdout);
 
         var child = exec('cat ' + outputFile, function(error, stdout, stderr) {
@@ -78,14 +81,15 @@ router.post('/process', function(req, res) {
 
   //console.log(JSON.parse(req.body.sources));
 
-  saveSources(JSON.parse(req.body.sources), callback);
+  saveSources(JSON.parse(req.body.sources), prefix, callback);
 });
 
 router.post('/graphml2rml', function(req, res) {
   var ms = new Date().getTime();
-	var graphML = tempDir + path.sep + "graphML_" + ms + ".xml";
-    var originalMappingFile = dir + path.sep + "GraphML_Mapping.rml.ttl";
-    var mappingFile = tempDir + path.sep + "GraphML_Mapping_" + ms + ".rml.ttl";
+  var graphML = tempDir + path.sep + "graphML_" + ms + ".xml";
+  var originalMappingFile = dir + path.sep + "GraphML_Mapping.rml.ttl";
+  var mappingFile = tempDir + path.sep + "GraphML_Mapping_" + ms + ".rml.ttl";
+  var logFile = tempDir + path.sep + "log_" + ms + ".log";
 
     var child = exec('cat ' + originalMappingFile, function(error, stdout, stderr){
       updated = setSourceGraphmlFile(stdout, graphML);
@@ -99,8 +103,8 @@ router.post('/graphml2rml', function(req, res) {
 
           //console.log('/home/pheyvaer/Developer/RML-Mapper/bin/RML-Mapper -m ' + mappingFile + ' -f ' + format + ' -o ' + outputFile + ' -tm TriplesMapGenerator_Mapping');
 
-          var child = exec('cd ' + rmwd + '; bin/RML-Mapper -m ' + mappingFile + ' -f ' + format + ' -o ' + outputFile + ' -tm TriplesMapGenerator_Mapping', function(error, stdout, stderr) {
-            //console.log(stdout);
+          var child = exec('cd ' + rmwd + '; bin/RML-Mapper -m ' + mappingFile + ' -f ' + format + ' -o ' + outputFile + ' -tm TriplesMapGenerator_Source_Mapping > ' + logFile, function(error, stdout, stderr) {
+            console.log(stdout);
 
             var child = exec('cat ' + outputFile, function(error, stdout, stderr) {
               res.send(stdout);
