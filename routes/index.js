@@ -1,6 +1,6 @@
 /*
-CHANGE TO YOUR OWN RML-MAPPER DIRECTORY
-*/
+ CHANGE TO YOUR OWN RML-MAPPER DIRECTORY
+ */
 var rmwd = "/home/pieter/Developer/RML-Mapper";
 
 var express = require('express');
@@ -14,12 +14,12 @@ var tempDir = dir + path.sep + "tmp";
 var sourceFilePrefix = "source_";
 
 //check if temp directory exists
-if (!fs.existsSync(tempDir)){
-    fs.mkdirSync(tempDir);
+if (!fs.existsSync(tempDir)) {
+  fs.mkdirSync(tempDir);
 }
 
 function writeSource(names, index, sources, prefix, callback) {
-  var child = exec('echo \'' + sources[names[index]] + '\' > ' + tempDir + path.sep + prefix + names[index] + '.csv', function(error, stdout, stderr) {
+  var child = exec('echo \'' + sources[names[index]] + '\' > ' + tempDir + path.sep + prefix + names[index] + '.csv', function (error, stdout, stderr) {
     if (index < names.length) {
       writeSource(names, index + 1, sources, prefix, callback);
     } else {
@@ -31,7 +31,7 @@ function writeSource(names, index, sources, prefix, callback) {
 function saveSources(sources, prefix, callback) {
   var names = [];
 
-  for(var name in sources) {
+  for (var name in sources) {
     names.push(name);
   }
 
@@ -55,24 +55,24 @@ function setSourceGraphmlFile(original, path) {
   return updated;
 };
 
-router.post('/process', function(req, res) {
+router.post('/process', function (req, res) {
   var ms = new Date().getTime();
-  var prefix = sourceFilePrefix + ms +"_";
+  var prefix = sourceFilePrefix + ms + "_";
   var logFile = tempDir + path.sep + "log_" + ms + ".log";
 
-  var callback = function() {
+  var callback = function () {
     var mappingFile = tempDir + path.sep + "mapdoc_" + ms + ".rml";
 
     var rml = setSourcesMappingFile(req.body.rml, prefix);
 
-    var child = exec('echo \'' + rml + '\' > ' + mappingFile, function(error, stdout, stderr) {
+    var child = exec('echo \'' + rml + '\' > ' + mappingFile, function (error, stdout, stderr) {
       var format = "rdfjson";
       var outputFile = tempDir + path.sep + "result_" + ms + ".ttl";
 
-      var child = exec('cd ' + rmwd + '; bin/RML-Mapper -m ' + mappingFile + ' -f ' + format + ' -o ' + outputFile + ' > ' + logFile, function(error, stdout, stderr) {
+      var child = exec('cd ' + rmwd + '; bin/RML-Mapper -m ' + mappingFile + ' -f ' + format + ' -o ' + outputFile + ' > ' + logFile, function (error, stdout, stderr) {
         console.log(stdout);
 
-        var child = exec('cat ' + outputFile, function(error, stdout, stderr) {
+        var child = exec('cat ' + outputFile, function (error, stdout, stderr) {
           res.send(stdout);
         });
       });
@@ -84,35 +84,35 @@ router.post('/process', function(req, res) {
   saveSources(JSON.parse(req.body.sources), prefix, callback);
 });
 
-router.post('/graphml2rml', function(req, res) {
+router.post('/graphml2rml', function (req, res) {
   var ms = new Date().getTime();
   var graphML = tempDir + path.sep + "graphML_" + ms + ".xml";
   var originalMappingFile = dir + path.sep + "GraphML_Mapping.rml.ttl";
   var mappingFile = tempDir + path.sep + "GraphML_Mapping_" + ms + ".rml.ttl";
   var logFile = tempDir + path.sep + "log_" + ms + ".log";
 
-    var child = exec('cat ' + originalMappingFile, function(error, stdout, stderr){
-      updated = setSourceGraphmlFile(stdout, graphML);
+  var child = exec('cat ' + originalMappingFile, function (error, stdout, stderr) {
+    updated = setSourceGraphmlFile(stdout, graphML);
 
-      fs.writeFile(mappingFile, updated, function (err) {
-        //console.log(err);
+    fs.writeFile(mappingFile, updated, function (err) {
+      //console.log(err);
 
-        var child = exec('echo \'' + req.body.graphml + '\' > ' + graphML, function(error, stdout, stderr) {
-          var format = "turtle";
-          var outputFile = tempDir + path.sep + "graphml2rml-result_" + ms + ".rml.ttl";
+      var child = exec('echo \'' + req.body.graphml + '\' > ' + graphML, function (error, stdout, stderr) {
+        var format = "turtle";
+        var outputFile = tempDir + path.sep + "graphml2rml-result_" + ms + ".rml.ttl";
 
-          //console.log('/home/pheyvaer/Developer/RML-Mapper/bin/RML-Mapper -m ' + mappingFile + ' -f ' + format + ' -o ' + outputFile + ' -tm TriplesMapGenerator_Mapping');
+        //console.log('/home/pheyvaer/Developer/RML-Mapper/bin/RML-Mapper -m ' + mappingFile + ' -f ' + format + ' -o ' + outputFile + ' -tm TriplesMapGenerator_Mapping');
 
-          var child = exec('cd ' + rmwd + '; bin/RML-Mapper -m ' + mappingFile + ' -f ' + format + ' -o ' + outputFile + ' -tm TriplesMapGenerator_Source_Mapping > ' + logFile, function(error, stdout, stderr) {
-            console.log(stdout);
+        var child = exec('cd ' + rmwd + '; bin/RML-Mapper -m ' + mappingFile + ' -f ' + format + ' -o ' + outputFile + ' -tm TriplesMapGenerator_Source_Mapping > ' + logFile, function (error, stdout, stderr) {
+          console.log(stdout);
 
-            var child = exec('cat ' + outputFile, function(error, stdout, stderr) {
-              res.send(stdout);
-            });
+          var child = exec('cat ' + outputFile, function (error, stdout, stderr) {
+            res.send(stdout);
           });
         });
-      })
-    });
+      });
+    })
+  });
 });
 
 module.exports = router;
