@@ -8,6 +8,7 @@ var router = express.Router();
 var exec = require('child_process').exec;
 var path = require('path');
 var fs = require('fs');
+var http = require('http');
 
 var dir = __dirname.replace("/routes", "");
 var tempDir = dir + path.sep + "tmp";
@@ -112,6 +113,22 @@ router.post('/graphml2rml', function (req, res) {
         });
       });
     })
+  });
+});
+
+router.get('/downloadfile', function (req, res){
+  console.log('test');
+  var uri = req.query.uri;
+
+  var csvData = '';
+  var request = http.get(uri, function(response) {
+    response.on('data', function(chunk) {
+      csvData += chunk;
+    });
+    response.on('end', function() {
+      //console.log(csvData);
+      res.send(csvData);
+    });
   });
 });
 
