@@ -20,13 +20,27 @@ if (!fs.existsSync(tempDir)) {
 }
 
 function writeSource(names, index, sources, prefix, callback) {
-  var child = exec('echo \'' + sources[names[index]] + '\' > ' + tempDir + path.sep + prefix + names[index] + '.csv', function (error, stdout, stderr) {
-    if (index < names.length) {
+  //console.log(sources[names[index]]);
+
+  function done() {
+      if (index < names.length) {
       writeSource(names, index + 1, sources, prefix, callback);
     } else {
       callback();
     }
-  });
+  };
+
+  if (sources[names[index]]) {
+    //console.log(sources[names[index]].replace('\'', "'\"'\"''"));
+    console.log('echo \'' + sources[names[index]].replace(/\'/g, "'\"'\"'") + '\' > ' + tempDir + path.sep + prefix + names[index] + '.csv');
+    var child = exec('echo \'' + sources[names[index]].replace(/\'/g, "'\"'\"'") + '\' > ' + tempDir + path.sep + prefix + names[index] + '.csv', function (error, stdout, stderr) {
+      console.log(stdout);
+      console.log(stderr);
+      done();
+    });
+  } else {
+    done();
+  }
 };
 
 function saveSources(sources, prefix, callback) {
@@ -80,7 +94,7 @@ router.post('/process', function (req, res) {
     });
   };
 
-  //console.log(JSON.parse(req.body.sources));
+  console.log(JSON.parse(req.body.sources));
 
   saveSources(JSON.parse(req.body.sources), prefix, callback);
 });
