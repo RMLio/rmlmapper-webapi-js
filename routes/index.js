@@ -131,7 +131,6 @@ router.post('/graphml2rml', function (req, res) {
 });
 
 router.get('/downloadfile', function (req, res){
-  console.log('test');
   var uri = req.query.uri;
 
   var csvData = '';
