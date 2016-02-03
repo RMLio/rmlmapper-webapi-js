@@ -133,15 +133,19 @@ router.post('/graphml2rml', function (req, res) {
 router.get('/downloadfile', function (req, res){
   var uri = req.query.uri;
 
-  var csvData = '';
+  var data = '';
   var request = http.get(uri, function(response) {
     response.on('data', function(chunk) {
-      csvData += chunk;
+      data += chunk;
     });
     response.on('end', function() {
       //console.log(csvData);
-      res.send(csvData);
+      res.send(data);
     });
+  });
+
+  request.on('error', function(error){
+    res.status(400).send({error: error});
   });
 });
 
