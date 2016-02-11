@@ -2,6 +2,7 @@
  CHANGE TO YOUR OWN RML-MAPPER DIRECTORY
  */
 var rmwd = "/home/pieter/Developer/RML-Mapper";
+var grwd = "/home/pieter/Developer/RML2GraphML";
 
 var express = require('express');
 var router = express.Router();
@@ -80,16 +81,15 @@ router.post('/process', function (req, res) {
 
     var rml = setSourcesMappingFile(req.body.rml, prefix);
 
-    var child = exec('echo \'' + rml + '\' > ' + mappingFile, function (error, stdout, stderr) {
+    fs.writeFile(mappingFile, rml, function(error) {
       var format = "rdfjson";
       var outputFile = tempDir + path.sep + "result_" + ms + ".ttl";
 
       var child = exec('cd ' + rmwd + '; bin/RML-Mapper -m ' + mappingFile + ' -f ' + format + ' -o ' + outputFile + ' > ' + logFile, function (error, stdout, stderr) {
         console.log(stdout);
 
-        var child = exec('cat ' + outputFile, function (error, stdout, stderr) {
-          res.send(stdout);
-        });
+        var readStream = fs.createReadStream(outputFile);
+        readStream.pipe(res);
       });
     });
   };
@@ -121,12 +121,29 @@ router.post('/graphml2rml', function (req, res) {
         var child = exec('cd ' + rmwd + '; bin/RML-Mapper -m ' + mappingFile + ' -f ' + format + ' -o ' + outputFile + ' -tm TriplesMapGenerator_Source_Mapping > ' + logFile, function (error, stdout, stderr) {
           console.log(stdout);
 
-          var child = exec('cat ' + outputFile, function (error, stdout, stderr) {
-            res.send(stdout);
-          });
+          var readStream = fs.createReadStream(outputFile);
+          readStream.pipe(res);
         });
       });
     })
+  });
+});
+
+router.post('/rml2graphml', function(req, res) {
+  var ms = new Date().getTime();
+  var originalRML = tempDir + path.sep + "originalRML_" + ms + ".rml.ttl";
+  var graphml = tempDir + path.sep + "graphMLFromRML_" + ms + ".xml";
+
+  fs.writeFile(originalRML, req.body.rml, function(err) {
+    if(err) {
+      return console.log(err);
+    }
+
+    exec('cd ' + grwd + '; node RML2GraphML.js ' + originalRML + ' ' + graphml, function (error, stdout, stderr) {
+
+      var readStream = fs.createReadStream(graphml);
+      readStream.pipe(res);
+    });
   });
 });
 

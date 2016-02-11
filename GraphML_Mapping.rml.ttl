@@ -23,7 +23,7 @@
     dcterms:creator <http://semweb.mmlab.be/AnastasiaDimou> ;
     dcterms:contributor <http://semweb.mmlab.be/PieterHeyvaert> ;
     dcterms:created "2015-10-24"^^xsd:date;
-    dcterms:modified "2016-01-19"^^xsd:date .
+    dcterms:modified "2016-02-08"^^xsd:date .
 
 
 ######################################################################################
@@ -32,19 +32,20 @@
 
 <#GraphML_EdgeInput>
 	#rml:source "/home/pheyvaer/Developer/rmlp_server/graphML.xml" ;
-	rml:source "/media/andimou/723A1FC53A1F856F/Ubuntu_Documents/MappingDocs/GraphML/Input/JoinCondition/issue2/graph.xml" ;
+	#rml:source "/media/andimou/723A1FC53A1F856F/Ubuntu_Documents/MappingDocs/GraphML/Input/BlankNode.xml" ;
+	rml:source "/media/andimou/723A1FC53A1F856F/Ubuntu_Documents/MappingDocs/GraphML/Input/issue6/files/mapping.xml" ;
 	rml:iterator "/graphml/graph/edge";
 	rml:referenceFormulation ql:XPath.
 
 <#GraphML_NodeInput>
 	#rml:source "/home/pheyvaer/Developer/rmlp_server/graphML.xml" ;
-	rml:source "/media/andimou/723A1FC53A1F856F/Ubuntu_Documents/MappingDocs/GraphML/Input/JoinCondition/issue2/graph.xml";
+	rml:source "/media/andimou/723A1FC53A1F856F/Ubuntu_Documents/MappingDocs/GraphML/Input/issue6/files/mapping.xml";
 	rml:iterator "/graphml/graph/node";
 	rml:referenceFormulation ql:XPath.
 
 <#GraphML_DataInput>
 	#rml:source "/home/pheyvaer/Developer/rmlp_server/graphML.xml" ;
-	rml:source "/media/andimou/723A1FC53A1F856F/Ubuntu_Documents/MappingDocs/GraphML/Input/JoinCondition/issue2/graph.xml";
+	rml:source "/media/andimou/723A1FC53A1F856F/Ubuntu_Documents/MappingDocs/GraphML/Input/issue6/files/mapping.xml";
 	rml:iterator "/graphml/graph";
 	rml:referenceFormulation ql:XPath.
 
@@ -63,6 +64,11 @@
 <#TriplesMapGenerator_Source_Mapping>
 	rml:logicalSource <#GraphML_EdgeInput> ;
 
+	#Generates a resource for the Subject Map
+	rr:subjectMap [
+		rr:template "http://ex.com/triplesMap/TriplesMap_{@source}" ;
+		rr:class rr:TriplesMap ] ;
+
 	#Adds the logical source predicate and the Logical Source resource
 	rr:predicateObjectMap [
 		rr:predicate rml:logicalSource ;
@@ -71,11 +77,6 @@
 			rr:joinCondition [
 				rr:child "@source";
 				rr:parent "@id" ] ] ] ;
-
-	#Generates a resource for the Subject Map
-	rr:subjectMap [
-		rr:template "http://ex.com/triplesMap/TriplesMap_{@source}" ;
-		rr:class rr:TriplesMap ] ;
 
 	#Adds the subject map predicate and the Subject Map resource
 	rr:predicateObjectMap [
@@ -103,7 +104,7 @@
 
 # 4.1.1 Triples Map Generator - Parent of RefObjMap
 
-<#Parent_TriplesMapGenerator_Mapping_2>
+<#Parent_TriplesMapGenerator_Mapping>
 	rml:logicalSource <#GraphML_NodeInput> ;
 
 	rr:subjectMap [
@@ -137,6 +138,7 @@
 		rr:template "http://ex.com/subjectMap/SubMap_{@id}" ;
 		rr:class rr:SubjectMap ] ;
 
+	rr:predicateObjectMap <#BlankNodeGenerator_Mapping> ;
 	rr:predicateObjectMap <#TemplateGenerator_Mapping> ;
 	rr:predicateObjectMap <#ReferenceGenerator_Mapping> ;
 	rr:predicateObjectMap <#ConstantGenerator_Mapping>  .
@@ -156,7 +158,9 @@
 
 	rr:predicateObjectMap [
 		rr:predicate rr:predicateMap ;
-		rr:objectMap [ rr:parentTriplesMap <#PredicateMapGenerator_Mapping> ] ] ;
+		rr:objectMap [ 
+			rr:parentTriplesMap <#PredicateMapGenerator_Mapping> ;
+		] ] ;
 
 	rr:predicateObjectMap [
 		rr:predicate rr:objectMap ;
@@ -173,13 +177,14 @@
 	rml:logicalSource <#GraphML_EdgeInput> ;
 
 	rr:subjectMap [
-		rr:template "http://ex.com/subjectMap/RefPredObjMap_{@target}" ;
+		rr:template "http://ex.com/preObjMap/RefPredObjMap_{@target}" ;
 		rr:class rr:PredicateObjectMap ] ;
 
 	rr:predicateObjectMap [
 		rr:predicate rr:predicateMap ;
-		rr:objectMap [ rr:parentTriplesMap <#RefObj_PredicateMapGenerator_Mapping> ] ] ;
+		rr:objectMap [ rr:parentTriplesMap <#PredicateMapGenerator_Mapping> ] ] ;
 
+	#Generale Predicate Object Map
 	rr:predicateObjectMap [
 		rr:predicateMap [
 			rr:constant rr:objectMap ;
@@ -191,11 +196,13 @@
 		] ;
 		rr:objectMap [
 			rr:parentTriplesMap <#RefObjectMapGenerator_Mapping> ;
+
 			rr:joinCondition [
 				rr:child "@target";
 				rr:parent "@id" ] ;
-			] ] ;
+		] ] ;
 
+	#Predicate Object Map for rdf:type
 	rr:predicateObjectMap [
 		rr:predicateMap [
 			rr:constant rr:objectMap ;
@@ -216,8 +223,6 @@
 # 4.4 Predicate Map
 ######################################################################################
 
-# TODO: It looks safe to merge those two
-
 <#PredicateMapGenerator_Mapping> 
 	rml:logicalSource <#GraphML_EdgeInput> ;
 
@@ -225,19 +230,6 @@
 		rr:template "http://ex.com/predicateMap/PreMap_{@id}" ;
 		rr:class rr:PredicateMap ] ;
 		
-	rr:predicateObjectMap <#ConstantPredicateGenerator_Mapping> ;
-	rr:predicateObjectMap <#TemplateGenerator_Mapping> ;
-	rr:predicateObjectMap <#ReferenceGenerator_Mapping> ;
-	rr:predicateObjectMap <#ConstantGenerator_Mapping> .
-
-
-<#RefObj_PredicateMapGenerator_Mapping> 
-	rml:logicalSource <#GraphML_EdgeInput> ;
-
-	rr:subjectMap [
-		rr:template "http://ex.com/predicateMap/RefPreMap_{@id}" ;
-		rr:class rr:PredicateMap ] ;
-
 	rr:predicateObjectMap <#ConstantPredicateGenerator_Mapping> ;
 	rr:predicateObjectMap <#TemplateGenerator_Mapping> ;
 	rr:predicateObjectMap <#ReferenceGenerator_Mapping> ;
@@ -252,8 +244,8 @@
 
 	rr:subjectMap [
 		rr:template "http://ex.com/objectMap/ObjMap_{@id}" ;
-		crml:negationOf [
-				crml:condition "!match(%%field%%,\"resource\")" ;
+		crml:booleanCondition [
+				crml:condition "match(%%field%%,\"literal\")" ;
 				crml:binding [
 					crml:variable "field" ;
 					rml:reference "data[@key=\"d0\"]" ] ]
@@ -280,12 +272,23 @@
 		rr:predicate rr:constant ;
 		rr:objectMap [
 			rml:reference "data[@key=\"d5\"]" ;
-			rr:termType rr:Literal
+			rr:termType rr:IRI
 	] ].
 
 
 # 4.6 Term Maps 
 ######################################################################################
+
+<#BlankNodeGenerator_Mapping> 
+	rr:predicate rr:termType ;
+	rr:objectMap [
+		rr:constant rr:BlankNode ;
+		crml:booleanCondition [
+			crml:condition "match(%%field%%,\"blank\")" ;
+			crml:binding [
+				crml:variable "field" ;
+				rml:reference "data[@key=\"d0\"]" ] ]
+	].
 
 <#TemplateGenerator_Mapping>
 	rr:predicate rr:template ;
@@ -320,12 +323,17 @@
 
 	rr:subjectMap [
 		rr:template "http://ex.com/objectMap/RefObjMap_{@id}" ;
-		rr:class rr:ObjectMap ] ;
+		rr:class rr:ObjectMap ;
+		crml:booleanCondition [
+				crml:condition "!match(%%field%%,\"literal\")" ;
+				crml:binding [
+					crml:variable "field" ;
+					rml:reference "data[@key=\"d0\"]" ] ] ] ;
 
 	rr:predicateObjectMap [
 		rr:predicate rr:parentTriplesMap ;
 		rr:objectMap [ 
-			rr:parentTriplesMap <#Parent_TriplesMapGenerator_Mapping_2> ;
+			rr:parentTriplesMap <#Parent_TriplesMapGenerator_Mapping> ;
 			#rr:parentTriplesMap <#TriplesMapGenerator_Source_Mapping>;
 			rr:joinCondition [ 
 				rr:parent "@id";
