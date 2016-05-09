@@ -141,8 +141,12 @@ router.post('/rml2graphml', function(req, res) {
 
     exec('cd ' + grwd + '; node RML2GraphML.js ' + originalRML + ' ' + graphml, function (error, stdout, stderr) {
 
-      var readStream = fs.createReadStream(graphml);
-      readStream.pipe(res);
+      if (!stderr) {
+        var readStream = fs.createReadStream(graphml);
+        readStream.pipe(res);
+      } else {
+        res.status(400).send(stderr);
+      }
     });
   });
 });
