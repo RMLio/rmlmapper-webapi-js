@@ -1,8 +1,9 @@
 /*
  CHANGE TO YOUR OWN RML-MAPPER DIRECTORY
  */
-var rmwd = "/home/pieter/Developer/RML-Mapper";
-var grwd = "/home/pieter/Developer/RML2GraphML";
+var config = require('../config.json');
+var rmwd = config.paths.rmlmapper;
+var grwd = config.paths.rml2graphml;
 
 var express = require('express');
 var router = express.Router();
