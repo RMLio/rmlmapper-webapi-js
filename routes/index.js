@@ -11,6 +11,7 @@ var exec = require('child_process').exec;
 var path = require('path');
 var fs = require('fs');
 var http = require('http');
+var request = require('request');
 
 var dir = __dirname.replace("/routes", "");
 var tempDir = dir + path.sep + "tmp";
@@ -155,19 +156,12 @@ router.post('/rml2graphml', function(req, res) {
 router.get('/downloadfile', function (req, res){
   var uri = req.query.uri;
 
-  var data = '';
-  var request = http.get(uri, function(response) {
-    response.on('data', function(chunk) {
-      data += chunk;
-    });
-    response.on('end', function() {
-      //console.log(csvData);
-      res.send(data);
-    });
-  });
-
-  request.on('error', function(error){
-    res.status(400).send({error: error});
+  request(uri, function (error, response, body) {
+    if (!error && response.statusCode == 200) {
+      res.send(body);
+    } else {
+      res.status(400).send({error: error});
+    }
   });
 });
 
