@@ -10,6 +10,7 @@
 @prefix prov:	<http://www.w3.org/ns/prov#> .
 @prefix xsd:	<http://www.w3.org/2001/XMLSchema#> .
 @prefix dcterms:<http://purl.org/dc/terms/> .
+@base <http://rml.io/rmleditor/graphml2rml> .
 
 
 ######################################################################################
@@ -31,17 +32,20 @@
 ######################################################################################
 
 <#GraphML_EdgeInput>
-	rml:source "/media/andimou/723A1FC53A1F856F/Ubuntu_Documents/MappingDocs/GraphML/Input/issue8/issue8.xml" ;
+	rml:source "/media/andimou/723A1FC53A1F856F/Ubuntu_Documents/MappingDocs/GraphML/GraphML2RML/Input/issue13/issue13.xml" ;
+	#rml:source "%%file%%";
 	rml:iterator "/graphml/graph/edge";
 	rml:referenceFormulation ql:XPath.
 
 <#GraphML_NodeInput>
-	rml:source "/media/andimou/723A1FC53A1F856F/Ubuntu_Documents/MappingDocs/GraphML/Input/issue8/issue8.xml" ;
+	rml:source "/media/andimou/723A1FC53A1F856F/Ubuntu_Documents/MappingDocs/GraphML/GraphML2RML/Input/issue13/issue13.xml" ;
+	#rml:source "%%file%%";
 	rml:iterator "/graphml/graph/node";
 	rml:referenceFormulation ql:XPath.
 
 <#GraphML_DataInput>
-	rml:source "/media/andimou/723A1FC53A1F856F/Ubuntu_Documents/MappingDocs/GraphML/Input/issue8/issue8.xml" ;
+	rml:source "/media/andimou/723A1FC53A1F856F/Ubuntu_Documents/MappingDocs/GraphML/GraphML2RML/Input/issue13/issue13.xml" ;
+	#rml:source "%%file%%"; 
 	rml:iterator "/graphml/graph";
 	rml:referenceFormulation ql:XPath.
 
@@ -183,7 +187,7 @@
 	rr:predicateObjectMap [
 		rr:predicateMap [
 			rr:constant rr:objectMap ;
-			crml:booleanCondition [
+			crml:equalCondition [
 				crml:condition "!match(%%field%%,\"http://www.w3.org/1999/02/22-rdf-syntax-ns#type\")" ;
 				crml:binding [
 					crml:variable "field" ;
@@ -201,7 +205,7 @@
 	rr:predicateObjectMap [
 		rr:predicateMap [
 			rr:constant rr:objectMap ;
-			crml:booleanCondition [
+			crml:equalCondition [
 				crml:condition "match(%%field%%,\"http://www.w3.org/1999/02/22-rdf-syntax-ns#type\")" ;
 				crml:binding [
 					crml:variable "field" ;
@@ -239,18 +243,19 @@
 
 	rr:subjectMap [
 		rr:template "http://ex.com/objectMap/ObjMap_{@id}" ;
-		crml:booleanCondition [
+		crml:equalCondition [
 				crml:condition "match(%%field%%,\"literal\")" ;
 				crml:binding [
 					crml:variable "field" ;
 					rml:reference "data[@key=\"d0\"]" ] ]
 	];
 		#rr:class rr:ObjectMap ] ;
-	#rr:predicateObjectMap <#TemplateGenerator_Mapping> ;
+	rr:predicateObjectMap <#TemplateObjectGenerator_Mapping> ;
 	rr:predicateObjectMap <#ReferenceGenerator_Mapping> ;
 	rr:predicateObjectMap <#ConstantGenerator_Mapping> ;
 	rr:predicateObjectMap <#DatatypeGenerator_Mapping> ;
-	rr:predicateObjectMap <#LanguageGenerator_Mapping> .
+	rr:predicateObjectMap <#LanguageGenerator_Mapping> ;
+	rr:predicateObjectMap <#TermTypeGenerator_Mapping> .
 
 
 # 4.6 Term Maps 
@@ -278,7 +283,7 @@
 	rr:predicate rr:termType ;
 	rr:objectMap [
 		rr:constant rr:BlankNode ;
-		crml:booleanCondition [
+		crml:equalCondition [
 			crml:condition "match(%%field%%,\"blank\")" ;
 			crml:binding [
 				crml:variable "field" ;
@@ -295,7 +300,21 @@
 
 <#ConstantGenerator_Mapping>
 	rr:predicate rr:constant ;
-	rr:objectMap [ rml:reference "data[@key=\"d5\"]" ; rr:termType rr:IRI ].
+	rr:objectMap [ 
+		rml:reference "data[@key=\"d5\"]" ; 
+		rr:termType rr:IRI ] ;
+	rr:objectMap [ 
+		rml:reference "data[@key=\"d5\"]" ; 
+		rr:termType rr:Literal ;
+		crml:equalCondition [
+			crml:condition "match(%%field%%,\"literal\")" ;
+			crml:binding [
+				crml:variable "field" ;
+				rml:reference "data[@key=\"d0\"]" ] ] ].
+
+<#TemplateObjectGenerator_Mapping>
+	rr:predicate rr:template ;
+	rr:objectMap [ rml:reference "data[@key=\"d4\"]" ; rr:termType rr:Literal ].
 
 <#ConstantPredicateGenerator_Mapping>
 	rr:predicate rr:constant ;
@@ -309,6 +328,16 @@
 	rr:predicate rr:language ;
 	rr:objectMap [ rml:reference "data[@key=\"d8\"]" ].
 
+<#TermTypeGenerator_Mapping>
+	rr:predicate rr:termType ;
+	rr:objectMap [ 
+		rr:constant "http://www.w3.org/ns/r2rml#Literal" ;
+		crml:equalCondition [
+				crml:condition "match(%%field%%,\"literal\")" ;
+				crml:binding [
+					crml:variable "field" ;
+					rml:reference "data[@key=\"d0\"]" ] ] ].
+
 
 # 4.5 Referencing Object Map
 ######################################################################################
@@ -319,7 +348,7 @@
 	rr:subjectMap [
 		rr:template "http://ex.com/objectMap/RefObjMap_{@id}" ;
 		rr:class rr:ObjectMap ;
-		crml:booleanCondition [
+		crml:equalCondition [
 				crml:condition "!match(%%field%%,\"literal\")" ;
 				crml:binding [
 					crml:variable "field" ;
@@ -357,16 +386,11 @@
 		#rr:termType rr:BlankNode ; 
 		rr:class rr:JoinCondition ;
 		#The problem is here
-		crml:booleanCondition [
+		crml:equalCondition [
 				crml:condition "hasField(%%field%%)" ;
 				crml:binding [
 					crml:variable "field" ;
 					rml:reference "data[@key=\"d9\"]" ] ] 
-		#crml:negationOf [
-		#		crml:condition "hasField(%%field%%)" ;
-		#		crml:binding [
-		#			crml:variable "field" ;
-		#			rml:reference "data[@key=\"d9\"]" ] ] 
 	] ;
 
 	rr:predicateObjectMap [
