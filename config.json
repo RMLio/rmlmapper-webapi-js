@@ -2,5 +2,8 @@
   "paths" : {
     "rmlmapper": "/home/pieter/Developer/RML-Mapper",
     "rml2graphml" : "/home/pieter/Developer/RML2GraphML"
+  },
+  "urls" : {
+    "validator" : "http://localhost:5555"
   }
 }

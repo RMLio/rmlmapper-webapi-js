@@ -165,4 +165,20 @@ router.get('/downloadfile', function (req, res){
   });
 });
 
+router.get('/api/v1/validate', function (req, res){
+
+  var options = {
+    body: req.body,
+    url: config.urls.validator + '/api/v1/validate'
+  };
+
+  request(options, function (error, response, body) {
+    if (!error && response.statusCode == 200) {
+      res.send(body);
+    } else {
+      res.status(400).send({error: error});
+    }
+  });
+});
+
 module.exports = router;
