@@ -4,6 +4,6 @@
     "rml2graphml" : "/home/pieter/Developer/RML2GraphML"
   },
   "urls" : {
-    "validator" : "http://localhost:5555"
+    "validator" : "http://monn.elis.ugent.be:10300"
   }
 }
