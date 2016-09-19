@@ -140,6 +140,7 @@
 	rr:predicateObjectMap <#BlankNodeGenerator_Mapping> ;
 	rr:predicateObjectMap <#TemplateGenerator_Mapping> ;
 	rr:predicateObjectMap <#ReferenceGenerator_Mapping> ;
+	rr:predicateObjectMap <#TermTypeReferenceGenerator_Mapping> ;
 	rr:predicateObjectMap <#ConstantGenerator_Mapping>  .
 
 
@@ -313,6 +314,12 @@
 	rr:objectMap [ 
 		rr:constant <http://www.w3.org/ns/r2rml#Literal> ;
 		crml:equalCondition <#LiteralEqualMatchCondition> ].
+
+<#TermTypeReferenceGenerator_Mapping>
+	rr:predicate rr:termType ;
+	rr:objectMap [ 
+		rr:constant <http://www.w3.org/ns/r2rml#IRI> ;
+		crml:equalCondition <#ResourceEqualMatchCondition> ].
 
 <#VerificationGenerator_Mapping>
 	rr:predicate co:verification ;
@@ -498,6 +505,12 @@
 
 <#LiteralEqualMatchCondition>
 	crml:condition "match(%%field%%,\"literal\")" ;
+	crml:binding [
+		crml:variable "field" ;
+		rml:reference "data[@key=\"d0\"]" ] .
+
+<#ResourceEqualMatchCondition>
+	crml:condition "match(%%field%%,\"resource\")" ;
 	crml:binding [
 		crml:variable "field" ;
 		rml:reference "data[@key=\"d0\"]" ] .
