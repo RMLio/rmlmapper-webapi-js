@@ -37,7 +37,7 @@ app.use(function (req, res, next) {
   // Pass to next layer of middleware
   next();
 });
-app.use(bodyParser.urlencoded({
+app.use(bodyParser.json({
   extended: false,
   limit: '50mb'
 }));

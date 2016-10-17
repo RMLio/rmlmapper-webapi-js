@@ -1,6 +1,3 @@
-/*
- CHANGE TO YOUR OWN RML-MAPPER DIRECTORY
- */
 var config = require('../config.json');
 var rmwd = config.paths.rmlmapper;
 var grwd = config.paths.rml2graphml;
@@ -31,7 +28,7 @@ function writeSource(names, index, sources, prefix, callback) {
     } else {
       callback();
     }
-  };
+  }
 
   if (sources[names[index]]) {
     //console.log(sources[names[index]].replace('\'', "'\"'\"''"));
@@ -44,7 +41,7 @@ function writeSource(names, index, sources, prefix, callback) {
   } else {
     done();
   }
-};
+}
 
 function saveSources(sources, prefix, callback) {
   var names = [];
@@ -56,7 +53,7 @@ function saveSources(sources, prefix, callback) {
   console.log(names);
 
   writeSource(names, 0, sources, prefix, callback);
-};
+}
 
 function setSourcesMappingFile(rml, prefix) {
   //console.log(rml);
@@ -64,14 +61,14 @@ function setSourcesMappingFile(rml, prefix) {
   newRML = rml.replace(regex, '$1 "' + tempDir + path.sep + prefix + '$2\.csv" $3');
   console.log(newRML);
   return newRML;
-};
+}
 
 function setSourceGraphmlFile(original, path) {
   var regex = /rml:source .+;/g;
   updated = original.replace(regex, 'rml:source "' + path + '" ;');
   //console.log(updated);
   return updated;
-};
+}
 
 router.post('/process', function (req, res) {
   var ms = new Date().getTime();
@@ -147,6 +144,29 @@ router.post('/rml2graphml', function(req, res) {
         var readStream = fs.createReadStream(graphml);
         readStream.pipe(res);
       } else {
+        res.status(400).send(stderr);
+      }
+    });
+  });
+});
+
+router.post('/remoteSourceData', function(req, res) {
+  var ms = new Date().getTime();
+  var originalRML = tempDir + path.sep + "remoteData_" + ms + ".rml.ttl";
+  var outputFile = tempDir + path.sep + "source_" + ms + "." + req.body.format;
+  var sourceID = req.body.sourceID;
+
+  fs.writeFile(originalRML, req.body.rml, function(err) {
+    if(err) {
+      return console.log(err);
+    }
+
+    exec('cd ' + rmwd + '; java -jar RML-DataRetrievalHandler-2.0-SNAPSHOT.jar -m ' + originalRML + ' -o ' + outputFile + ' -f ' + req.body.format, function (error, stdout, stderr) {
+      if (stderr.indexOf('ERROR') == -1) {
+        var readStream = fs.createReadStream(outputFile);
+        readStream.pipe(res);
+      } else {
+        console.log(stderr);
         res.status(400).send(stderr);
       }
     });
