@@ -98,7 +98,7 @@ router.post('/process', function (req, res) {
 
     setSourcesMappingFile(req.body.rml, prefix, function(rml){
       fs.writeFile(mappingFile, rml, function(error) {
-        var format = "rdfjson";
+        var format = req.body.format ? req.body.format : "rdfjson";
         var outputFile = tempDir + path.sep + "result_" + ms + ".ttl";
 
         var child = exec('cd ' + rmwd + '; java -jar RML-Mapper.jar -m ' + mappingFile + ' -f ' + format + ' -o ' + outputFile + ' > ' + logFile, function (error, stdout, stderr) {
