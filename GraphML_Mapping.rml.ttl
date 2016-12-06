@@ -7,7 +7,7 @@
 @prefix crml:    <http://semweb.mmlab.be/ns/crml#> .
 @prefix ql:     <http://semweb.mmlab.be/ns/ql#> .
 @prefix fnml: <http://semweb.mmlab.be/ns/fnml#> .
-
+@prefix fno: 	<http://w3id.org/function/ontology#> .
 @prefix prov:	<http://www.w3.org/ns/prov#> .
 @prefix xsd:	<http://www.w3.org/2001/XMLSchema#> .
 @prefix dcterms:<http://purl.org/dc/terms/> .
@@ -45,10 +45,22 @@
 	rml:iterator "/graphml/graph/node";
 	rml:referenceFormulation ql:XPath.
 
-<#GraphML_NodeParamValuesInput>
+<#GraphML_NodeParamReferenceValuesInput>
 	rml:source "/home/pheyvaer/Desktop/temp/rml/fn-xml/mapping.xml" ;
 	#rml:source "%%file%%";
 	rml:iterator "/graphml/graph/node/data/values/reference";
+	rml:referenceFormulation ql:XPath.
+
+<#GraphML_NodeParamConstantValuesInput>
+	rml:source "/home/pheyvaer/Desktop/temp/rml/fn-xml/mapping.xml" ;
+	#rml:source "%%file%%";
+	rml:iterator "/graphml/graph/node/data/values/constant";
+	rml:referenceFormulation ql:XPath.
+
+<#GraphML_NodeParamTemplateValuesInput>
+	rml:source "/home/pheyvaer/Desktop/temp/rml/fn-xml/mapping.xml" ;
+	#rml:source "%%file%%";
+	rml:iterator "/graphml/graph/node/data/values/template";
 	rml:referenceFormulation ql:XPath.
 
 <#GraphML_DataInput>
@@ -253,7 +265,7 @@
 	rr:predicateObjectMap <#TermTypeGenerator_Mapping> ;
 	rr:predicateObjectMap <#VerificationGenerator_Mapping> ;
 	rr:predicateObjectMap <#CompletionGenerator_Mapping> ;
-	rr:predicateObjectMap <#FnValueOMGenerator_Mapping> .
+	rr:predicateObjectMap <#FunctionIntermediateNodeGenerator_Mapping> .
 
 
 # 4.6 Term Maps
@@ -343,9 +355,10 @@
 		rr:datatype xsd:boolean ;
 		crml:equalCondition <#TrueCompletionCondition> ].
 
-<#FnValueOMGenerator_Mapping>
-	rr:predicate fnml:FunctionTermMap ;
-	rr:objectMap [ rr:parentTriplesMap <#FunctionTermMapGenerator_Mapping>].
+<#FunctionIntermediateNodeGenerator_Mapping> 
+	rr:predicate fnml:functionValue ;
+	rr:objectMap [
+		rr:parentTriplesMap <#FunctionTermMapGenerator_Mapping> ].
 
 
 # 4.5 Referencing Object Map
@@ -587,6 +600,21 @@
   	rr:objectMap [
 		rr:parentTriplesMap <#ExecutionPOMGenerator_Mapping> ] ] ;
 
+rr:predicateObjectMap [
+  	rr:predicate rr:predicateObjectMap;
+  	rr:objectMap [
+		rr:parentTriplesMap <#FunctionParamReferenceGenerator_Mapping> ] ] ;
+
+rr:predicateObjectMap [
+  	rr:predicate rr:predicateObjectMap;
+  	rr:objectMap [
+		rr:parentTriplesMap <#FunctionParamConstantGenerator_Mapping> ] ] ;
+
+rr:predicateObjectMap [
+  	rr:predicate rr:predicateObjectMap;
+  	rr:objectMap [
+		rr:parentTriplesMap <#FunctionParamTemplateGenerator_Mapping> ] ] ;
+
   rr:predicateObjectMap [
 		rr:predicate rml:logicalSource ;
 		rr:objectMap [
@@ -595,7 +623,8 @@
 rr:predicateObjectMap [
 		rr:predicate rr:subjectMap ;
 		rr:objectMap [
-			rr:parentTriplesMap <#FunctionSMGenerator_Mapping> ] ] .
+			rr:termType rr:IRI;
+			rr:constant "http://www.example.com/dummySubjectMap" ] ] .
 
 <#FunctionSMGenerator_Mapping> 
 
@@ -625,17 +654,12 @@ rml:logicalSource <#GraphML_NodeInput> ;
 rr:predicateObjectMap [
   	rr:predicate rr:predicate;
   	rr:objectMap [
-		rr:constant fnml:executes ] ] ;
+		rr:constant fno:executes ] ] ;
 
 rr:predicateObjectMap [
   	rr:predicate rr:objectMap;
   	rr:objectMap [
-		rr:parentTriplesMap <#FunctionOMGenerator_Mapping> ] ] ;
-
-rr:predicateObjectMap [
-  	rr:predicate rr:predicateObjectMap;
-  	rr:objectMap [
-		rr:parentTriplesMap <#FunctionParamGenerator_Mapping> ] ] .
+		rr:parentTriplesMap <#FunctionOMGenerator_Mapping> ] ] .
 
 <#FunctionOMGenerator_Mapping> 
 
@@ -650,11 +674,12 @@ rml:logicalSource <#GraphML_NodeInput> ;
 rr:predicateObjectMap [
   	rr:predicate rr:constant;
   	rr:objectMap [
+ 		rr:termType rr:IRI;
 		rml:reference "data[@key=\"d16\"]/function" ] ] .
 
-<#FunctionParamGenerator_Mapping> 
+<#FunctionParamReferenceGenerator_Mapping> 
 
-rml:logicalSource <#GraphML_NodeParamValuesInput> ;
+rml:logicalSource <#GraphML_NodeParamReferenceValuesInput> ;
 
   rr:subjectMap [
   	rr:template "http://ex.com/functionMap/FunMapParam_POM_{@id}" ;
@@ -664,16 +689,17 @@ rml:logicalSource <#GraphML_NodeParamValuesInput> ;
 rr:predicateObjectMap [
   	rr:predicate rr:predicate;
   	rr:objectMap [
+		rr:termType rr:IRI;
 		rml:reference "@parameter" ] ] ;
 
 rr:predicateObjectMap [
   	rr:predicate rr:objectMap;
   	rr:objectMap [
-		rr:parentTriplesMap <#FunctionParamValueGenerator_Mapping> ] ] .
+		rr:parentTriplesMap <#FunctionParamReferenceValueGenerator_Mapping> ] ] .
 
-<#FunctionParamValueGenerator_Mapping> 
+<#FunctionParamReferenceValueGenerator_Mapping> 
 
-rml:logicalSource <#GraphML_NodeParamValuesInput> ;
+rml:logicalSource <#GraphML_NodeParamReferenceValuesInput> ;
 
   rr:subjectMap [
   	rr:template "http://ex.com/functionMap/FunMapValue_OM_{@id}" ;
@@ -682,5 +708,73 @@ rml:logicalSource <#GraphML_NodeParamValuesInput> ;
 
 rr:predicateObjectMap [
   	rr:predicate rml:reference;
+  	rr:objectMap [
+		rml:reference "." ] ] .
+
+<#FunctionParamConstantGenerator_Mapping> 
+
+rml:logicalSource <#GraphML_NodeParamConstantValuesInput> ;
+
+  rr:subjectMap [
+  	rr:template "http://ex.com/functionMap/FunMapParam_POM_{@id}" ;
+  	rr:class rr:PredicateObjectMap ;
+  ];
+
+rr:predicateObjectMap [
+  	rr:predicate rr:predicate;
+  	rr:objectMap [
+		rr:termType rr:IRI;
+		rml:reference "@parameter" ] ] ;
+
+rr:predicateObjectMap [
+  	rr:predicate rr:objectMap;
+  	rr:objectMap [
+		rr:parentTriplesMap <#FunctionParamConstantValueGenerator_Mapping> ] ] .
+
+<#FunctionParamConstantValueGenerator_Mapping> 
+
+rml:logicalSource <#GraphML_NodeParamConstantValuesInput> ;
+
+  rr:subjectMap [
+  	rr:template "http://ex.com/functionMap/FunMapValue_OM_{@id}" ;
+  	rr:class rr:ObjectMap ;
+  ];
+
+rr:predicateObjectMap [
+  	rr:predicate rr:constant;
+  	rr:objectMap [
+		rml:reference "." ] ] .
+
+<#FunctionParamTemplateGenerator_Mapping> 
+
+rml:logicalSource <#GraphML_NodeParamTemplateValuesInput> ;
+
+  rr:subjectMap [
+  	rr:template "http://ex.com/functionMap/FunMapParam_POM_{@id}" ;
+  	rr:class rr:PredicateObjectMap ;
+  ];
+
+rr:predicateObjectMap [
+  	rr:predicate rr:predicate;
+  	rr:objectMap [
+		rr:termType rr:IRI;
+		rml:reference "@parameter" ] ] ;
+
+rr:predicateObjectMap [
+  	rr:predicate rr:objectMap;
+  	rr:objectMap [
+		rr:parentTriplesMap <#FunctionParamTemplateValueGenerator_Mapping> ] ] .
+
+<#FunctionParamTemplateValueGenerator_Mapping> 
+
+rml:logicalSource <#GraphML_NodeParamTemplateValuesInput> ;
+
+  rr:subjectMap [
+  	rr:template "http://ex.com/functionMap/FunMapValue_OM_{@id}" ;
+  	rr:class rr:ObjectMap ;
+  ];
+
+rr:predicateObjectMap [
+  	rr:predicate rr:template;
   	rr:objectMap [
 		rml:reference "." ] ] .
