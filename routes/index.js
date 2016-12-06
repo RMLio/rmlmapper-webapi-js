@@ -1,6 +1,3 @@
-/*
- CHANGE TO YOUR OWN RML-MAPPER DIRECTORY
- */
 var config = require('../config.json');
 var rmwd = config.paths.rmlmapper;
 var grwd = config.paths.rml2graphml;
@@ -12,6 +9,7 @@ var path = require('path');
 var fs = require('fs');
 var http = require('http');
 var request = require('request');
+var N3 = require('n3');
 
 var dir = __dirname.replace("/routes", "");
 var tempDir = dir + path.sep + "tmp";
@@ -31,20 +29,20 @@ function writeSource(names, index, sources, prefix, callback) {
     } else {
       callback();
     }
-  };
+  }
 
   if (sources[names[index]]) {
     //console.log(sources[names[index]].replace('\'', "'\"'\"''"));
-    console.log('echo \'' + sources[names[index]].replace(/\'/g, "'\"'\"'") + '\' > ' + tempDir + path.sep + prefix + names[index] + '.csv');
-    var child = exec('echo \'' + sources[names[index]].replace(/\'/g, "'\"'\"'") + '\' > ' + tempDir + path.sep + prefix + names[index] + '.csv', function (error, stdout, stderr) {
-      console.log(stdout);
-      console.log(stderr);
+    //console.log('echo \'' + sources[names[index]].replace(/\'/g, "'\"'\"'") + '\' > ' + tempDir + path.sep + prefix + names[index]);
+    var child = exec('echo \'' + sources[names[index]].replace(/\'/g, "'\"'\"'") + '\' > ' + tempDir + path.sep + prefix + names[index], function (error, stdout, stderr) {
+      //console.log(stdout);
+      //console.log(stderr);
       done();
     });
   } else {
     done();
   }
-};
+}
 
 function saveSources(sources, prefix, callback) {
   var names = [];
@@ -53,50 +51,67 @@ function saveSources(sources, prefix, callback) {
     names.push(name);
   }
 
-  console.log(names);
+  //console.log(names);
 
   writeSource(names, 0, sources, prefix, callback);
-};
+}
 
-function setSourcesMappingFile(rml, prefix) {
-  //console.log(rml);
-  var regex = /(<http:\/\/semweb.mmlab.be\/ns\/rml#source>) "(.*)" ([;\.])/g;
-  newRML = rml.replace(regex, '$1 "' + tempDir + path.sep + prefix + '$2\.csv" $3');
-  console.log(newRML);
-  return newRML;
-};
+function setSourcesMappingFile(rml, prefix, callback) {
+  var parser = N3.Parser();
+  var writer = N3.Writer();
+
+  parser.parse(rml, function(error, triple, prefixes){
+    if (triple) {
+      if (triple.predicate == 'http://semweb.mmlab.be/ns/rml#source' && N3.Util.isLiteral(triple.object)) {
+        triple.object = N3.Util.createLiteral(tempDir + path.sep + prefix + N3.Util.getLiteralValue(triple.object));
+      }
+
+      writer.addTriple(triple.subject, triple.predicate, triple.object);
+    } else {
+      writer.end(function (error, result) {
+       if (error) {
+          console.log(error);
+        }
+        //console.log(result);
+        callback(result);
+      });
+    }
+  })
+}
 
 function setSourceGraphmlFile(original, path) {
   var regex = /rml:source .+;/g;
-  updated = original.replace(regex, 'rml:source "' + path + '" ;');
+  var updated = original.replace(regex, 'rml:source "' + path + '" ;');
   //console.log(updated);
   return updated;
-};
+}
 
 router.post('/process', function (req, res) {
   var ms = new Date().getTime();
   var prefix = sourceFilePrefix + ms + "_";
   var logFile = tempDir + path.sep + "log_" + ms + ".log";
 
+  //console.log(JSON.parse(req.body.sources));
+
   var callback = function () {
     var mappingFile = tempDir + path.sep + "mapdoc_" + ms + ".rml";
 
-    var rml = setSourcesMappingFile(req.body.rml, prefix);
+    setSourcesMappingFile(req.body.rml, prefix, function(rml){
+      fs.writeFile(mappingFile, rml, function(error) {
+        var format = req.body.format ? req.body.format : "rdfjson";
+        var outputFile = tempDir + path.sep + "result_" + ms + ".ttl";
 
-    fs.writeFile(mappingFile, rml, function(error) {
-      var format = "rdfjson";
-      var outputFile = tempDir + path.sep + "result_" + ms + ".ttl";
+        var child = exec('cd ' + rmwd + '; java -jar RML-Mapper.jar -m ' + mappingFile + ' -f ' + format + ' -o ' + outputFile + ' > ' + logFile, function (error, stdout, stderr) {
+          //console.log(stdout);
 
-      var child = exec('cd ' + rmwd + '; java -jar RML-Mapper.jar -m ' + mappingFile + ' -f ' + format + ' -o ' + outputFile + ' > ' + logFile, function (error, stdout, stderr) {
-        console.log(stdout);
-
-        var readStream = fs.createReadStream(outputFile);
-        readStream.pipe(res);
+          var readStream = fs.createReadStream(outputFile);
+          readStream.pipe(res);
+        });
       });
     });
   };
 
-  console.log(JSON.parse(req.body.sources));
+  //console.log(JSON.parse(req.body.sources));
 
   saveSources(JSON.parse(req.body.sources), prefix, callback);
 });
@@ -109,7 +124,7 @@ router.post('/graphml2rml', function (req, res) {
   var logFile = tempDir + path.sep + "log_" + ms + ".log";
 
   var child = exec('cat ' + originalMappingFile, function (error, stdout, stderr) {
-    updated = setSourceGraphmlFile(stdout, graphML);
+    var updated = setSourceGraphmlFile(stdout, graphML);
 
     fs.writeFile(mappingFile, updated, function (err) {
       //console.log(err);
@@ -148,6 +163,29 @@ router.post('/rml2graphml', function(req, res) {
         var readStream = fs.createReadStream(graphml);
         readStream.pipe(res);
       } else {
+        res.status(400).send(stderr);
+      }
+    });
+  });
+});
+
+router.post('/remoteSourceData', function(req, res) {
+  var ms = new Date().getTime();
+  var originalRML = tempDir + path.sep + "remoteData_" + ms + ".rml.ttl";
+  var outputFile = tempDir + path.sep + "source_" + ms + "." + req.body.format;
+  var sourceID = req.body.sourceID;
+
+  fs.writeFile(originalRML, req.body.rml, function(err) {
+    if(err) {
+      return console.log(err);
+    }
+
+    exec('cd ' + rmwd + '; java -jar RML-DataRetrievalHandler-2.0-SNAPSHOT.jar -m ' + originalRML + ' -o ' + outputFile + ' -f ' + req.body.format, function (error, stdout, stderr) {
+      if (stderr.indexOf('ERROR') == -1) {
+        var readStream = fs.createReadStream(outputFile);
+        readStream.pipe(res);
+      } else {
+        console.log(stderr);
         res.status(400).send(stderr);
       }
     });
