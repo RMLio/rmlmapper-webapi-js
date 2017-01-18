@@ -10,6 +10,7 @@ var fs = require('fs');
 var http = require('http');
 var request = require('request');
 var N3 = require('n3');
+var DataAnalysis = require("data-analysis");
 
 var dir = __dirname.replace("/routes", "");
 var tempDir = dir + path.sep + "tmp";
@@ -218,6 +219,15 @@ router.post('/api/v1/validate', function (req, res){
       res.status(400).send({error: error});
     }
   });
+});
+
+router.post('/analyse', function(req, res){
+  console.log(req.body.data.replace(/(\r\n|\n|\r)/gm,"").replace(/>\s*/g, '>').replace(/\s*</g, '<'));
+  var da = new DataAnalysis.xml.SDaro(req.body.data.replace(/(\r\n|\n|\r)/gm,"").replace(/>\s*/g, '>').replace(/\s*</g, '<'));
+  var output = da.analyze('/', {pruning: true, logLevel: 'info', multiLevel: true, features:'structure'});
+  console.log(output);
+
+  res.send(output);
 });
 
 module.exports = router;
