@@ -16,6 +16,7 @@
     "path": "^0.12.7",
     "request": "^2.72.0",
     "serve-favicon": "~2.2.0",
-    "data-analysis": "git+ssh://git@git.datasciencelab.ugent.be:4444/automatic-mappings/data-analysis.git#feature-journal"
+    "data-analysis": "git+ssh://git@git.datasciencelab.ugent.be:4444/automatic-mappings/data-analysis.git#feature-journal",
+    "example2rml": "git+ssh://git@git.datasciencelab.ugent.be:4444/pheyvaer/example2rml.git"
   }
 }
