@@ -12,6 +12,7 @@ var request = require('request');
 var N3 = require('n3');
 var DataAnalysis = require("data-analysis");
 
+
 var dir = __dirname.replace("/routes", "");
 var tempDir = dir + path.sep + "tmp";
 var sourceFilePrefix = "source_";
@@ -63,7 +64,7 @@ function setSourcesMappingFile(rml, prefix, callback) {
 
   parser.parse(rml, function(error, triple, prefixes){
     if (triple) {
-      if (triple.predicate == 'http://semweb.mmlab.be/ns/rml#source' && N3.Util.isLiteral(triple.object)) {
+      if (triple.predicate === 'http://semweb.mmlab.be/ns/rml#source' && N3.Util.isLiteral(triple.object)) {
         triple.object = N3.Util.createLiteral(tempDir + path.sep + prefix + N3.Util.getLiteralValue(triple.object));
       }
 
@@ -182,7 +183,7 @@ router.post('/remoteSourceData', function(req, res) {
     }
 
     exec('cd ' + rmwd + '; java -jar RML-DataRetrievalHandler-2.0-SNAPSHOT.jar -m ' + originalRML + ' -o ' + outputFile + ' -f ' + req.body.format, function (error, stdout, stderr) {
-      if (stderr.indexOf('ERROR') == -1) {
+      if (stderr.indexOf('ERROR') === -1) {
         var readStream = fs.createReadStream(outputFile);
         readStream.pipe(res);
       } else {
@@ -197,7 +198,7 @@ router.get('/downloadfile', function (req, res){
   var uri = req.query.uri;
 
   request(uri, function (error, response, body) {
-    if (!error && response.statusCode == 200) {
+    if (!error && response.statusCode === 200) {
       res.send(body);
     } else {
       res.status(400).send({error: error});
@@ -213,7 +214,7 @@ router.post('/api/v1/validate', function (req, res){
   };
 
   request(options, function (error, response, body) {
-    if (!error && response.statusCode == 200) {
+    if (!error && response.statusCode === 200) {
       res.send(body);
     } else {
       res.status(400).send({error: error});
