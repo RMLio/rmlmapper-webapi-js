@@ -12,6 +12,8 @@ let request = require('request');
 let N3 = require('n3');
 let DataAnalysis = require("data-analysis");
 let example2rml = require('example2rml');
+let rml2graphml = require('RML2GraphML');
+let XMLWriter = require('xml-writer');
 
 let dir = __dirname.replace("/routes", "");
 let tempDir = dir + path.sep + "tmp";
@@ -150,25 +152,24 @@ router.post('/graphml2rml', function (req, res) {
 });
 
 router.post('/rml2graphml', function(req, res) {
-  let ms = new Date().getTime();
-  let originalRML = tempDir + path.sep + "originalRML_" + ms + ".rml.ttl";
-  let graphml = tempDir + path.sep + "graphMLFromRML_" + ms + ".xml";
+  let parser = N3.Parser({format: 'Turtle'});
+  let store = N3.Store();
 
-  fs.writeFile(originalRML, req.body.rml, function(err) {
-    if(err) {
-      return console.log(err);
-    }
-
-    exec('cd ' + grwd + '; node RML2GraphML.js ' + originalRML + ' ' + graphml, function (error, stdout, stderr) {
-
-      if (!stderr) {
-        let readStream = fs.createReadStream(graphml);
-        readStream.pipe(res);
+  parser.parse(req.body.rml,
+    function (error, triple, prefixes) {
+      if (error) {
+        console.error(error);
+        res.status(400).send(error);
+      } else if (triple) {
+        store.addTriple(triple.subject, triple.predicate, triple.object);
       } else {
-        res.status(400).send(stderr);
+        //Adding Subjects
+        let xw = new XMLWriter(true);
+        rml2graphml(store, xw);
+
+        res.send(xw.toString());
       }
     });
-  });
 });
 
 router.post('/remoteSourceData', function(req, res) {
