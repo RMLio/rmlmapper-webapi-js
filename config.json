@@ -1,7 +1,6 @@
 {
   "paths" : {
-    "rmlmapper": "/home/pieter/Desktop/temp/bdm",
-    "rml2graphml" : "/home/pieter/Developer/RML2GraphML"
+    "rmlmapper": "/home/pieter/Desktop/temp/bdm"
   },
   "urls" : {
     "validator" : "http://monn.elis.ugent.be:10300"
