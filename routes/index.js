@@ -232,12 +232,29 @@ router.post('/analyse', function(req, res){
   res.send(output);
 });
 
+router.post('/example2graphml', function(req, res) {
+  console.log(req.body.dataSources);
+  example2rml(req.body.triples, req.body.dataSources)
+    .then(function(rml){
+      console.log(rml);
+      let xw = new XMLWriter(true);
+      let store = N3.Store();
+      store.addTriples(rml);
+
+      rml2graphml(store, xw);
+
+      res.send(xw.toString());
+    }).catch(function(error){
+      console.log(error);
+  });
+});
+
 router.post('/example2rml', function(req, res) {
   example2rml(req.body.triples, req.body.dataSources)
     .then(function(rml){
       res.send(rml);
     }).catch(function(error){
-      console.log(error);
+    console.log(error);
   });
 });
 
