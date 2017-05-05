@@ -245,7 +245,8 @@ router.post('/example2graphml', function (req, res) {
 
       res.send(xw.toString());
     }).catch(function (error) {
-    console.log(error);
+    console.log(error.name);
+    res.status(400).send(error);
   });
 });
 
@@ -254,7 +255,8 @@ router.post('/example2rml', function (req, res) {
     .then(function (rml) {
       res.send(rml);
     }).catch(function (error) {
-    console.log(error);
+    console.log(error.name);
+    res.status(400).send(error);
   });
 });
 
