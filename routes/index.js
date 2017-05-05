@@ -28,7 +28,7 @@ function writeSource(names, index, sources, prefix, callback) {
   //console.log(sources[names[index]]);
 
   function done() {
-      if (index < names.length) {
+    if (index < names.length) {
       writeSource(names, index + 1, sources, prefix, callback);
     } else {
       callback();
@@ -64,7 +64,7 @@ function setSourcesMappingFile(rml, prefix, callback) {
   let parser = N3.Parser();
   let writer = N3.Writer();
 
-  parser.parse(rml, function(error, triple, prefixes){
+  parser.parse(rml, function (error, triple, prefixes) {
     if (triple) {
       if (triple.predicate === 'http://semweb.mmlab.be/ns/rml#source' && N3.Util.isLiteral(triple.object)) {
         triple.object = N3.Util.createLiteral(tempDir + path.sep + prefix + N3.Util.getLiteralValue(triple.object));
@@ -73,7 +73,7 @@ function setSourcesMappingFile(rml, prefix, callback) {
       writer.addTriple(triple.subject, triple.predicate, triple.object);
     } else {
       writer.end(function (error, result) {
-       if (error) {
+        if (error) {
           console.log(error);
         }
         //console.log(result);
@@ -100,8 +100,8 @@ router.post('/process', function (req, res) {
   let callback = function () {
     let mappingFile = tempDir + path.sep + "mapdoc_" + ms + ".rml";
 
-    setSourcesMappingFile(req.body.rml, prefix, function(rml){
-      fs.writeFile(mappingFile, rml, function(error) {
+    setSourcesMappingFile(req.body.rml, prefix, function (rml) {
+      fs.writeFile(mappingFile, rml, function (error) {
         let format = req.body.format ? req.body.format : "rdfjson";
         let outputFile = tempDir + path.sep + "result_" + ms + ".ttl";
 
@@ -151,7 +151,7 @@ router.post('/graphml2rml', function (req, res) {
   });
 });
 
-router.post('/rml2graphml', function(req, res) {
+router.post('/rml2graphml', function (req, res) {
   let parser = N3.Parser({format: 'Turtle'});
   let store = N3.Store();
 
@@ -172,14 +172,14 @@ router.post('/rml2graphml', function(req, res) {
     });
 });
 
-router.post('/remoteSourceData', function(req, res) {
+router.post('/remoteSourceData', function (req, res) {
   let ms = new Date().getTime();
   let originalRML = tempDir + path.sep + "remoteData_" + ms + ".rml.ttl";
   let outputFile = tempDir + path.sep + "source_" + ms + "." + req.body.format;
   let sourceID = req.body.sourceID;
 
-  fs.writeFile(originalRML, req.body.rml, function(err) {
-    if(err) {
+  fs.writeFile(originalRML, req.body.rml, function (err) {
+    if (err) {
       return console.log(err);
     }
 
@@ -195,7 +195,7 @@ router.post('/remoteSourceData', function(req, res) {
   });
 });
 
-router.get('/downloadfile', function (req, res){
+router.get('/downloadfile', function (req, res) {
   let uri = req.query.uri;
 
   request(uri, function (error, response, body) {
@@ -207,7 +207,7 @@ router.get('/downloadfile', function (req, res){
   });
 });
 
-router.post('/api/v1/validate', function (req, res){
+router.post('/api/v1/validate', function (req, res) {
   let options = {
     method: 'post',
     form: req.body,
@@ -223,19 +223,19 @@ router.post('/api/v1/validate', function (req, res){
   });
 });
 
-router.post('/analyse', function(req, res){
-  console.log(req.body.data.replace(/(\r\n|\n|\r)/gm,"").replace(/>\s*/g, '>').replace(/\s*</g, '<'));
-  let da = new DataAnalysis.xml.SDaro(req.body.data.replace(/(\r\n|\n|\r)/gm,"").replace(/>\s*/g, '>').replace(/\s*</g, '<'));
-  let output = da.analyze('/', {pruning: true, logLevel: 'info', multiLevel: true, features:'structure'});
+router.post('/analyse', function (req, res) {
+  console.log(req.body.data.replace(/(\r\n|\n|\r)/gm, "").replace(/>\s*/g, '>').replace(/\s*</g, '<'));
+  let da = new DataAnalysis.xml.SDaro(req.body.data.replace(/(\r\n|\n|\r)/gm, "").replace(/>\s*/g, '>').replace(/\s*</g, '<'));
+  let output = da.analyze('/', {pruning: true, logLevel: 'info', multiLevel: true, features: 'structure'});
   console.log(output);
 
   res.send(output);
 });
 
-router.post('/example2graphml', function(req, res) {
+router.post('/example2graphml', function (req, res) {
   console.log(req.body.dataSources);
   example2rml(req.body.triples, req.body.dataSources)
-    .then(function(rml){
+    .then(function (rml) {
       console.log(rml);
       let xw = new XMLWriter(true);
       let store = N3.Store();
@@ -244,16 +244,16 @@ router.post('/example2graphml', function(req, res) {
       rml2graphml(store, xw);
 
       res.send(xw.toString());
-    }).catch(function(error){
-      console.log(error);
+    }).catch(function (error) {
+    console.log(error);
   });
 });
 
-router.post('/example2rml', function(req, res) {
+router.post('/example2rml', function (req, res) {
   example2rml(req.body.triples, req.body.dataSources)
-    .then(function(rml){
+    .then(function (rml) {
       res.send(rml);
-    }).catch(function(error){
+    }).catch(function (error) {
     console.log(error);
   });
 });
