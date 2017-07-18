@@ -1,8 +1,8 @@
 {
   "paths" : {
-    "rmlmapper": "/home/pieter/Desktop/temp/bdm"
+    "rmlmapper": "/home/louise_dck/rmlp_server/"
   },
   "urls" : {
-    "validator" : "http://monn.elis.ugent.be:10300"
+    "validator" : "http://dia.test.iminds.be:8988/"
   }
 }

@@ -18,6 +18,8 @@ let XMLWriter = require('xml-writer');
 let dir = __dirname.replace("/routes", "");
 let tempDir = dir + path.sep + "tmp";
 let sourceFilePrefix = "source_";
+let metadatafile = "";
+let baseoutputfile = "";
 
 //check if temp directory exists
 if (!fs.existsSync(tempDir)) {
@@ -39,8 +41,8 @@ function writeSource(names, index, sources, prefix, callback) {
     //console.log(sources[names[index]].replace('\'', "'\"'\"''"));
     //console.log('echo \'' + sources[names[index]].replace(/\'/g, "'\"'\"'") + '\' > ' + tempDir + path.sep + prefix + names[index]);
     var child = exec('echo \'' + sources[names[index]].replace(/\'/g, "'\"'\"'") + '\' > ' + tempDir + path.sep + prefix + names[index], function (error, stdout, stderr) {
-      //console.log(stdout);
-      //console.log(stderr);
+      console.log(stdout);
+      console.log(stderr);
       done();
     });
   } else {
@@ -90,6 +92,14 @@ function setSourceGraphmlFile(original, path) {
   return updated;
 }
 
+router.get('/results/:id', function(req, res){
+  let id = req.params.id;
+  let file = baseoutputfile + "_" + id + ".ttl";
+  console.log(file);
+  let readStream = fs.createReadStream(file);
+  readStream.pipe(res);
+});
+
 router.post('/process', function (req, res) {
   let ms = new Date().getTime();
   let prefix = sourceFilePrefix + ms + "_";
@@ -104,11 +114,16 @@ router.post('/process', function (req, res) {
       fs.writeFile(mappingFile, rml, function (error) {
         let format = req.body.format ? req.body.format : "rdfjson";
         let outputFile = tempDir + path.sep + "result_" + ms + ".ttl";
+        let file2 = tempDir + path.sep + "result_" + ms + "_0.ttl";
+        metadatafile = tempDir + path.sep + "result_" + ms + "_metadata.ttl";
+        baseoutputfile = tempDir + path.sep + "result_" + ms;
 
-        let child = exec('cd ' + rmwd + '; java -jar RML-Mapper.jar -m ' + mappingFile + ' -f ' + format + ' -o ' + outputFile + ' > ' + logFile, function (error, stdout, stderr) {
+        console.log(mappingFile);
+
+        let child = exec('cd ' + rmwd + '; java -jar RML-Mapper.jar -m ' + mappingFile + ' -o ' + outputFile + ' -mdl triple ' + ' > ' + logFile, function (error, stdout, stderr) {
           //console.log(stdout);
 
-          let readStream = fs.createReadStream(outputFile);
+          let readStream = fs.createReadStream(file2);
           readStream.pipe(res);
         });
       });
@@ -118,6 +133,11 @@ router.post('/process', function (req, res) {
   //console.log(JSON.parse(req.body.sources));
 
   saveSources(JSON.parse(req.body.sources), prefix, callback);
+});
+
+router.get('/metadata/triple', function (req, res) {
+  let readStream = fs.createReadStream(metadatafile);
+  readStream.pipe(res);
 });
 
 router.post('/graphml2rml', function (req, res) {
@@ -142,6 +162,7 @@ router.post('/graphml2rml', function (req, res) {
         let child = exec('cd ' + rmwd + '; java -jar RML-Mapper.jar -m ' + mappingFile + ' -f ' + format + ' -o ' + outputFile + ' -tm TriplesMapGenerator_Source_Mapping,MetadataGenerator_Mapping,FunctionTermMapGenerator_Mapping -b http://rml.io/rmleditor/graphml2rml# > ' + logFile, function (error, stdout, stderr) {
           console.log(stdout);
           console.log(stderr);
+          console.log("GRAPH2RML");
 
           let readStream = fs.createReadStream(outputFile);
           readStream.pipe(res);
