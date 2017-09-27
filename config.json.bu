@@ -1,0 +1,8 @@
+{
+  "paths" : {
+    "rmlmapper": "/home/pieter/Desktop/temp/bdm"
+  },
+  "urls" : {
+    "validator" : "http://monn.elis.ugent.be:10300"
+  }
+}

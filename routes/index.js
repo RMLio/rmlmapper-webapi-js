@@ -18,8 +18,9 @@ let XMLWriter = require('xml-writer');
 let dir = __dirname.replace("/routes", "");
 let tempDir = dir + path.sep + "tmp";
 let sourceFilePrefix = "source_";
-let metadatafile = "";
+let metadatafiles = {};
 let baseoutputfile = "";
+let latestProcessID;
 
 //check if temp directory exists
 if (!fs.existsSync(tempDir)) {
@@ -105,6 +106,8 @@ router.post('/process', function (req, res) {
   let prefix = sourceFilePrefix + ms + "_";
   let logFile = tempDir + path.sep + "log_" + ms + ".log";
 
+  latestProcessID = ms;
+
   //console.log(JSON.parse(req.body.sources));
 
   let callback = function () {
@@ -115,7 +118,9 @@ router.post('/process', function (req, res) {
         let format = req.body.format ? req.body.format : "rdfjson";
         let outputFile = tempDir + path.sep + "result_" + ms + ".ttl";
         let file2 = tempDir + path.sep + "result_" + ms + "_0.ttl";
-        metadatafile = tempDir + path.sep + "result_" + ms + "_metadata.ttl";
+        let metadatafile = tempDir + path.sep + "result_" + ms + "_metadata.ttl";
+
+        metadatafiles[ms] = metadatafile;
         baseoutputfile = tempDir + path.sep + "result_" + ms;
 
         console.log(mappingFile);
@@ -124,7 +129,16 @@ router.post('/process', function (req, res) {
           //console.log(stdout);
 
           let readStream = fs.createReadStream(file2);
-          readStream.pipe(res);
+          const chunks = [];
+
+          readStream.on("data", function (chunk) {
+            chunks.push(chunk);
+          });
+
+          // Send the buffer or you can put it into a var
+          readStream.on("end", function () {
+            res.send({result: Buffer.concat(chunks).toString(), id: ms});
+          });
         });
       });
     });
@@ -136,7 +150,14 @@ router.post('/process', function (req, res) {
 });
 
 router.get('/metadata/triple', function (req, res) {
-  let readStream = fs.createReadStream(metadatafile);
+  let id = req.query.id;
+
+  if (!id) {
+    id = latestProcessID;
+    console.log('Taking metadata from latest process');
+  }
+
+  let readStream = fs.createReadStream(metadatafiles[id]);
   readStream.pipe(res);
 });
 
