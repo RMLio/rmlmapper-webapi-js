@@ -19,7 +19,7 @@ let dir = __dirname.replace("/routes", "");
 let tempDir = dir + path.sep + "tmp";
 let sourceFilePrefix = "source_";
 let metadatafiles = {};
-let baseoutputfile = "";
+let baseoutputfile = tempDir + path.sep + "result_";
 let latestProcessID;
 
 //check if temp directory exists
@@ -93,18 +93,19 @@ function setSourceGraphmlFile(original, path) {
   return updated;
 }
 
-router.get('/results/:id', function(req, res){
-  let id = req.params.id;
-  let file = baseoutputfile + "_" + id + ".ttl";
+router.get('/results/:id-:graph', function(req, res){
+  const id = req.params.id;
+  const graph = req.params.graph;
+  const file = baseoutputfile + id + "_" + graph + ".ttl";
   console.log(file);
-  let readStream = fs.createReadStream(file);
+  const readStream = fs.createReadStream(file);
   readStream.pipe(res);
 });
 
 router.post('/process', function (req, res) {
-  let ms = new Date().getTime();
-  let prefix = sourceFilePrefix + ms + "_";
-  let logFile = tempDir + path.sep + "log_" + ms + ".log";
+  const ms = new Date().getTime();
+  const prefix = sourceFilePrefix + ms + "_";
+  const logFile = tempDir + path.sep + "log_" + ms + ".log";
 
   latestProcessID = ms;
 
@@ -115,30 +116,26 @@ router.post('/process', function (req, res) {
 
     setSourcesMappingFile(req.body.rml, prefix, function (rml) {
       fs.writeFile(mappingFile, rml, function (error) {
-        let format = req.body.format ? req.body.format : "rdfjson";
-        let outputFile = tempDir + path.sep + "result_" + ms + ".ttl";
-        let file2 = tempDir + path.sep + "result_" + ms + "_0.ttl";
-        let metadatafile = tempDir + path.sep + "result_" + ms + "_metadata.ttl";
+        let outputFile = baseoutputfile + ms + ".ttl";
+        let outputFileGraph = baseoutputfile + ms + "_1.ttl";
+        let metadatafile = baseoutputfile + ms + "_metadata.ttl";
 
         metadatafiles[ms] = metadatafile;
-        baseoutputfile = tempDir + path.sep + "result_" + ms;
 
-        console.log(mappingFile);
+        console.log(outputFile);
 
         let child = exec('cd ' + rmwd + '; java -jar RML-Mapper.jar -m ' + mappingFile + ' -o ' + outputFile + ' -mdl triple ' + ' > ' + logFile, function (error, stdout, stderr) {
-          //console.log(stdout);
-
-          let readStream = fs.createReadStream(file2);
-          const chunks = [];
-
-          readStream.on("data", function (chunk) {
-            chunks.push(chunk);
-          });
+          // let readStream = fs.createReadStream(outputFileGraph);
+          // const chunks = [];
+          //
+          // readStream.on("data", function (chunk) {
+          //   chunks.push(chunk);
+          // });
 
           // Send the buffer or you can put it into a var
-          readStream.on("end", function () {
-            res.send({result: Buffer.concat(chunks).toString(), id: ms});
-          });
+          //readStream.on("end", function () {
+            res.send({result: '', id: ms});
+          //});
         });
       });
     });
