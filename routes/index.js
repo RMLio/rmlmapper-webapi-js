@@ -95,7 +95,7 @@ function setSourceGraphmlFile(original, path) {
 
 router.get('/results/:id-:graph', function(req, res){
   const id = req.params.id;
-  const graph = parseInt(req.params.graph) * 2;
+  const graph = req.params.graph;
   const file = baseoutputfile + id + "_" + graph + ".ttl";
   console.log(file);
   const readStream = fs.createReadStream(file);
@@ -132,10 +132,15 @@ router.post('/process', function (req, res) {
           //   chunks.push(chunk);
           // });
 
+          exec(`cd ${tempDir} ; find . -type f -regex "./result_${ms}_[0-9]+.ttl" | sed -e 's/.*_\\([0-9]\\)*.ttl/\\1/g' | tr '\\r\\n' ','`, function (error, stdout, stderr) {
+            const suffixes = stdout.split(',');
+            suffixes.pop();
+            console.log(suffixes);
           // Send the buffer or you can put it into a var
           //readStream.on("end", function () {
-            res.send({result: '', id: ms});
+            res.send({result: '', id: ms, suffixes});
           //});
+          });
         });
       });
     });
