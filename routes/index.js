@@ -95,7 +95,7 @@ function setSourceGraphmlFile(original, path) {
 
 router.get('/results/:id-:graph', function(req, res){
   const id = req.params.id;
-  const graph = req.params.graph;
+  const graph = parseInt(req.params.graph) * 2;
   const file = baseoutputfile + id + "_" + graph + ".ttl";
   console.log(file);
   const readStream = fs.createReadStream(file);
