@@ -1,6 +1,7 @@
 {
   "paths" : {
-    "rmlmapper": "/home/pieter/Developer/RML-Mapper"
+    "rmlmapper": "/home/pieter/Developer/RML-Mapper",
+    "new-rmlmapper":"/home/pheyvaer/Developer/rmlp_server"
   },
   "urls" : {
     "validator" : "http://dia.test.iminds.be:8988/"

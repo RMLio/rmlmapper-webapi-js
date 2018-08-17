@@ -113,13 +113,13 @@
 	rr:predicateObjectMap [
 		rr:predicate rr:predicateObjectMap ;
 		rr:objectMap [
-			rr:parentTriplesMap <#PredicateObjectMapGenerator_Mapping> ] ];
+			rr:parentTriplesMap <#PredicateObjectMapGenerator_Mapping> ] ].
 
 	#Adds the predicateObjectMap predicate and the Predicate Object Map resource
 	#Only for Referencing Object Maps
-	rr:predicateObjectMap [
-		rr:predicate rr:predicateObjectMap ;
-		rr:objectMap [ rr:parentTriplesMap <#RefObj_PredicateObjectMapGenerator_Mapping> ] ] .
+	#rr:predicateObjectMap [
+	#	rr:predicate rr:predicateObjectMap ;
+	#	rr:objectMap [ rr:parentTriplesMap <#RefObj_PredicateObjectMapGenerator_Mapping> ] ] .
 
 
 # 4.1.1 Triples Map Generator - Parent of RefObjMap
@@ -130,12 +130,12 @@
 	rr:subjectMap [
 		rr:template "http://ex.com/triplesMap/TriplesMap_{@id}" ;
 		rr:class rr:TriplesMap, rr:ParentTriplesMap ;
+		crml:equalCondition <#TypeEqualNotMatchCondition>
 	] ;
 
 	rr:predicateObjectMap [
 		rr:predicateMap [
 			rr:constant rml:logicalSource ;
-			crml:equalCondition <#TypeEqualNotMatchCondition>
 			] ;
 		rr:objectMap [
 			rr:parentTriplesMap <#Parent_LogicalSourceGenerator_Mapping> ] ];
@@ -154,7 +154,8 @@
 
 	rr:subjectMap [
 		rr:template "http://ex.com/subjectMap/SubMap_{@id}" ;
-		rr:class rr:SubjectMap ] ;
+		rr:class rr:SubjectMap;
+                crml:equalCondition <#HasSourceMatchCondition> ] ;
 
 	rr:predicateObjectMap <#BlankNodeGenerator_Mapping> ;
 	rr:predicateObjectMap <#TemplateGenerator_Mapping> ;
@@ -174,7 +175,7 @@
 	rr:subjectMap [
 		rr:template "http://ex.com/preObjMap/PredObjMap_{@target}" ;
 		rr:class rr:PredicateObjectMap ;
-		crml:equalCondition <#ContainsNotEqualCondition>
+#		crml:equalCondition <#ContainsNotEqualCondition>
 	] ;
 
 	rr:predicateObjectMap [
@@ -189,46 +190,78 @@
 			rr:parentTriplesMap <#ObjectMapGenerator_Mapping> ;
 			rr:joinCondition [
 				rr:child "@target";
-				rr:parent "@id" ] ] ] .
+				rr:parent "@id" ] ] ] ;
 
+        rr:predicateObjectMap [
+		rr:predicate rr:objectMap ;
+		rr:objectMap [
+			rr:parentTriplesMap <#ObjectMapFromResourceGenerator_Mapping> ;
+			rr:joinCondition [
+				rr:child "@target";
+				rr:parent "@id" ] ] ] ;
 
-# 4.3.1 Predicate Object Map Generator for Referencing Object Map
-
-<#RefObj_PredicateObjectMapGenerator_Mapping>
-	rml:logicalSource <#GraphML_EdgeInput> ;
-
-	rr:subjectMap [
-		rr:template "http://ex.com/preObjMap/RefPredObjMap_{@target}" ;
-		rr:class rr:PredicateObjectMap ] ;
-
-	rr:predicateObjectMap [
-		rr:predicate rr:predicateMap ;
-		rr:objectMap [ rr:parentTriplesMap <#PredicateMapGenerator_Mapping> ] ] ;
-
-	#Generale Predicate Object Map
-	rr:predicateObjectMap [
+        rr:predicateObjectMap [
 		rr:predicateMap [
 			rr:constant rr:objectMap ;
-			crml:equalCondition <#TypeEqualNotMatchCondition> ] ;
+			crml:equalCondition <#LiteralNotEqualMatchCondition> ] ;
 
 		rr:objectMap [
 			rr:parentTriplesMap <#RefObjectMapGenerator_Mapping> ;
 
 			rr:joinCondition [
 				rr:child "@target";
-				rr:parent "@id" ] ] ] ;
+				rr:parent "@id" ] ] ] .
 
-	#Predicate Object Map for rdf:type
-	rr:predicateObjectMap [
-		rr:predicateMap [
-			rr:constant rr:objectMap ;
-			crml:equalCondition <#TypeEqualMatchCondition> ] ;
-		rr:objectMap [
-			rr:parentTriplesMap <#ClassGenerator_Mapping> ;
-			rr:joinCondition [
-				rr:child "@target";
-				rr:parent "@id" ] ;
-			] ].
+       #Predicate Object Map for rdf:type
+#	rr:predicateObjectMap [
+#		rr:predicateMap [
+#			rr:constant rr:objectMap ;
+#			crml:equalCondition <#TypeEqualMatchCondition> ] ;
+#		rr:objectMap [
+#			rr:parentTriplesMap <#ClassGenerator_Mapping> ;
+#			rr:joinCondition [
+#				rr:child "@target";
+#				rr:parent "@id" ] ;
+#			] ].
+
+
+# 4.3.1 Predicate Object Map Generator for Referencing Object Map
+
+#<#RefObj_PredicateObjectMapGenerator_Mapping>
+#	rml:logicalSource <#GraphML_EdgeInput> ;
+#
+#	rr:subjectMap [
+#		rr:template "http://ex.com/preObjMap/RefPredObjMap_{@target}" ;
+#		rr:class rr:PredicateObjectMap ] ;
+#
+#	rr:predicateObjectMap [
+#		rr:predicate rr:predicateMap ;
+#		rr:objectMap [ rr:parentTriplesMap <#PredicateMapGenerator_Mapping> ] ] ;
+#
+#	#Generale Predicate Object Map
+#	rr:predicateObjectMap [
+#		rr:predicateMap [
+#			rr:constant rr:objectMap ;
+#			crml:equalCondition <#TypeEqualNotMatchCondition> ] ;
+#
+#		rr:objectMap [
+#			rr:parentTriplesMap <#RefObjectMapGenerator_Mapping> ;
+#
+#			rr:joinCondition [
+#				rr:child "@target";
+#				rr:parent "@id" ] ] ] ;
+#
+#	#Predicate Object Map for rdf:type
+#	rr:predicateObjectMap [
+#		rr:predicateMap [
+#			rr:constant rr:objectMap ;
+#			crml:equalCondition <#TypeEqualMatchCondition> ] ;
+#		rr:objectMap [
+#			rr:parentTriplesMap <#ClassGenerator_Mapping> ;
+#			rr:joinCondition [
+#				rr:child "@target";
+#				rr:parent "@id" ] ;
+#			] ].
 
 
 # 4.4 Predicate Map
@@ -263,6 +296,27 @@
 	rr:predicateObjectMap <#DatatypeGenerator_Mapping> ;
 	rr:predicateObjectMap <#LanguageGenerator_Mapping> ;
 	rr:predicateObjectMap <#TermTypeGenerator_Mapping> ;
+	rr:predicateObjectMap <#VerificationGenerator_Mapping> ;
+	rr:predicateObjectMap <#CompletionGenerator_Mapping> ;
+	rr:predicateObjectMap <#FunctionIntermediateNodeGenerator_Mapping> .
+
+<#ObjectMapFromResourceGenerator_Mapping>
+	rml:logicalSource <#GraphML_NodeInput> ;
+
+	rr:subjectMap [
+		rr:template "http://ex.com/objectMap/ObjMap_{@id}" ;
+                rr:class rr:ObjectMap;
+		crml:equalCondition <#ResourceEqualMatchCondition>, <#HasNoSourceMatchCondition> ];
+
+	rr:predicateObjectMap <#TemplateObjectGenerator_Mapping> ;
+	rr:predicateObjectMap <#ReferenceGenerator_Mapping> ;
+	rr:predicateObjectMap <#ConstantGenerator_Mapping> ;
+	rr:predicateObjectMap <#DatatypeGenerator_Mapping> ;
+	rr:predicateObjectMap <#LanguageGenerator_Mapping> ;
+	rr:predicateObjectMap [
+	rr:predicate rr:termType ;
+	rr:objectMap [
+		rr:constant <http://www.w3.org/ns/r2rml#IRI> ]];
 	rr:predicateObjectMap <#VerificationGenerator_Mapping> ;
 	rr:predicateObjectMap <#CompletionGenerator_Mapping> ;
 	rr:predicateObjectMap <#FunctionIntermediateNodeGenerator_Mapping> .
@@ -557,6 +611,18 @@
 	crml:binding [
 		crml:variable "field" ;
 		rml:reference "data[@key=\"d9\"]" ] .
+
+<#HasSourceMatchCondition>
+	crml:condition "hasField(%%field%%)" ;
+	crml:binding [
+		crml:variable "field" ;
+		rml:reference "data[@key=\"d7\"]" ] .
+
+<#HasNoSourceMatchCondition>
+	crml:condition "!hasField(%%field%%)" ;
+	crml:binding [
+		crml:variable "field" ;
+		rml:reference "data[@key=\"d7\"]" ] .
 
 <#ContainsNotEqualCondition>
 	crml:condition "!contains(%%field%%,\"cn\")" ;
