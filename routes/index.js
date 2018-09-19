@@ -1,26 +1,21 @@
-let config = require('../config.json');
-let rmwd = config.paths.rmlmapper;
-let grwd = config.paths.rml2graphml;
+const config = require('../config.json');
+const rmlmapperPath = config.paths.rmlmapper;
 
-let express = require('express');
-let router = express.Router();
-let exec = require('child_process').exec;
-let path = require('path');
-let fs = require('fs');
-let http = require('http');
-let request = require('request');
-let N3 = require('n3');
-let DataAnalysis = require("data-analysis");
-let example2rml = require('example2rml');
-let rml2graphml = require('RML2GraphML');
-let XMLWriter = require('xml-writer');
+const express = require('express');
+const router = express.Router();
+const exec = require('child_process').exec;
+const path = require('path');
+const fs = require('fs');
+const request = require('request');
+const N3 = require('n3');
+const DataAnalysis = require("data-analysis");
+const example2rml = require('example2rml');
+const rml2graphml = require('RML2GraphML');
+const XMLWriter = require('xml-writer');
 
-let dir = __dirname.replace("/routes", "");
-let tempDir = dir + path.sep + "tmp";
-let sourceFilePrefix = "source_";
-let metadatafiles = {};
-let baseoutputfile = tempDir + path.sep + "result_";
-let latestProcessID;
+const dir = __dirname.replace("/routes", "");
+const tempDir = dir + path.sep + "tmp";
+const sourceFilePrefix = "data-";
 
 //check if temp directory exists
 if (!fs.existsSync(tempDir)) {
@@ -39,11 +34,7 @@ function writeSource(names, index, sources, prefix, callback) {
   }
 
   if (sources[names[index]]) {
-    //console.log(sources[names[index]].replace('\'', "'\"'\"''"));
-    //console.log('echo \'' + sources[names[index]].replace(/\'/g, "'\"'\"'") + '\' > ' + tempDir + path.sep + prefix + names[index]);
-    var child = exec('echo \'' + sources[names[index]].replace(/\'/g, "'\"'\"'") + '\' > ' + tempDir + path.sep + prefix + names[index], function (error, stdout, stderr) {
-      console.log(stdout);
-      console.log(stderr);
+    exec('echo \'' + sources[names[index]].replace(/\'/g, "'\"'\"'") + '\' > ' + prefix + names[index], function (error, stdout, stderr) {
       done();
     });
   } else {
@@ -58,19 +49,22 @@ function saveSources(sources, prefix, callback) {
     names.push(name);
   }
 
-  //console.log(names);
-
   writeSource(names, 0, sources, prefix, callback);
 }
 
+function setSourceGraphmlFile(original, path) {
+  const regex = /rml:source .+;/g;
+  return original.replace(regex, 'rml:source "' + path + '" ;');
+}
+
 function setSourcesMappingFile(rml, prefix, callback) {
-  let parser = N3.Parser();
-  let writer = N3.Writer();
+  const parser = N3.Parser();
+  const writer = N3.Writer();
 
   parser.parse(rml, function (error, triple, prefixes) {
     if (triple) {
       if (triple.predicate === 'http://semweb.mmlab.be/ns/rml#source' && N3.Util.isLiteral(triple.object)) {
-        triple.object = N3.Util.createLiteral(tempDir + path.sep + prefix + N3.Util.getLiteralValue(triple.object));
+        triple.object = N3.Util.createLiteral(prefix + N3.Util.getLiteralValue(triple.object));
       }
 
       writer.addTriple(triple.subject, triple.predicate, triple.object);
@@ -79,88 +73,56 @@ function setSourcesMappingFile(rml, prefix, callback) {
         if (error) {
           console.log(error);
         }
-        //console.log(result);
+
         callback(result);
       });
     }
   })
 }
 
-function setSourceGraphmlFile(original, path) {
-  let regex = /rml:source .+;/g;
-  let updated = original.replace(regex, 'rml:source "' + path + '" ;');
-  //console.log(updated);
-  return updated;
-}
-
-router.get('/results/:id-:graph', function(req, res){
-  const id = req.params.id;
-  const graph = req.params.graph;
-  const file = baseoutputfile + id + "_" + graph + ".ttl";
-  console.log(file);
-  const readStream = fs.createReadStream(file);
-  readStream.pipe(res);
-});
-
 router.post('/process', function (req, res) {
   const ms = new Date().getTime();
-  const prefix = sourceFilePrefix + ms + "_";
-  const logFile = tempDir + path.sep + "log_" + ms + ".log";
+  const processDir = tempDir + path.sep + ms;
 
-  latestProcessID = ms;
+  fs.mkdir(processDir, () => {
+    const logFile = processDir + path.sep + 'rmlmapper.log';
+    const sourceDirPrefix = processDir + path.sep + sourceFilePrefix;
 
-  //console.log(JSON.parse(req.body.sources));
+    const callback = function () {
+      const mappingFile = processDir + path.sep + 'mapping.rml.ttl';
 
-  let callback = function () {
-    let mappingFile = tempDir + path.sep + "mapdoc_" + ms + ".rml";
+      setSourcesMappingFile(req.body.rml, sourceDirPrefix, function (rml) {
+        fs.writeFile(mappingFile, rml, function (error) {
+          const outputFile = processDir + path.sep + "output.nq";
+          const metadatafile = processDir + path.sep + "metadata.nq";
 
-    setSourcesMappingFile(req.body.rml, prefix, function (rml) {
-      fs.writeFile(mappingFile, rml, function (error) {
-        let outputFile = baseoutputfile + ms + ".ttl";
-        let outputFileGraph = baseoutputfile + ms + "_1.ttl";
-        let metadatafile = baseoutputfile + ms + "_metadata.ttl";
+          exec(`java -jar ${rmlmapperPath} -m ${mappingFile} -o ${outputFile} -l triple -e ${metadatafile} &> ${logFile}`, function (error, stdout, stderr) {
+            console.log(stderr);
 
-        metadatafiles[ms] = metadatafile;
-
-        console.log(outputFile);
-
-        let child = exec('cd ' + rmwd + '; java -jar RML-Mapper.jar -m ' + mappingFile + ' -o ' + outputFile + ' -mdl triple ' + ' > ' + logFile, function (error, stdout, stderr) {
-          // let readStream = fs.createReadStream(outputFileGraph);
-          // const chunks = [];
-          //
-          // readStream.on("data", function (chunk) {
-          //   chunks.push(chunk);
-          // });
-
-          exec(`cd ${tempDir} ; find . -type f -regex "./result_${ms}_[0-9]+.ttl" | sed -e 's/.*_\\([0-9]*\\).ttl/\\1/g' | tr '\\r\\n' ','`, function (error, stdout, stderr) {
-            const suffixes = stdout.split(',');
-            suffixes.pop();
-            console.log(suffixes);
-          // Send the buffer or you can put it into a var
-          //readStream.on("end", function () {
-            res.send({result: '', id: ms, suffixes});
-          //});
+            fs.readFile(outputFile, 'utf8', (outputErr, output) => {
+              if (outputErr) {
+                console.error(`Error while reading output file '${outputFile}'`);
+                res.status('500');
+                res.send();
+              } else {
+                fs.readFile(metadatafile, 'utf8', (metadataErr, metadata) => {
+                  if (metadataErr) {
+                    console.error(`Error while reading metadata file '${outputFile}'`);
+                    res.status('500');
+                    res.send();
+                  } else {
+                    res.send({output, metadata});
+                  }
+                });
+              }
+            });
           });
         });
       });
-    });
-  };
+    };
 
-  //console.log(JSON.parse(req.body.sources));
-
-  saveSources(JSON.parse(req.body.sources), prefix, callback);
-});
-
-router.get('/metadata/triple', function (req, res) {
-  let id = req.query.id;
-
-  if (!id) {
-    id = latestProcessID;
-    console.log('Taking metadata from latest process');
-  }
-
-  let readStream = fs.createReadStream(metadatafiles[id]);
-  readStream.pipe(res);
+    saveSources(JSON.parse(req.body.sources), sourceDirPrefix, callback)
+  });
 });
 
 router.post('/graphml2rml', function (req, res) {
@@ -170,19 +132,19 @@ router.post('/graphml2rml', function (req, res) {
   let mappingFile = tempDir + path.sep + "GraphML_Mapping_" + ms + ".rml.ttl";
   let logFile = tempDir + path.sep + "log_" + ms + ".log";
 
-  let child = exec('cat ' + originalMappingFile, function (error, stdout, stderr) {
+  exec('cat ' + originalMappingFile, function (error, stdout, stderr) {
     let updated = setSourceGraphmlFile(stdout, graphML);
 
     fs.writeFile(mappingFile, updated, function (err) {
       //console.log(err);
 
-      let child = exec('echo \'' + req.body.graphml + '\' > ' + graphML, function (error, stdout, stderr) {
+      exec('echo \'' + req.body.graphml + '\' > ' + graphML, function (error, stdout, stderr) {
         let format = "turtle";
         let outputFile = tempDir + path.sep + "graphml2rml-result_" + ms + ".rml.ttl";
 
         //console.log('/home/pheyvaer/Developer/RML-Mapper/bin/RML-Mapper -m ' + mappingFile + ' -f ' + format + ' -o ' + outputFile + ' -tm TriplesMapGenerator_Mapping');
 
-        let child = exec('cd ' + rmwd + '; java -jar RML-Mapper.jar -m ' + mappingFile + ' -f ' + format + ' -o ' + outputFile + ' -tm TriplesMapGenerator_Source_Mapping,MetadataGenerator_Mapping,FunctionTermMapGenerator_Mapping -b http://rml.io/rmleditor/graphml2rml# > ' + logFile, function (error, stdout, stderr) {
+        exec('cd ' + rmlmapperPath + '; java -jar RML-Mapper.jar -m ' + mappingFile + ' -f ' + format + ' -o ' + outputFile + ' -tm TriplesMapGenerator_Source_Mapping,MetadataGenerator_Mapping,FunctionTermMapGenerator_Mapping -b http://rml.io/rmleditor/graphml2rml# > ' + logFile, function (error, stdout, stderr) {
           console.log(stdout);
           console.log(stderr);
           console.log("GRAPH2RML");
@@ -227,7 +189,7 @@ router.post('/remoteSourceData', function (req, res) {
       return console.log(err);
     }
 
-    exec('cd ' + rmwd + '; java -jar RML-DataRetrievalHandler-2.0-SNAPSHOT.jar -m ' + originalRML + ' -o ' + outputFile + ' -f ' + req.body.format, function (error, stdout, stderr) {
+    exec('cd ' + rmlmapperPath + '; java -jar RML-DataRetrievalHandler-2.0-SNAPSHOT.jar -m ' + originalRML + ' -o ' + outputFile + ' -f ' + req.body.format, function (error, stdout, stderr) {
       if (stderr.indexOf('ERROR') === -1) {
         let readStream = fs.createReadStream(outputFile);
         readStream.pipe(res);
