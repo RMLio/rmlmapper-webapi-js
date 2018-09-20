@@ -126,34 +126,44 @@ router.post('/process', function (req, res) {
 });
 
 router.post('/graphml2rml', function (req, res) {
-  let ms = new Date().getTime();
-  let graphML = tempDir + path.sep + "graphML_" + ms + ".xml";
-  let originalMappingFile = dir + path.sep + "GraphML_Mapping.rml.ttl";
-  let mappingFile = tempDir + path.sep + "GraphML_Mapping_" + ms + ".rml.ttl";
-  let logFile = tempDir + path.sep + "log_" + ms + ".log";
+  const ms = new Date().getTime();
+  const processDir = tempDir + path.sep + ms;
 
-  exec('cat ' + originalMappingFile, function (error, stdout, stderr) {
-    let updated = setSourceGraphmlFile(stdout, graphML);
+  fs.mkdir(processDir, () => {
+    const graphML = processDir + path.sep + "graphml.xml";
+    const originalMappingFile = dir + path.sep + "GraphML_Mapping.rml.ttl";
+    const mappingFile = processDir + path.sep + "graphml-mapping.rml.ttl";
+    const logFile = processDir + path.sep + "rmlmapper.log";
 
-    fs.writeFile(mappingFile, updated, function (err) {
-      //console.log(err);
+    exec('cat ' + originalMappingFile, function (error, stdout, stderr) {
+      let updated = setSourceGraphmlFile(stdout, graphML);
 
-      exec('echo \'' + req.body.graphml + '\' > ' + graphML, function (error, stdout, stderr) {
-        let format = "turtle";
-        let outputFile = tempDir + path.sep + "graphml2rml-result_" + ms + ".rml.ttl";
+      fs.writeFile(mappingFile, updated, function (err) {
+        //console.log(err);
 
-        //console.log('/home/pheyvaer/Developer/RML-Mapper/bin/RML-Mapper -m ' + mappingFile + ' -f ' + format + ' -o ' + outputFile + ' -tm TriplesMapGenerator_Mapping');
+        exec('echo \'' + req.body.graphml + '\' > ' + graphML, function (error, stdout, stderr) {
+          const format = "turtle";
+          const outputFile = processDir + path.sep + "result" + ms + ".rml.ttl";
 
-        exec('cd ' + rmlmapperPath + '; java -jar RML-Mapper.jar -m ' + mappingFile + ' -f ' + format + ' -o ' + outputFile + ' -tm TriplesMapGenerator_Source_Mapping,MetadataGenerator_Mapping,FunctionTermMapGenerator_Mapping -b http://rml.io/rmleditor/graphml2rml# > ' + logFile, function (error, stdout, stderr) {
-          console.log(stdout);
-          console.log(stderr);
-          console.log("GRAPH2RML");
+          //console.log('/home/pheyvaer/Developer/RML-Mapper/bin/RML-Mapper -m ' + mappingFile + ' -f ' + format + ' -o ' + outputFile + ' -tm TriplesMapGenerator_Mapping');
 
-          let readStream = fs.createReadStream(outputFile);
-          readStream.pipe(res);
+          exec(`java -jar ${rmlmapperPath} -m ${mappingFile} -f ${format} -o ${outputFile} -t http://rml.io/rmleditor/graphml2rml#TriplesMapGenerator_Source_Mapping,http://rml.io/rmleditor/graphml2rml#MetadataGenerator_Mapping,http://rml.io/rmleditor/graphml2rml#FunctionTermMapGenerator_Mapping &> ${logFile}`, function (error, stdout, stderr) {
+            console.log(stdout);
+            console.log(stderr);
+            console.log("GRAPH2RML");
+
+            try {
+              const readStream = fs.createReadStream(outputFile);
+              readStream.pipe(res);
+            } catch (e) {
+              console.error(e);
+              res.status(500);
+              res.send();
+            }
+          });
         });
-      });
-    })
+      })
+    });
   });
 });
 
