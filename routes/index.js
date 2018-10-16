@@ -95,7 +95,7 @@ router.post('/process', function (req, res) {
         fs.writeFile(mappingFile, rml, function (error) {
           const outputFile = processDir + path.sep + "output.nq";
           const metadatafile = processDir + path.sep + "metadata.nq";
-          const generateMetatdata = req.body.generateMetatdata;
+          const generateMetatdata = req.body.generateMetadata;
 
           let execCommand = `java -jar ${rmlmapperPath} -m ${mappingFile} -o ${outputFile}`;
 
