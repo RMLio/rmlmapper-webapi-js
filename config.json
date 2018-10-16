@@ -1,6 +1,6 @@
 {
   "paths" : {
-    "rmlmapper":"/home/pheyvaer/Developer/rmlmapper-java/target/rmlmapper-4.0.0-r48-jar-with-dependencies.jar"
+    "rmlmapper":"/home/pheyvaer/Developer/rmlmapper-java/target/rmlmapper-4.0.0-r53-jar-with-dependencies.jar"
   },
   "urls" : {
     "validator" : "http://dia.test.iminds.be:8988/"

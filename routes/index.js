@@ -95,9 +95,21 @@ router.post('/process', function (req, res) {
         fs.writeFile(mappingFile, rml, function (error) {
           const outputFile = processDir + path.sep + "output.nq";
           const metadatafile = processDir + path.sep + "metadata.nq";
+          const generateMetatdata = req.body.generateMetatdata;
 
-          exec(`java -jar ${rmlmapperPath} -m ${mappingFile} -o ${outputFile} -l triple -e ${metadatafile} &> ${logFile}`, function (error, stdout, stderr) {
-            console.log(stderr);
+          let execCommand = `java -jar ${rmlmapperPath} -m ${mappingFile} -o ${outputFile}`;
+
+          if (generateMetatdata) {
+            execCommand += ` -l triple -e ${metadatafile}`;
+          }
+
+          execCommand += ` &> ${logFile}`;
+
+          exec(execCommand, function (error, stdout, stderr) {
+
+            if (stderr) {
+              console.error(stderr);
+            }
 
             fs.readFile(outputFile, 'utf8', (outputErr, output) => {
               if (outputErr) {
@@ -105,15 +117,19 @@ router.post('/process', function (req, res) {
                 res.status('500');
                 res.send();
               } else {
-                fs.readFile(metadatafile, 'utf8', (metadataErr, metadata) => {
-                  if (metadataErr) {
-                    console.error(`Error while reading metadata file '${outputFile}'`);
-                    res.status('500');
-                    res.send();
-                  } else {
-                    res.send({output, metadata});
-                  }
-                });
+                if (generateMetatdata) {
+                  fs.readFile(metadatafile, 'utf8', (metadataErr, metadata) => {
+                    if (metadataErr) {
+                      console.error(`Error while reading metadata file '${outputFile}'`);
+                      res.status('500');
+                      res.send();
+                    } else {
+                      res.send({output, metadata});
+                    }
+                  });
+                } else {
+                  res.send({output});
+                }
               }
             });
           });

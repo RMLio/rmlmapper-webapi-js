@@ -1,6 +1,6 @@
 {
-  "name": "rmlp_server",
-  "version": "0.0.0",
+  "name": "rmlmapper-api-js",
+  "version": "0.0.2",
   "private": true,
   "scripts": {
     "start": "node ./bin/www"
