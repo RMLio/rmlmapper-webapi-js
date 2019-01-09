@@ -137,7 +137,7 @@ router.post('/process', function (req, res) {
       });
     };
 
-    saveSources(JSON.parse(req.body.sources), sourceDirPrefix, callback)
+    saveSources(req.body.sources, sourceDirPrefix, callback)
   });
 });
 
