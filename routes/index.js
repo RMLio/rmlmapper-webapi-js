@@ -1,4 +1,5 @@
 const config = require('../config.json');
+const pkg = require('../package');
 const rmlmapperPath = config.paths.rmlmapper;
 
 const express = require('express');
@@ -79,6 +80,23 @@ function setSourcesMappingFile(rml, prefix, callback) {
     }
   })
 }
+
+router.get('/', (req, res) => {
+  res.send(`<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>RMLMapper Web API v${pkg.version}</title>
+  </head>
+  <body>
+    <h3>RMLMapper Web API</h3>
+    <ul>
+      <li>API version: ${pkg.version}</li>
+      <li>RMLMapper version: ${config.versions.rmlmapper}</li>
+    </ul>
+  </body>
+</html>`);
+});
 
 router.post('/process', function (req, res) {
   const ms = new Date().getTime();
