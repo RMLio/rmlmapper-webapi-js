@@ -7,6 +7,7 @@ RUN apt-get install -y nodejs
 RUN apt-get install -y build-essential
 RUN apt-get install -y python
 RUN apt-get install -y default-jre
+RUN apt-get install -y git-core
 
 ADD repo-key /
 RUN \
