@@ -35,9 +35,13 @@ function writeSource(names, index, sources, prefix, callback) {
   }
 
   if (sources[names[index]]) {
-    exec('echo \'' + sources[names[index]].replace(/\'/g, "'\"'\"'") + '\' > ' + prefix + names[index], function (error, stdout, stderr) {
-      done();
-    });
+    if (typeof sources[names[index]] === 'string') {
+      exec('echo \'' + sources[names[index]].replace(/\'/g, "'\"'\"'") + '\' > ' + prefix + names[index], function (error, stdout, stderr) {
+        done();
+      });
+    } else {
+      callback(new Error(`The source with name "${names[index]}" is not string.`));
+    }
   } else {
     done();
   }
@@ -94,6 +98,37 @@ router.get('/', (req, res) => {
       <li>API version: ${pkg.version}</li>
       <li>RMLMapper version: ${config.versions.rmlmapper}</li>
     </ul>
+    
+    <div>
+        <h4>Usage</h4>
+        
+        <p>
+            <ul>
+                <li>Request: HTTP POST</li>
+                <li>Path: <code>/process</code></li>
+                <li>Content-Type: application/json</li>
+                <li>Body (raw):
+                    <ul>
+                        <li><code>rml</code> (required): RML rules (string, Turtle format)</li>
+                        <li><code>sources</code> (optional): key-value pairs where the key is the name of the source used in the rules and the value the string representation of that source</li>
+                        <li><code>generateMetadata</code> (optional, default is <code>false</code>): if set to <code>true</code> the metadata of the process is generated and returned</li>
+                    </ul>
+                </li>
+                <li>Example:
+                    <pre>
+curl -X POST \\
+  ${config.urls["web-api"]}/process \\
+  -d '{
+  "rml":"@prefix rr: <http://www.w3.org/ns/r2rml#>. @prefix rml: <http://semweb.mmlab.be/ns/rml#>. @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>. @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>. @prefix ql: <http://semweb.mmlab.be/ns/ql#>. @prefix map: <http://mapping.example.com/>.  map:map_person_0 rml:logicalSource map:source_0;     a rr:TriplesMap;     rdfs:label \\"person\\";     rr:subjectMap map:s_0;     rr:predicateObjectMap map:pom_0, map:pom_1. map:om_0 a rr:ObjectMap;     rr:constant \\"http://xmlns.com/foaf/0.1/Person\\";     rr:termType rr:IRI. map:om_1 a rr:ObjectMap;     rml:reference \\"firstname\\";     rr:termType rr:Literal. map:pm_0 a rr:PredicateMap;     rr:constant rdf:type. map:pm_1 a rr:PredicateMap;     rr:constant <http://example.com/name>. map:pom_0 a rr:PredicateObjectMap;     rr:predicateMap map:pm_0;     rr:objectMap map:om_0. map:pom_1 a rr:PredicateObjectMap;     rr:predicateMap map:pm_1;     rr:objectMap map:om_1. map:s_0 a rr:SubjectMap;     rr:template \\"http://example.com/{firstname}\\". map:source_0 a rml:LogicalSource;     rml:source \\"data.json\\";     rml:iterator \\"$.persons[*]\\";     rml:referenceFormulation ql:JSONPath. ",
+  "sources": {
+  	"data.json": "{\\"persons\\": [{\\"firstname\\": \\"John\\", \\"lastname\\": \\"Doe\\"},{\\"firstname\\": \\"Jane\\",\\"lastname\\": \\"Smith\\"},{ \\"firstname\\": \\"Sarah\\", \\"lastname\\": \\"Bladinck\\"}] }"
+  }
+}'
+</pre>
+                </li>
+            </ul>
+        </p>
+    </div>
   </body>
 </html>`);
 });
@@ -102,61 +137,74 @@ router.post('/process', function (req, res) {
   const ms = new Date().getTime();
   const processDir = tempDir + path.sep + ms;
 
-  fs.mkdir(processDir, () => {
-    const logFile = processDir + path.sep + 'rmlmapper.log';
-    const sourceDirPrefix = processDir + path.sep + sourceFilePrefix;
+  if (!req.body.rml) {
+    res.status(400).send(`The parameter "rml" is required.`);
+  } else {
 
-    const callback = function () {
-      const mappingFile = processDir + path.sep + 'mapping.rml.ttl';
+    fs.mkdir(processDir, () => {
+      const logFile = processDir + path.sep + 'rmlmapper.log';
+      const sourceDirPrefix = processDir + path.sep + sourceFilePrefix;
 
-      setSourcesMappingFile(req.body.rml, sourceDirPrefix, function (rml) {
-        fs.writeFile(mappingFile, rml, function (error) {
-          const outputFile = processDir + path.sep + "output.nq";
-          const metadatafile = processDir + path.sep + "metadata.nq";
-          const generateMetatdata = req.body.generateMetadata;
+      const callback = function (error) {
+        if (error) {
+          res.status(400).send(error.message);
+        } else {
+          const mappingFile = processDir + path.sep + 'mapping.rml.ttl';
 
-          let execCommand = `java -jar ${rmlmapperPath} -m ${mappingFile} -o ${outputFile}`;
+          setSourcesMappingFile(req.body.rml, sourceDirPrefix, function (rml) {
+            fs.writeFile(mappingFile, rml, function (error) {
+              const outputFile = processDir + path.sep + "output.nq";
+              const metadatafile = processDir + path.sep + "metadata.nq";
+              const generateMetatdata = req.body.generateMetadata;
 
-          if (generateMetatdata) {
-            execCommand += ` -l triple -e ${metadatafile}`;
-          }
+              let execCommand = `java -jar ${rmlmapperPath} -m ${mappingFile} -o ${outputFile}`;
 
-          execCommand += ` &> ${logFile}`;
-
-          exec(execCommand, function (error, stdout, stderr) {
-
-            if (stderr) {
-              console.error(stderr);
-            }
-
-            fs.readFile(outputFile, 'utf8', (outputErr, output) => {
-              if (outputErr) {
-                console.error(`Error while reading output file '${outputFile}'`);
-                res.status('500');
-                res.send();
-              } else {
-                if (generateMetatdata) {
-                  fs.readFile(metadatafile, 'utf8', (metadataErr, metadata) => {
-                    if (metadataErr) {
-                      console.error(`Error while reading metadata file '${outputFile}'`);
-                      res.status('500');
-                      res.send();
-                    } else {
-                      res.send({output, metadata});
-                    }
-                  });
-                } else {
-                  res.send({output});
-                }
+              if (generateMetatdata) {
+                execCommand += ` -l triple -e ${metadatafile}`;
               }
+
+              execCommand += ` &> ${logFile}`;
+
+              exec(execCommand, function (error, stdout, stderr) {
+
+                if (stderr) {
+                  console.error(stderr);
+                }
+
+                fs.readFile(outputFile, 'utf8', (outputErr, output) => {
+                  if (outputErr) {
+                    console.error(`Error while reading output file '${outputFile}'`);
+                    res.status('500');
+                    res.send();
+                  } else {
+                    if (generateMetatdata) {
+                      fs.readFile(metadatafile, 'utf8', (metadataErr, metadata) => {
+                        if (metadataErr) {
+                          console.error(`Error while reading metadata file '${outputFile}'`);
+                          res.status('500');
+                          res.send();
+                        } else {
+                          res.send({output, metadata});
+                        }
+                      });
+                    } else {
+                      res.send({output});
+                    }
+                  }
+                });
+              });
             });
           });
-        });
-      });
-    };
+        }
+      };
 
-    saveSources(req.body.sources, sourceDirPrefix, callback)
-  });
+      if (req.body.sources) {
+        saveSources(req.body.sources, sourceDirPrefix, callback);
+      } else {
+        callback();
+      }
+    });
+  }
 });
 
 router.post('/graphml2rml', function (req, res) {
