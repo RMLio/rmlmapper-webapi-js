@@ -36,7 +36,11 @@ function writeSource(names, index, sources, prefix, callback) {
 
   if (sources[names[index]]) {
     if (typeof sources[names[index]] === 'string') {
-      exec('echo \'' + sources[names[index]].replace(/\'/g, "'\"'\"'") + '\' > ' + prefix + names[index], function (error, stdout, stderr) {
+      fs.writeFile(prefix + names[index], sources[names[index]], (err) => {
+        if (err) {
+          throw err;
+        }
+
         done();
       });
     } else {
