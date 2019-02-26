@@ -1,6 +1,6 @@
 {
   "paths" : {
-    "rmlmapper":"/home/pheyvaer/Developer/rmlmapper-java/target/rmlmapper-4.3.1-r91.jar"
+    "rmlmapper":"/home/pheyvaer/Developer/rmlmapper-java/target/rmlmapper-4.3.1-r90.jar"
   },
   "versions": {
     "rmlmapper": "v4.3.1"
@@ -8,5 +8,6 @@
   "urls" : {
     "validator" : "http://dia.test.iminds.be:8988/",
     "web-api": "http://localhost:4000"
-  }
+  },
+  "removeTempFolders": true
 }

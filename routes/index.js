@@ -6,7 +6,7 @@ const express = require('express');
 const router = express.Router();
 const exec = require('child_process').exec;
 const path = require('path');
-const fs = require('fs');
+const fs = require('fs-extra');
 const request = require('request');
 const N3 = require('n3');
 const DataAnalysis = require("data-analysis");
@@ -145,7 +145,6 @@ router.post('/process', function (req, res) {
   if (!req.body.rml) {
     res.status(400).send(`The parameter "rml" is required.`);
   } else {
-
     fs.mkdir(processDir, () => {
       const logFile = processDir + path.sep + 'rmlmapper.log';
       const sourceDirPrefix = processDir + path.sep + sourceFilePrefix;
@@ -195,6 +194,15 @@ router.post('/process', function (req, res) {
                     } else {
                       res.send({output});
                     }
+                  }
+
+                  if (config.removeTempFolders) {
+                    fs.remove(processDir, err => {
+                      if (err) {
+                        console.error(`Unable to remove temp folder "${processDir}.`);
+                        console.error(err);
+                      }
+                    });
                   }
                 });
               });
