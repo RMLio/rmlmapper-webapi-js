@@ -6,7 +6,6 @@
     "rmlmapper": "v4.3.3"
   },
   "urls" : {
-    "validator" : "http://dia.test.iminds.be:8988/",
     "web-api": "http://localhost:4000"
   },
   "removeTempFolders": true
