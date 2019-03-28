@@ -1,26 +1,20 @@
-var express = require('express');
-var path = require('path');
-var favicon = require('serve-favicon');
-var logger = require('morgan');
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
+const express = require('express');
+const path = require('path');
+const logger = require('morgan');
+const bodyParser = require('body-parser');
+const routes = require('./routes/index');
 
-var routes = require('./routes/index');
-
-var app = express();
+const app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
-// uncomment after placing your favicon in /public
-//app.use(favicon(__dirname + '/public/favicon.ico'));
+// configure logger
 app.use(logger('dev'));
-//app.use(bodyParser.json({
-//  limit: '2kb'
-//}));
-app.use(function (req, res, next) {
 
+// allow CORS
+app.use(function (req, res, next) {
   // Website you wish to allow to connect
   res.setHeader('Access-Control-Allow-Origin', '*');
 
@@ -37,19 +31,21 @@ app.use(function (req, res, next) {
   // Pass to next layer of middleware
   next();
 });
+
+// configure the body of the requests
 app.use(bodyParser.json({
   extended: false,
   limit: '50mb'
 }));
-app.use(cookieParser());
+
+// configure where to find public files
 app.use(express.static(path.join(__dirname, 'public')));
-
-
+// add the routes
 app.use('/', routes);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
-  var err = new Error('Not Found');
+  const err = new Error('Not Found');
   err.status = 404;
   next(err);
 });
@@ -77,6 +73,5 @@ app.use(function (err, req, res, next) {
     error: {}
   });
 });
-
 
 module.exports = app;

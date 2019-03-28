@@ -1,9 +1,9 @@
 {
   "paths" : {
-    "rmlmapper":"/home/pheyvaer/Developer/rmlmapper-java/target/rmlmapper-4.3.1-r90.jar"
+    "rmlmapper":"/home/pheyvaer/Developer/rmlmapper-java/target/rmlmapper-4.3.3-r93.jar"
   },
   "versions": {
-    "rmlmapper": "v4.3.1"
+    "rmlmapper": "v4.3.3"
   },
   "urls" : {
     "validator" : "http://dia.test.iminds.be:8988/",

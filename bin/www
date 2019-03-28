@@ -4,22 +4,22 @@
  * Module dependencies.
  */
 
-var app = require('../app');
-var debug = require('debug')('rmlp_server:server');
-var http = require('http');
+const app = require('../app');
+const debug = require('debug')('rmlp_server:server');
+const http = require('http');
 
 /**
  * Get port from environment and store in Express.
  */
 
-var port = parseInt(process.env.PORT, 10) || 4000;
+const port = parseInt(process.env.PORT, 10) || 4000;
 app.set('port', port);
 
 /**
  * Create HTTP server.
  */
 
-var server = http.createServer(app);
+const server = http.createServer(app);
 
 /**
  * Listen on provided port, on all network interfaces.
