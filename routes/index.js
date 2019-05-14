@@ -10,7 +10,7 @@ const RMLMapperWrapper = require('@rmlio/rmlmapper-java-wrapper');
 const dir = __dirname.replace("/routes", "");
 const tempDir = dir + path.sep + "tmp";
 
-//check if temp directory exists
+// check if temp directory exists
 if (!fs.existsSync(tempDir)) {
   fs.mkdirSync(tempDir);
 }

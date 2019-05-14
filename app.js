@@ -4,6 +4,11 @@ const logger = require('morgan');
 const bodyParser = require('body-parser');
 const routes = require('./routes/index');
 
+/**
+ * Create a app that can be used with an http.server.
+ * @param loggerFormat: the logger format as specified by the morgan library.
+ * @returns {*}
+ */
 function createApp(loggerFormat) {
   const app = express();
 

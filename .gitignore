@@ -76,3 +76,4 @@ result.ttl
 tmp
 .idea
 *.jar
+.nyc_output

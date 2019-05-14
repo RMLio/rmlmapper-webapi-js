@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "test": "mocha"
+    "test": "nyc mocha"
   },
   "dependencies": {
     "@rmlio/rmlmapper-java-wrapper": "0.0.2",
@@ -17,6 +17,7 @@
     "pug": "^2.0.3"
   },
   "devDependencies": {
-    "mocha": "^6.1.4"
+    "mocha": "^6.1.4",
+    "nyc": "^14.1.1"
   }
 }
