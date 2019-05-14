@@ -1,7 +1,7 @@
 swagger: "2.0"
 info:
   description: "This is a Web API around the RMLMapper. You are able to execute RML rules on different data sources. Optionally, you can also request for the metadata that is generated during the execution of the rules."
-  version: "0.0.3"
+  version: "0.0.6"
   title: "RMLMapper Web API"
   contact:
     email: "pheyvaer.heyvaert@ugent.be"
@@ -18,7 +18,7 @@ paths:
       responses:
         200:
           description: "HTML with information about the Web API"
-  /process:
+  /execute:
     post:
       summary: "Execute RML rules"
       description: ""

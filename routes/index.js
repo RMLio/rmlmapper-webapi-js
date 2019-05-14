@@ -5,7 +5,7 @@ const express = require('express');
 const router = express.Router();
 const path = require('path');
 const fs = require('fs-extra');
-const RMLMapper = require('../lib/rmlmapperwrapper');
+const RMLMapperWrapper = require('@rmlio/rmlmapper-java-wrapper');
 
 const dir = __dirname.replace("/routes", "");
 const tempDir = dir + path.sep + "tmp";
@@ -15,7 +15,7 @@ if (!fs.existsSync(tempDir)) {
   fs.mkdirSync(tempDir);
 }
 
-const rmlmapper = new RMLMapper(config.paths.rmlmapper, tempDir, true);
+const rmlmapper = new RMLMapperWrapper(config.paths.rmlmapper, tempDir, true);
 
 router.get('/', (req, res) => {
   res.render('index', {
@@ -25,7 +25,7 @@ router.get('/', (req, res) => {
   })
 });
 
-router.post('/process', function (req, res) {
+router.post('/execute', function (req, res) {
   if (!req.body.rml) {
     res.status(400).send(`The parameter "rml" is required.`);
   } else {

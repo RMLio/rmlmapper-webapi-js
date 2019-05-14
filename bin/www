@@ -4,8 +4,8 @@
  * Module dependencies.
  */
 
-const app = require('../app');
-const debug = require('debug')('rmlp_server:server');
+const app = require('../app')('dev');
+const debug = require('debug')('rmlmapper-webapi-js');
 const http = require('http');
 
 /**
