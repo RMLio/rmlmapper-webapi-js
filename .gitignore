@@ -77,3 +77,4 @@ tmp
 .idea
 *.jar
 .nyc_output
+config.json

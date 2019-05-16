@@ -2,21 +2,21 @@
 
 ### Requirements
 - Node.js
-- Download and install the [RMLMapper](https://gitlab.ilabt.imec.be/rml/proc/rmlmapper-java).
+- Download the [RMLMapper](https://github.com/RMLio/rmlmapper-java) (Java VM is required.).
 
 ### Usage
 - Clone this repo.
 - Go into folder of repo: `cd rmlmapper-webapi-js`.
 - Install dependencies: `npm install`.
-- Update `config.json`. 
-This includes the path to the jar of the RMLMapper.
+- Rename `config_example.json` to `config.json` and update it. 
+The file includes the path to the jar of the RMLMapper.
 - Start the server via `npm start`.
 - The server is available at `http://localhost:4000` (if port is unchanged).
 
 ### How to make API calls
 
 - Request: HTTP Post
-- Path: /process
+- Path: /execute
 - Content-Type: application/json
 - Body (raw):
   - `rml` (required): RML rules (string, Turtle format
@@ -27,7 +27,7 @@ This includes the path to the jar of the RMLMapper.
 - Example:
 ```
 curl -X POST \
-  http://localhost:4000/process \
+  http://localhost:4000/execute \
   -H 'Content-Type: application/json' \
   -d '{
   "rml":"@prefix rr: <http://www.w3.org/ns/r2rml#>. @prefix rml: <http://semweb.mmlab.be/ns/rml#>. @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>. @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>. @prefix ql: <http://semweb.mmlab.be/ns/ql#>. @prefix map: <http://mapping.example.com/>.  map:map_person_0 rml:logicalSource map:source_0;     a rr:TriplesMap;     rdfs:label \"person\";     rr:subjectMap map:s_0;     rr:predicateObjectMap map:pom_0, map:pom_1. map:om_0 a rr:ObjectMap;     rr:constant \"http://xmlns.com/foaf/0.1/Person\";     rr:termType rr:IRI. map:om_1 a rr:ObjectMap;     rml:reference \"firstname\";     rr:termType rr:Literal. map:pm_0 a rr:PredicateMap;     rr:constant rdf:type. map:pm_1 a rr:PredicateMap;     rr:constant <http://example.com/name>. map:pom_0 a rr:PredicateObjectMap;     rr:predicateMap map:pm_0;     rr:objectMap map:om_0. map:pom_1 a rr:PredicateObjectMap;     rr:predicateMap map:pm_1;     rr:objectMap map:om_1. map:s_0 a rr:SubjectMap;     rr:template \"http://example.com/{firstname}\". map:source_0 a rml:LogicalSource;     rml:source \"data.json\";     rml:iterator \"$.persons[*]\";     rml:referenceFormulation ql:JSONPath. ",
