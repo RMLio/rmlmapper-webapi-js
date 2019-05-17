@@ -25,6 +25,11 @@ function createRouter(config) {
     fs.mkdirSync(config.tempFolder);
   }
 
+  /* istanbul ignore next */
+  if (!path.isAbsolute(config.paths.rmlmapper)) {
+    config.paths.rmlmapper = process.cwd() + path.sep + config.paths.rmlmapper;
+  }
+
   const rmlmapper = new RMLMapperWrapper(config.paths.rmlmapper, config.tempFolder, true);
 
   router.get('/', (req, res) => {

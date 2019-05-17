@@ -41,7 +41,8 @@ curl -X POST \
 
 ### Run tests
 
-You run the tests via `npm test`.
+- Add the jar of the RMLMapper in the root and call it `rmlmapper.jar`.
+- Run the tests via `npm test`.
 The test framework is [Mocha](https://mochajs.org/) and the code coverage is provided via [Istanbul](https://istanbul.js.org/)
 
 ### License

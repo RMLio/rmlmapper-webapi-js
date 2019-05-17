@@ -1,6 +1,6 @@
 {
   "paths" : {
-    "rmlmapper":"/path/to/rmlmapper.jar"
+    "rmlmapper":"rmlmapper.jar"
   },
   "versions": {
     "rmlmapper": "v4.3.3"
