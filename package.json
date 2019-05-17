@@ -7,7 +7,7 @@
     "test": "nyc mocha"
   },
   "dependencies": {
-    "@rmlio/rmlmapper-java-wrapper": "0.0.2",
+    "@rmlio/rmlmapper-java-wrapper": "0.0.3",
     "body-parser": "^1.18.3",
     "debug": "^4.1.1",
     "express": "^4.16.4",

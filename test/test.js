@@ -50,19 +50,17 @@ describe('Test app.js', function() {
         "Content-Type": "application/json"
       }
     }, (res) => {
-      const chunks = [];
+      let json = '';
       const { statusCode } = res;
 
       assert.strictEqual(statusCode, 200);
 
       res.on("data", function (chunk) {
-        chunks.push(chunk);
+        json += chunk;
       });
 
       res.on("end", function () {
-        const body = Buffer.concat(chunks);
-
-        assert.deepStrictEqual(JSON.parse(body.toString()), require('./output-post-execute.json'));
+        assert.deepStrictEqual(JSON.parse(json), require('./output-post-execute.json'));
         done();
       });
     }).on('error', (e) => {
@@ -82,10 +80,23 @@ describe('Test app.js', function() {
         "Content-Type": "application/json"
       }
     }, (res) => {
+      let json = '';
       const { statusCode } = res;
 
       assert.strictEqual(statusCode, 500);
-      done();
+
+      res.on("data", function (chunk) {
+        json += chunk;
+      });
+
+      res.on("end", function () {
+        json = JSON.parse(json);
+
+        assert.strictEqual(json.message, `Error while executing the rules.`);
+        assert.strictEqual(json.log.indexOf('Triples Maps found') !== -1, true);
+        done();
+      });
+      //done();
     }).on('error', (e) => {
       console.error(`Got error: ${e.message}`);
       throw e;

@@ -27,14 +27,15 @@ function createRouter(tempDir = defaultTempDir) {
   });
 
   router.post('/execute', function (req, res) {
+    res.type('json');
+
     if (!req.body.rml) {
-      res.status(400).send(`The parameter "rml" is required.`);
+      res.status(400).send({message: `The parameter "rml" is required.`});
     } else {
       rmlmapper.execute(req.body.rml, req.body.sources, req.body.generateMetadata)
         .then(result => res.send(result))
         .catch(error => {
-          //console.error(error);
-          res.status(500).send(error.message);
+          res.status(500).send({message: error.message, log: error.log});
         });
     }
   });

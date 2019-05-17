@@ -1,5 +1,7 @@
 ## Web API for the RMLMapper
 
+![code coverage](https://img.shields.io/badge/coverage-100%25-success.svg)
+
 ### Requirements
 - Node.js
 - Download the [RMLMapper](https://github.com/RMLio/rmlmapper-java) (Java VM is required.).
@@ -36,3 +38,10 @@ curl -X POST \
   }
 }'
 ```
+
+### Run tests
+
+You run the tests via `npm test`.
+The test framework is [Mocha](https://mochajs.org/) and the code coverage is provided via [Istanbul](https://istanbul.js.org/)
+
+### License

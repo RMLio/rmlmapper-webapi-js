@@ -16,8 +16,8 @@ function createApp(loggerFormat, tempDir) {
   app.set('views', path.join(__dirname, 'views'));
   app.set('view engine', 'pug');
 
-// configure logger
-
+  /* istanbul ignore next */
+  // configure logger
   if (loggerFormat) {
     app.use(logger(loggerFormat));
   }
@@ -59,10 +59,11 @@ function createApp(loggerFormat, tempDir) {
     next(err);
   });
 
-// error handlers
+  // error handlers
 
-// development error handler
-// will print stacktrace
+  /* istanbul ignore next */
+  // development error handler
+  // will print stacktrace
   if (app.get('env') === 'development') {
     app.use(function (err, req, res, next) {
       res.status(err.status || 500);
@@ -73,8 +74,9 @@ function createApp(loggerFormat, tempDir) {
     });
   }
 
-// production error handler
-// no stacktraces leaked to user
+  /* istanbul ignore next */
+  // production error handler
+  // no stacktraces leaked to user
   app.use(function (err, req, res, next) {
     res.status(err.status || 500);
     res.render('error', {
