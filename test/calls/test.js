@@ -5,7 +5,7 @@
 
 const config = require('./config');
 const assert = require('assert');
-const app = require('../app')(config);
+const app = require('../../app')(config);
 const http = require('http');
 const fs = require('fs-extra');
 
@@ -131,8 +131,8 @@ describe('Test app.js', function() {
 
   after((done) => {
     server.close();
-    fs.remove(config.tempFolder, () => {
-      done();
-    });
+     fs.remove(config.tempFolder, () => {
+       done();
+     });
   });
 });

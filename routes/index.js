@@ -10,8 +10,14 @@ const dir = __dirname.replace("/routes", "");
 const defaultTempFolder = dir + path.sep + "tmp";
 
 function createRouter(config) {
+  /* istanbul ignore next */
   if (!config.tempFolder) {
     config.tempFolder = defaultTempFolder;
+  }
+
+  /* istanbul ignore next */
+  if (!path.isAbsolute(config.tempFolder)) {
+    config.tempFolder = process.cwd() + path.sep + config.tempFolder;
   }
 
   // check if temp directory exists
@@ -19,7 +25,6 @@ function createRouter(config) {
     fs.mkdirSync(config.tempFolder);
   }
 
-  console.log(config.tempFolder);
   const rmlmapper = new RMLMapperWrapper(config.paths.rmlmapper, config.tempFolder, true);
 
   router.get('/', (req, res) => {

@@ -78,4 +78,4 @@ tmp
 *.jar
 .nyc_output
 config.json
-!/test/config.json
+!/test/**/config.json
