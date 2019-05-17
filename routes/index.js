@@ -1,4 +1,3 @@
-const config = require('../config.json');
 const pkg = require('../package');
 
 const express = require('express');
@@ -8,15 +7,20 @@ const fs = require('fs-extra');
 const RMLMapperWrapper = require('@rmlio/rmlmapper-java-wrapper');
 
 const dir = __dirname.replace("/routes", "");
-const defaultTempDir = dir + path.sep + "tmp";
+const defaultTempFolder = dir + path.sep + "tmp";
 
-function createRouter(tempDir = defaultTempDir) {
-// check if temp directory exists
-  if (!fs.existsSync(tempDir)) {
-    fs.mkdirSync(tempDir);
+function createRouter(config) {
+  if (!config.tempFolder) {
+    config.tempFolder = defaultTempFolder;
   }
 
-  const rmlmapper = new RMLMapperWrapper(config.paths.rmlmapper, tempDir, true);
+  // check if temp directory exists
+  if (!fs.existsSync(config.tempFolder)) {
+    fs.mkdirSync(config.tempFolder);
+  }
+
+  console.log(config.tempFolder);
+  const rmlmapper = new RMLMapperWrapper(config.paths.rmlmapper, config.tempFolder, true);
 
   router.get('/', (req, res) => {
     res.render('index', {

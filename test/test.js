@@ -3,9 +3,11 @@
  * Ghent University - imec - IDLab
  */
 
+const config = require('./config');
 const assert = require('assert');
-const app = require('../app')();
+const app = require('../app')(config);
 const http = require('http');
+const fs = require('fs-extra');
 
 const PORT = 4000;
 
@@ -127,7 +129,10 @@ describe('Test app.js', function() {
     req.end();
   });
 
-  after(() => {
+  after((done) => {
     server.close();
+    fs.remove(config.tempFolder, () => {
+      done();
+    });
   });
 });

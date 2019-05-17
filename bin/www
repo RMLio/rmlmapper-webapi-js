@@ -4,7 +4,8 @@
  * Module dependencies.
  */
 
-const app = require('../app')('dev');
+const config = require('../config');
+const App = require('../app');
 const debug = require('debug')('rmlmapper-webapi-js');
 const http = require('http');
 
@@ -13,6 +14,9 @@ const http = require('http');
  */
 
 const port = parseInt(process.env.PORT, 10) || 4000;
+
+config.loggerFormat = 'dev';
+const app = new App(config);
 app.set('port', port);
 
 /**

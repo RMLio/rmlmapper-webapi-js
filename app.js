@@ -9,7 +9,7 @@ const routes = require('./routes/index');
  * @param loggerFormat: the logger format as specified by the morgan library.
  * @returns {*}
  */
-function createApp(loggerFormat, tempDir) {
+function createApp(config) {
   const app = express();
 
 // view engine setup
@@ -18,8 +18,8 @@ function createApp(loggerFormat, tempDir) {
 
   /* istanbul ignore next */
   // configure logger
-  if (loggerFormat) {
-    app.use(logger(loggerFormat));
+  if (config.loggerFormat) {
+    app.use(logger(config.loggerFormat));
   }
 
 // allow CORS
@@ -50,7 +50,7 @@ function createApp(loggerFormat, tempDir) {
 // configure where to find public files
   app.use(express.static(path.join(__dirname, 'public')));
 // add the routes
-  app.use('/', routes(tempDir));
+  app.use('/', routes(config));
 
 // catch 404 and forward to error handler
   app.use(function (req, res, next) {
