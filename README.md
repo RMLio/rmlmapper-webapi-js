@@ -45,3 +45,6 @@ You run the tests via `npm test`.
 The test framework is [Mocha](https://mochajs.org/) and the code coverage is provided via [Istanbul](https://istanbul.js.org/)
 
 ### License
+
+This code is copyrighted by [Ghent University – imec](http://idlab.ugent.be/) and 
+released under the [MIT license](http://opensource.org/licenses/MIT).
