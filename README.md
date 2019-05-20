@@ -4,12 +4,13 @@
 
 ### Requirements
 - Node.js
-- Download the [RMLMapper](https://github.com/RMLio/rmlmapper-java) (Java VM is required.).
+- Java VM
 
 ### Usage
 - Clone this repo.
 - Go into folder of repo: `cd rmlmapper-webapi-js`.
 - Install dependencies: `npm install`.
+- Download the [RMLMapper](https://github.com/RMLio/rmlmapper-java): `npm run download:rmlmapper`.
 - Rename `config_example.json` to `config.json` and update it. 
 The file includes the path to the jar of the RMLMapper.
 - Start the server via `npm start`.
@@ -41,7 +42,8 @@ curl -X POST \
 
 ### Run tests
 
-- Add the jar of the RMLMapper in the root and call it `rmlmapper.jar`.
+- The RMLMapper needs to be available in the root and called `rmlmapper.jar`.
+This is the case if you executed `npm run download:rmlmapper`.
 - Run the tests via `npm test`.
 The test framework is [Mocha](https://mochajs.org/) and the code coverage is provided via [Istanbul](https://istanbul.js.org/)
 

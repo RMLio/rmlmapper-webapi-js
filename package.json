@@ -4,13 +4,15 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "test": "nyc mocha 'test/**/test.js'"
+    "test": "nyc mocha 'test/**/test.js'",
+    "download:rmlmapper": "node ./lib/download-latest-rmlmapper.js"
   },
   "dependencies": {
     "@rmlio/rmlmapper-java-wrapper": "0.0.3",
     "body-parser": "^1.18.3",
     "debug": "^4.1.1",
     "express": "^4.16.4",
+    "follow-redirects": "^1.7.0",
     "fs-extra": "^7.0.1",
     "morgan": "^1.9.1",
     "n3": "^0.8.1",
