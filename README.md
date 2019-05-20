@@ -11,10 +11,18 @@
 - Go into folder of repo: `cd rmlmapper-webapi-js`.
 - Install dependencies: `npm install`.
 - Download the [RMLMapper](https://github.com/RMLio/rmlmapper-java): `npm run download:rmlmapper`.
-- Rename `config_example.json` to `config.json` and update it. 
+- Rename `config_example.json` to `config.json` and update it (see below for [details](#configuration-file)). 
 The file includes the path to the jar of the RMLMapper.
 - Start the server via `npm start`.
 - The server is available at `http://localhost:4000` (if port is unchanged).
+
+### Configuration file
+The configuration file is called `config.json` and contains the following settings:
+
+- `paths.rmlmapper`: the path of the RMLMapper jar
+- `versions.rmlmapper`: the version of the used RMLMapper. This is shown on the main page of the API.
+- `urls.web-api`: the url of where the API will be available. This is shown on the main page of the API.
+- `removeTempFolders`: if this is set true, temporary folders are removed once the execution of one call is done.
 
 ### How to make API calls
 

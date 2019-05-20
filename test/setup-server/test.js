@@ -11,7 +11,6 @@ const fs = require('fs-extra');
 const path = require('path');
 
 let server;
-let folderToRemove;
 
 describe('Test app.js', function() {
   this.timeout(5000);
