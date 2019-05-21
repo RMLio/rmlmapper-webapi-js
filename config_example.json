@@ -1,12 +1,4 @@
 {
-  "paths" : {
-    "rmlmapper":"rmlmapper.jar"
-  },
-  "versions": {
-    "rmlmapper": "v4.3.3"
-  },
-  "urls" : {
-    "web-api": "http://localhost:4000"
-  },
+  "baseURL": "http://localhost:4000",
   "removeTempFolders": true
 }
