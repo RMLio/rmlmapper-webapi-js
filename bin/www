@@ -10,6 +10,8 @@ const App = require('../app');
 const http = require('http');
 const download = require('../lib/downloadrmlmapper');
 const fs = require('fs');
+const winston = require('winston');
+const logger = require('../lib/logger');
 
 const DEFAULT_RMLMAPPER_PATH = path.resolve(__dirname, '../rmlmapper.jar');
 const DEFAULT_RMLMAPPER_VERSION_PATH = path.resolve(__dirname, '../rmlmapper-version.txt');
@@ -19,7 +21,15 @@ if (!config.logLevel) {
   config.logLevel = 'error';
 }
 
-const logger = require('../lib/logger')(config.logLevel);
+logger.configure({
+  level: config.logLevel,
+  format: winston.format.json(),
+  transports: [
+    new winston.transports.Console({
+      format: winston.format.simple()
+    })
+  ]
+});
 
 start();
 
