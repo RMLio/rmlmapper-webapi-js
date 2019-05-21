@@ -32,7 +32,7 @@ The version is automatically determined.
 - Path: /execute
 - Content-Type: application/json
 - Body (raw):
-  - `rml` (required): RML rules (string, Turtle format
+  - `rml` (required): RML rules (string, Turtle format)
   - `sources` (optional): key-value pairs where the key is the name of the source used in the rules and the value the string representation of that source
   - `generateMetadata` (optional, default is `false`): if set to `true` the metadata of the process is generated and returned
                       
