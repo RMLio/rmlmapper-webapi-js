@@ -5,10 +5,10 @@
   "scripts": {
     "start": "node ./bin/www",
     "test": "nyc mocha 'test/**/test.js'",
-    "download:rmlmapper": "node ./lib/download-latest-rmlmapper.js"
+    "download:rmlmapper": "node ./lib/downloadrmlmappertocwd.js"
   },
   "dependencies": {
-    "@rmlio/rmlmapper-java-wrapper": "0.0.3",
+    "@rmlio/rmlmapper-java-wrapper": "0.0.5",
     "body-parser": "^1.18.3",
     "debug": "^4.1.1",
     "express": "^4.16.4",
@@ -16,7 +16,8 @@
     "fs-extra": "^7.0.1",
     "morgan": "^1.9.1",
     "n3": "^0.8.1",
-    "pug": "^2.0.3"
+    "pug": "^2.0.3",
+    "winston": "^3.2.1"
   },
   "devDependencies": {
     "mocha": "^6.1.4",

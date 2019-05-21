@@ -26,17 +26,17 @@ function createRouter(config) {
   }
 
   /* istanbul ignore next */
-  if (!path.isAbsolute(config.paths.rmlmapper)) {
-    config.paths.rmlmapper = process.cwd() + path.sep + config.paths.rmlmapper;
+  if (!path.isAbsolute(config.rmlmapper.path)) {
+    config.rmlmapper.path = path.resolve(process.cwd(), config.rmlmapper.path);
   }
 
-  const rmlmapper = new RMLMapperWrapper(config.paths.rmlmapper, config.tempFolder, true);
+  const rmlmapper = new RMLMapperWrapper(config.rmlmapper.path, config.tempFolder, true);
 
   router.get('/', (req, res) => {
     res.render('index', {
       apiVersion: pkg.version,
-      rmlmapperVersion: config.versions.rmlmapper,
-      url: config.urls['web-api']
+      rmlmapperVersion: config.rmlmapper.version,
+      url: config.baseURL
     })
   });
 

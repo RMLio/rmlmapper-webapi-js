@@ -10,19 +10,21 @@
 - Clone this repo.
 - Go into folder of repo: `cd rmlmapper-webapi-js`.
 - Install dependencies: `npm install`.
-- Download the [RMLMapper](https://github.com/RMLio/rmlmapper-java): `npm run download:rmlmapper`.
 - Rename `config_example.json` to `config.json` and update it (see below for [details](#configuration-file)). 
-The file includes the path to the jar of the RMLMapper.
 - Start the server via `npm start`.
 - The server is available at `http://localhost:4000` (if port is unchanged).
 
 ### Configuration file
 The configuration file is called `config.json` and contains the following settings:
 
-- `paths.rmlmapper`: the path of the RMLMapper jar
-- `versions.rmlmapper`: the version of the used RMLMapper. This is shown on the main page of the API.
-- `urls.web-api`: the url of where the API will be available. This is shown on the main page of the API.
+- `rmlmapper.path` (optional): the path to the RMLMapper jar
+- `rmlmapper.version` (optional): the version of the used RMLMapper. This is shown on the main page of the API.
+- `baseURL`: the url of where the API will be available. This is shown on the main page of the API.
 - `removeTempFolders`: if this is set true, temporary folders are removed once the execution of one call is done.
+- `logLevel`: log level used by the logger (default: error).
+
+The latest version of the RMLMapper is downloaded when running the server if no `rmlmapper.path` is given.
+The version is automatically determined.
 
 ### How to make API calls
 
@@ -51,7 +53,7 @@ curl -X POST \
 ### Run tests
 
 - The RMLMapper needs to be available in the root and called `rmlmapper.jar`.
-This is the case if you executed `npm run download:rmlmapper`.
+Get the latest version via `npm run download:rmlmapper`.
 - Run the tests via `npm test`.
 The test framework is [Mocha](https://mochajs.org/) and the code coverage is provided via [Istanbul](https://istanbul.js.org/)
 

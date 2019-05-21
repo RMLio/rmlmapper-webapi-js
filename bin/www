@@ -4,34 +4,77 @@
  * Module dependencies.
  */
 
-const config = require('../config');
+const path = require('path');
+const config = require(path.resolve(process.cwd(), 'config.json'));
 const App = require('../app');
-const debug = require('debug')('rmlmapper-webapi-js');
 const http = require('http');
+const download = require('../lib/downloadrmlmapper');
+const fs = require('fs');
 
-/**
- * Get port from environment and store in Express.
- */
+const DEFAULT_RMLMAPPER_PATH = path.resolve(__dirname, '../rmlmapper.jar');
+const DEFAULT_RMLMAPPER_VERSION_PATH = path.resolve(__dirname, '../rmlmapper-version.txt');
+let server;
 
-const port = parseInt(process.env.PORT, 10) || 4000;
+if (!config.logLevel) {
+  config.logLevel = 'error';
+}
 
-config.loggerFormat = 'dev';
-const app = new App(config);
-app.set('port', port);
+const logger = require('../lib/logger')(config.logLevel);
 
-/**
- * Create HTTP server.
- */
+start();
 
-const server = http.createServer(app);
+async function start() {
+  /**
+   * Check if RMLMapper is defined.
+   */
 
-/**
- * Listen on provided port, on all network interfaces.
- */
+  if (!config.rmlmapper || !config.rmlmapper.path) {
+    logger.info('No path to an RMLMapper jar is defined.');
+    let version;
 
-server.listen(port);
-server.on('error', onError);
-server.on('listening', onListening);
+    if (!fs.existsSync(DEFAULT_RMLMAPPER_PATH)) {
+      try {
+        version = await download(DEFAULT_RMLMAPPER_PATH);
+        fs.writeFileSync(DEFAULT_RMLMAPPER_VERSION_PATH, version, 'utf-8');
+
+        logger.info(`Using the RMLMapper jar at ${DEFAULT_RMLMAPPER_PATH} (${version}).`);
+      } catch (e) {
+        console.error(e);
+        process.exit(1);
+      }
+    } else {
+      version = fs.readFileSync(DEFAULT_RMLMAPPER_VERSION_PATH, 'utf-8');
+      logger.info(`Usig the default jar at ${DEFAULT_RMLMAPPER_PATH} (${version}).`);
+    }
+
+    config.rmlmapper = {
+      path: DEFAULT_RMLMAPPER_PATH,
+      version
+    };
+  }
+
+  /**
+   * Get port from environment and store in Express.
+   */
+
+  const port = parseInt(process.env.PORT, 10) || 4000;
+  const app = new App(config);
+  app.set('port', port);
+
+  /**
+   * Create HTTP server.
+   */
+
+  server = http.createServer(app);
+
+  /**
+   * Listen on provided port, on all network interfaces.
+   */
+
+  server.listen(port);
+  server.on('error', onError);
+  server.on('listening', onListening);
+}
 
 /**
  * Event listener for HTTP server "error" event.
@@ -45,11 +88,11 @@ function onError(error) {
   // handle specific listen errors with friendly messages
   switch (error.code) {
     case 'EACCES':
-      console.error('Port ' + port + ' requires elevated privileges');
+      logger.error('Port ' + port + ' requires elevated privileges');
       process.exit(1);
       break;
     case 'EADDRINUSE':
-      console.error('Port ' + port + ' is already in use');
+      logger.error('Port ' + port + ' is already in use');
       process.exit(1);
       break;
     default:
@@ -62,5 +105,6 @@ function onError(error) {
  */
 
 function onListening() {
-  debug('Listening on port ' + server.address().port);
+  logger.info('Listening on port ' + server.address().port);
 }
+
