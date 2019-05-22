@@ -16,8 +16,8 @@ Configurations (optional) are passed via `config.json`,
 which is located in the current working directory,
 and contains the following settings:
 
-- `rmlmapper.path` (optional): path to the RMLMapper jar.
-- `rmlmapper.version` (optional): version of the used RMLMapper. This is shown on the main page of the API.
+- `rmlmapper.path`: path to the RMLMapper jar.
+- `rmlmapper.version`: version of the used RMLMapper. This is shown on the main page of the API.
 - `baseURL`: url of where the API will be available. This is shown on the main page of the API.
 - `removeTempFolders`: if this is set true, temporary folders are removed once the execution of one call is done.
 - `logLevel`: log level used by the logger (default: info).
