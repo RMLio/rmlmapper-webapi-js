@@ -23,7 +23,13 @@ if (fs.pathExistsSync(configPath)) {
 }
 
 if (!config.logLevel) {
-  config.logLevel = 'error';
+  config.logLevel = 'info';
+}
+
+if (!config.port) {
+  config.port = 4000;
+} else {
+  config.port = parseInt(config.port);
 }
 
 logger.configure({
@@ -35,6 +41,11 @@ logger.configure({
     })
   ]
 });
+
+// we do this if again, because the config needs to be read first before we can start the logger.
+if (fs.pathExistsSync(configPath)) {
+  logger.info(`Using config file at ${configPath}.`);
+}
 
 start();
 
@@ -72,9 +83,8 @@ async function start() {
    * Get port from environment and store in Express.
    */
 
-  const port = parseInt(process.env.PORT, 10) || 4000;
   const app = new App(config);
-  app.set('port', port);
+  app.set('port', config.port);
 
   /**
    * Create HTTP server.
@@ -86,7 +96,7 @@ async function start() {
    * Listen on provided port, on all network interfaces.
    */
 
-  server.listen(port);
+  server.listen(config.port);
   server.on('error', onError);
   server.on('listening', onListening);
 }
@@ -103,11 +113,11 @@ function onError(error) {
   // handle specific listen errors with friendly messages
   switch (error.code) {
     case 'EACCES':
-      logger.error('Port ' + port + ' requires elevated privileges');
+      logger.error('Port ' + config.port + ' requires elevated privileges');
       process.exit(1);
       break;
     case 'EADDRINUSE':
-      logger.error('Port ' + port + ' is already in use');
+      logger.error('Port ' + config.port + ' is already in use');
       process.exit(1);
       break;
     default:
