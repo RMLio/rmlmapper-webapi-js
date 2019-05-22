@@ -5,17 +5,22 @@
  */
 
 const path = require('path');
-const config = require(path.resolve(process.cwd(), 'config.json'));
 const App = require('../app');
 const http = require('http');
 const download = require('../lib/downloadrmlmapper');
-const fs = require('fs');
+const fs = require('fs-extra');
 const winston = require('winston');
 const logger = require('../lib/logger');
 
 const DEFAULT_RMLMAPPER_PATH = path.resolve(__dirname, '../rmlmapper.jar');
 const DEFAULT_RMLMAPPER_VERSION_PATH = path.resolve(__dirname, '../rmlmapper-version.txt');
+const configPath = path.resolve(process.cwd(), 'config.json');
 let server;
+let config = {};
+
+if (fs.pathExistsSync(configPath)) {
+  config = require(configPath);
+}
 
 if (!config.logLevel) {
   config.logLevel = 'error';

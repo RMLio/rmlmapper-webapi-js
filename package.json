@@ -7,6 +7,9 @@
     "test": "nyc mocha 'test/**/test.js'",
     "download:rmlmapper": "node ./lib/downloadrmlmappertocwd.js"
   },
+  "bin": {
+    "rmlmapper-webapi": "./bin/www"
+  },
   "dependencies": {
     "@rmlio/rmlmapper-java-wrapper": "0.0.5",
     "body-parser": "^1.18.3",
