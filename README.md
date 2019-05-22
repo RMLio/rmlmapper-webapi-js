@@ -7,7 +7,7 @@
 - Java VM
 
 ### Usage
-- Install the server: `npm i -g @rmlio/rmlmapper-webapi`
+- Install the server: `npm i -g @rmlio/rmlmapper-webapi`.
 - Start the server: `rmlmapper-webapi`.
 - The server is available at `http://localhost:4000` (if port is unchanged).
 
