@@ -32,6 +32,10 @@ if (!config.port) {
   config.port = parseInt(config.port);
 }
 
+if (!config.baseURL) {
+  config.baseURL = 'http://localhost:' + config.port;
+}
+
 logger.configure({
   level: config.logLevel,
   format: winston.format.json(),
