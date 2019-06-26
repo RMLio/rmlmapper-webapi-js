@@ -4,30 +4,106 @@
  * Module dependencies.
  */
 
-var app = require('../app');
-var debug = require('debug')('rmlp_server:server');
-var http = require('http');
+const path = require('path');
+const App = require('../app');
+const http = require('http');
+const download = require('../lib/downloadrmlmapper');
+const fs = require('fs-extra');
+const winston = require('winston');
+const logger = require('../lib/logger');
 
-/**
- * Get port from environment and store in Express.
- */
+const DEFAULT_RMLMAPPER_PATH = path.resolve(__dirname, '../rmlmapper.jar');
+const DEFAULT_RMLMAPPER_VERSION_PATH = path.resolve(__dirname, '../rmlmapper-version.txt');
+const configPath = path.resolve(process.cwd(), 'config.json');
+let server;
+let config = {};
 
-var port = parseInt(process.env.PORT, 10) || 4000;
-app.set('port', port);
+if (fs.pathExistsSync(configPath)) {
+  config = require(configPath);
+}
 
-/**
- * Create HTTP server.
- */
+if (!config.logLevel) {
+  config.logLevel = 'info';
+}
 
-var server = http.createServer(app);
+if (!config.port) {
+  config.port = 4000;
+} else {
+  config.port = parseInt(config.port);
+}
 
-/**
- * Listen on provided port, on all network interfaces.
- */
+if (!config.baseURL) {
+  config.baseURL = 'http://localhost:' + config.port;
+}
 
-server.listen(port);
-server.on('error', onError);
-server.on('listening', onListening);
+logger.configure({
+  level: config.logLevel,
+  format: winston.format.json(),
+  transports: [
+    new winston.transports.Console({
+      format: winston.format.simple()
+    })
+  ]
+});
+
+// we do this if again, because the config needs to be read first before we can start the logger.
+if (fs.pathExistsSync(configPath)) {
+  logger.info(`Using config file at ${configPath}.`);
+}
+
+start();
+
+async function start() {
+  /**
+   * Check if RMLMapper is defined.
+   */
+
+  if (!config.rmlmapper || !config.rmlmapper.path) {
+    logger.info('No path to an RMLMapper jar is defined.');
+    let version;
+
+    if (!fs.existsSync(DEFAULT_RMLMAPPER_PATH)) {
+      try {
+        version = await download(DEFAULT_RMLMAPPER_PATH);
+        fs.writeFileSync(DEFAULT_RMLMAPPER_VERSION_PATH, version, 'utf-8');
+
+        logger.info(`Using the RMLMapper jar at ${DEFAULT_RMLMAPPER_PATH} (${version}).`);
+      } catch (e) {
+        console.error(e);
+        process.exit(1);
+      }
+    } else {
+      version = fs.readFileSync(DEFAULT_RMLMAPPER_VERSION_PATH, 'utf-8');
+      logger.info(`Usig the default jar at ${DEFAULT_RMLMAPPER_PATH} (${version}).`);
+    }
+
+    config.rmlmapper = {
+      path: DEFAULT_RMLMAPPER_PATH,
+      version
+    };
+  }
+
+  /**
+   * Get port from environment and store in Express.
+   */
+
+  const app = new App(config);
+  app.set('port', config.port);
+
+  /**
+   * Create HTTP server.
+   */
+
+  server = http.createServer(app);
+
+  /**
+   * Listen on provided port, on all network interfaces.
+   */
+
+  server.listen(config.port);
+  server.on('error', onError);
+  server.on('listening', onListening);
+}
 
 /**
  * Event listener for HTTP server "error" event.
@@ -41,11 +117,11 @@ function onError(error) {
   // handle specific listen errors with friendly messages
   switch (error.code) {
     case 'EACCES':
-      console.error('Port ' + port + ' requires elevated privileges');
+      logger.error('Port ' + config.port + ' requires elevated privileges');
       process.exit(1);
       break;
     case 'EADDRINUSE':
-      console.error('Port ' + port + ' is already in use');
+      logger.error('Port ' + config.port + ' is already in use');
       process.exit(1);
       break;
     default:
@@ -58,5 +134,6 @@ function onError(error) {
  */
 
 function onListening() {
-  debug('Listening on port ' + server.address().port);
+  logger.info('Listening on port ' + server.address().port);
 }
+
