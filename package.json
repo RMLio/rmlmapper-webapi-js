@@ -1,5 +1,6 @@
 {
   "name": "rmlmapper-webapi-js",
+  "description": "Web API for the RMLMapper",
   "version": "0.0.6",
   "private": true,
   "scripts": {
