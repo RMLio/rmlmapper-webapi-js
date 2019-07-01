@@ -32,14 +32,6 @@ function createRouter(config) {
 
   const rmlmapper = new RMLMapperWrapper(config.rmlmapper.path, config.tempFolder, true);
 
-  router.get('/', (req, res) => {
-    res.render('index', {
-      apiVersion: pkg.version,
-      rmlmapperVersion: config.rmlmapper.version,
-      url: config.baseURL
-    })
-  });
-
   router.post('/execute', function (req, res) {
     res.type('json');
 
