@@ -37,7 +37,7 @@ The version is automatically determined.
 ### How to make API calls
 
 When the server is running you can find the descriptions of the calls at the root of the server (e.g., `http://localhost:4000`).
-The calls are also described using the [Open API specification](https://github.com/OAI/OpenAPI-Specification) at `/public/swagger.yaml`.
+The calls are also described using the [Open API specification](https://github.com/OAI/OpenAPI-Specification) in `/swagger.yaml`.
 
 ### Run tests
 
