@@ -48,9 +48,9 @@ function createApp(config) {
   }));
 
 // configure where to find public files
-  app.use(express.static(path.join(__dirname, 'public')));
+  app.use(config.basePath, express.static(path.join(__dirname, 'public')));
 // add the routes
-  app.use('/', routes(config));
+  app.use(config.basePath, routes(config));
 
 // catch 404 and forward to error handler
   app.use(function (req, res, next) {

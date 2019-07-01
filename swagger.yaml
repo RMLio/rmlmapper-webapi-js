@@ -1,0 +1,76 @@
+openapi: "3.0.0"
+info:
+  description: "This is a Web API around the RMLMapper. You are able to execute RML rules on different data sources. Optionally, you can also request for the metadata that is generated during the execution of the rules."
+  title: "RMLMapper Web API"
+  contact:
+    email: "pheyvaer.heyvaert@ugent.be"
+schemes:
+- "http"
+paths:
+  /:
+    get:
+      summary: "Information page of the Web API"
+      produces:
+      - "text/html"
+      responses:
+        200:
+          description: "HTML with information about the Web API"
+          content:
+            text/html:
+              schema:
+                type: string
+  /execute:
+    post:
+      summary: "Execute RML rules"
+      description: ""
+      requestBody:
+        description: The RML rules in Turtle format.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Execute"
+            example: >
+              {
+                 "rml": "@prefix rr: <http://www.w3.org/ns/r2rml#>. @prefix rml: <http://semweb.mmlab.be/ns/rml#>. @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>. @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>. @prefix ql: <http://semweb.mmlab.be/ns/ql#>. @prefix map: <http://mapping.example.com/>.  map:map_person_0 rml:logicalSource map:source_0;     a rr:TriplesMap;     rdfs:label \"person\";     rr:subjectMap map:s_0;     rr:predicateObjectMap map:pom_0, map:pom_1. map:om_0 a rr:ObjectMap;     rr:constant \"http://xmlns.com/foaf/0.1/Person\";     rr:termType rr:IRI. map:om_1 a rr:ObjectMap;     rml:reference \"firstname\";     rr:termType rr:Literal. map:pm_0 a rr:PredicateMap;     rr:constant rdf:type. map:pm_1 a rr:PredicateMap;     rr:constant <http://example.com/name>. map:pom_0 a rr:PredicateObjectMap;     rr:predicateMap map:pm_0;     rr:objectMap map:om_0. map:pom_1 a rr:PredicateObjectMap;     rr:predicateMap map:pm_1;     rr:objectMap map:om_1. map:s_0 a rr:SubjectMap;     rr:template \"http://example.com/{firstname}\". map:source_0 a rml:LogicalSource;     rml:source \"data.json\";     rml:iterator \"$.persons[*]\";     rml:referenceFormulation ql:JSONPath.",
+                 "sources": {
+                  "data.json": "{     \"persons\": [         {             \"firstname\": \"John\",             \"lastname\": \"Doe\"         },         {             \"firstname\": \"Jane\",             \"lastname\": \"Smith\"         },         {             \"firstname\": \"Sarah\",             \"lastname\": \"Bladinck\"         }     ] }"
+                 }
+              }
+      responses:
+        200:
+          description: "The generated RDF is returned. Optionally, with the metadata of the generation."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExecuteOutput"
+        400:
+          description: "invalid input"
+        500:
+          description: "Internal server error during execution of RML rules"
+components:
+  schemas:
+    Execute:
+      type: "object"
+      properties:
+        sources:
+          type: "object"
+          example: >
+            {
+              "data.json": "{     \"persons\": [         {             \"firstname\": \"John\",             \"lastname\": \"Doe\"         },         {             \"firstname\": \"Jane\",             \"lastname\": \"Smith\"         },         {             \"firstname\": \"Sarah\",             \"lastname\": \"Bladinck\"         }     ] }"
+            }
+        generateMetadata:
+          type: "boolean"
+          default: false
+    ExecuteOutput:
+      type: "object"
+      properties:
+        output:
+          type: "string"
+          format: "text/turtle"
+          example: "<http://example.com/John> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Person>.\n<http://example.com/John> <http://example.com/name> \"John\".\n<http://example.com/Jane> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Person>.\n<http://example.com/Jane> <http://example.com/name> \"Jane\".\n<http://example.com/Sarah> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Person>.\n<http://example.com/Sarah> <http://example.com/name> \"Sarah\".\n"
+        metadata:
+          type: "string"
+          format: "text/turtle"
+          example: null
+

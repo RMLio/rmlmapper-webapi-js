@@ -7,9 +7,15 @@
 - Java VM
 
 ### Usage
+
+#### CLI
 - Install the server: `npm i -g @rmlio/rmlmapper-webapi`.
 - Start the server: `rmlmapper-webapi`.
 - The server is available at `http://localhost:4000` (if port is unchanged).
+
+#### Docker
+- Build image: `docker build -t rmlmapper-webapi .`.
+- Run container: `docker run `
 
 ### Configuration file
 Configurations (optional) are passed via `config.json`, 
@@ -22,6 +28,7 @@ and contains the following settings:
 - `removeTempFolders`: if this is set true, temporary folders are removed once the execution of one call is done.
 - `logLevel`: log level used by the logger (default: info).
 - `port`: port of the server (default: 4000).
+- `basePath`: the path preceding all routes (default: /).
 
 An example can be found in `config_example.json`.
 The latest version of the RMLMapper is downloaded when running the server if no `rmlmapper.path` is given.

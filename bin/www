@@ -11,29 +11,41 @@ const download = require('../lib/downloadrmlmapper');
 const fs = require('fs-extra');
 const winston = require('winston');
 const logger = require('../lib/logger');
+const program = require('commander');
+const pkg = require('../package.json');
 
 const DEFAULT_RMLMAPPER_PATH = path.resolve(__dirname, '../rmlmapper.jar');
 const DEFAULT_RMLMAPPER_VERSION_PATH = path.resolve(__dirname, '../rmlmapper-version.txt');
 const configPath = path.resolve(process.cwd(), 'config.json');
+
+program
+  .version(pkg.version)
+  .option('-p, --port [port]', 'Port of the server (default: 4000.')
+  .option('-e, --baseURL [url]', 'Url of the server (default: http://localhost:4000.')
+  .option('-r, --rmlmapper [path]', 'Path to the RMLMapper jar (default: rmlmapper.jar).')
+  .option('--rmlmapper-version [version]', 'Version of the used RMLMapper.')
+  .option('-t, --removeTempFolders', 'True if temp folders should be removed, else false (default: true).')
+  .option('-b, --basePath [path]', 'The path preceding all routes (default: /).')
+  .option('-l, --logLevel [level]', 'The log level used by the logger (default: info)')
+  .parse(process.argv);
+
 let server;
-let config = {};
+let config = {
+  version: pkg.version
+};
+let configFile = {};
 
 if (fs.pathExistsSync(configPath)) {
-  config = require(configPath);
+  configFile = require(configPath);
 }
 
-if (!config.logLevel) {
-  config.logLevel = 'info';
-}
+config.logLevel = program.logLevel || configFile.logLevel || 'info';
+config.port = parseInt(program.port) || parseInt(config.port) || 4000;
+config.baseURL = program.baseURL || configFile.baseURL || 'http://localhost:' + config.port;
+config.basePath = program.basePath || configFile.basePath || '/';
 
-if (!config.port) {
-  config.port = 4000;
-} else {
-  config.port = parseInt(config.port);
-}
-
-if (!config.baseURL) {
-  config.baseURL = 'http://localhost:' + config.port;
+if (!config.basePath.startsWith('/')) {
+  config.basePath = '/' + config.basePath;
 }
 
 logger.configure({

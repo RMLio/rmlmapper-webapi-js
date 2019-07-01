@@ -1,10 +1,9 @@
-const pkg = require('../package');
-
 const express = require('express');
 const router = express.Router();
 const path = require('path');
 const fs = require('fs-extra');
 const RMLMapperWrapper = require('@rmlio/rmlmapper-java-wrapper');
+const YAML = require('yamljs');
 
 const dir = __dirname.replace("/routes", "");
 const defaultTempFolder = dir + path.sep + "tmp";
@@ -31,6 +30,17 @@ function createRouter(config) {
   }
 
   const rmlmapper = new RMLMapperWrapper(config.rmlmapper.path, config.tempFolder, true);
+  const swaggerYAML = fs.readFileSync(path.resolve(__dirname, '../swagger.yaml'), 'utf-8');
+  const swaggerObj = YAML.parse(swaggerYAML);
+
+  swaggerObj.servers = [
+    {url : `${config.baseURL}${config.basePath}`}
+  ];
+  swaggerObj.info.version = config.version;
+
+  router.get('/', function (req, res) {
+    res.render('index', {swagger: JSON.stringify(swaggerObj)});
+  });
 
   router.post('/execute', function (req, res) {
     res.type('json');
