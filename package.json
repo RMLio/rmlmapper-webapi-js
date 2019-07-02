@@ -1,5 +1,5 @@
 {
-  "name": "rmlmapper-webapi-js",
+  "name": "@rmlio/rmlmapper-webapi",
   "description": "Web API for the RMLMapper",
   "version": "0.0.10",
   "private": true,
@@ -28,5 +28,10 @@
   "devDependencies": {
     "mocha": "^6.1.4",
     "nyc": "^14.1.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/RMLio/rmlmapper-webapi-js.git"
   }
+
 }
