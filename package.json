@@ -2,7 +2,6 @@
   "name": "@rmlio/rmlmapper-webapi",
   "description": "Web API for the RMLMapper",
   "version": "0.0.11",
-  "private": true,
   "scripts": {
     "start": "node ./bin/www",
     "test": "nyc mocha 'test/**/test.js'",
