@@ -1,3 +1,5 @@
+# The version of the API is set based on the version in package.json.
+
 openapi: "3.0.0"
 info:
   description: "This is a Web API around the RMLMapper. You are able to execute RML rules on different data sources. Optionally, you can also request for the metadata that is generated during the execution of the rules."
@@ -73,4 +75,3 @@ components:
           type: "string"
           format: "text/turtle"
           example: null
-
