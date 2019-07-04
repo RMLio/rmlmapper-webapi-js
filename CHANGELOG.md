@@ -7,19 +7,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
-## [0.0.13] - 2018-07-03
+## [0.0.13] - 2019-07-03
 
 ### Fixed
 
 - add missing basePath to tests
 
-## [0.0.12] - 2018-07-02
+## [0.0.12] - 2019-07-02
 
 ### Fixed
 
 - make package public
 
-## [0.0.11] - 2018-07-02
+## [0.0.11] - 2019-07-02
 
 ### Fixed
 
@@ -29,7 +29,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - added Github repo to package.json
 
-## [0.0.10] - 2018-07-02
+## [0.0.10] - 2019-07-02
 
 ### Fixed
 
@@ -40,7 +40,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - changelog
 - comment regarding version in Swagger file
 
-## [0.0.9] - 2018-07-01
+## [0.0.9] - 2019-07-01
 
 ### Fixed
 
@@ -48,22 +48,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - clean Dockerfile
 - better integration of Swagger UI
 
-## [0.0.8] - 2018-07-01
+## [0.0.8] - 2019-07-01
 
 ### Fixed
 
 - remove unused code
 
-## [0.0.7] - 2018-07-01
+## [0.0.7] - 2019-07-01
 
 ### Added
 
 - use Swagger UI for index page
 
-
-[0.0.6]: https://github.com/RMLio/rmlmapper-webapi-js/compare/v0.0.5...v0.0.6
-
-## [0.0.6] - 2018-06-26
+## [0.0.6] - 2019-06-26
 
 ### Fixed
 
