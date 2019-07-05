@@ -58,7 +58,7 @@ The calls are also described using the [Open API specification](https://github.c
 - The RMLMapper needs to be available in the root and called `rmlmapper.jar`.
 Get the latest version via `npm run download:rmlmapper`.
 - Run the tests: `npm test`.
-The test framework is [Mocha](https://mochajs.org/) and the code coverage is provided via [Istanbul](https://istanbul.js.org/)
+The test framework is [Mocha](https://mochajs.org/) and the code coverage is provided via [Istanbul](https://istanbul.js.org/).
 
 ### License
 
