@@ -20,8 +20,8 @@ const configPath = path.resolve(process.cwd(), 'config.json');
 
 program
   .version(pkg.version)
-  .option('-p, --port [port]', 'Port of the server (default: 4000.')
-  .option('-e, --baseURL [url]', 'Url of the server (default: http://localhost:4000.')
+  .option('-p, --port [port]', 'Port of the server (default: 4000).')
+  .option('-e, --baseURL [url]', 'Url of the server (default: http://localhost:4000).')
   .option('-r, --rmlmapper [path]', 'Path to the RMLMapper jar (default: rmlmapper.jar).')
   .option('--rmlmapper-version [version]', 'Version of the used RMLMapper.')
   .option('-t, --removeTempFolders', 'True if temp folders should be removed, else false (default: true).')

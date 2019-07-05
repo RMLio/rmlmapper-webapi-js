@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+## [0.0.14] - 2019-07-05
+
+### Added
+
+- CLI parameters in README
+
+### Fixed
+
+- Docker run command in README
+- typos in CLI help message
+
 ## [0.0.13] - 2019-07-03
 
 ### Fixed
@@ -71,6 +82,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - description to package.json
 
 
+[0.0.14]: https://github.com/RMLio/rmlmapper-webapi-js/compare/v0.0.13...v0.0.14
 [0.0.13]: https://github.com/RMLio/rmlmapper-webapi-js/compare/v0.0.12...v0.0.13
 [0.0.12]: https://github.com/RMLio/rmlmapper-webapi-js/compare/v0.0.11...v0.0.12
 [0.0.11]: https://github.com/RMLio/rmlmapper-webapi-js/compare/v0.0.10...v0.0.11
