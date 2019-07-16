@@ -48,7 +48,9 @@ function createRouter(config) {
     if (!req.body.rml) {
       res.status(400).send({message: `The parameter "rml" is required.`});
     } else {
-      rmlmapper.execute(req.body.rml, req.body.sources, req.body.generateMetadata)
+      const options = {sources, generateMetadata, serialization } = req.body;
+
+      rmlmapper.execute(req.body.rml, options)
         .then(result => res.send(result))
         .catch(error => {
           res.status(500).send({message: error.message, log: error.log});

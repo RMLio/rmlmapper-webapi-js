@@ -11,7 +11,7 @@
     "rmlmapper-webapi": "./bin/www"
   },
   "dependencies": {
-    "@rmlio/rmlmapper-java-wrapper": "0.0.5",
+    "@rmlio/rmlmapper-java-wrapper": "0.1.1",
     "body-parser": "^1.18.3",
     "commander": "^2.20.0",
     "debug": "^4.1.1",
