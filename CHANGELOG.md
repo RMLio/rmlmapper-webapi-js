@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+## [0.1.0] - 2019-07-17
+
+### Added
+
+- Serialization argument to execute
+
 ## [0.0.14] - 2019-07-05
 
 ### Added
@@ -82,6 +88,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - description to package.json
 
 
+[0.1.0]: https://github.com/RMLio/rmlmapper-webapi-js/compare/v0.0.14...v0.1.0
 [0.0.14]: https://github.com/RMLio/rmlmapper-webapi-js/compare/v0.0.13...v0.0.14
 [0.0.13]: https://github.com/RMLio/rmlmapper-webapi-js/compare/v0.0.12...v0.0.13
 [0.0.12]: https://github.com/RMLio/rmlmapper-webapi-js/compare/v0.0.11...v0.0.12

@@ -8,7 +8,7 @@
     "download:rmlmapper": "node ./lib/downloadrmlmappertocwd.js"
   },
   "bin": {
-    "rmlmapper-webapi": "./bin/www"
+    "rmlmapper-webapi": "./bin/cli.js"
   },
   "dependencies": {
     "@rmlio/rmlmapper-java-wrapper": "0.1.1",

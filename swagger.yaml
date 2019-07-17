@@ -64,6 +64,9 @@ components:
         generateMetadata:
           type: "boolean"
           default: false
+        serialization:
+          type: "string"
+          default: "nquads"
     ExecuteOutput:
       type: "object"
       properties:
