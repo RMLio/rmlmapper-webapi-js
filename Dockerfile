@@ -15,4 +15,4 @@ WORKDIR rmlmapper-webapi-js
 RUN npm install
 
 #after boot
-ENTRYPOINT ["./bin/www"]
+ENTRYPOINT ["./bin/cli.js"]
