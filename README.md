@@ -8,6 +8,34 @@
 
 ### Usage
 
+The package can be used as both a library and CLI.
+
+#### Library
+The package can be used as a library as follows:
+
+```JavaScript
+const Api = require('@rmlio/rmlmapper-webapi');
+const config = {}; // see below
+
+// Create API.
+const api = new Api(config);
+api.set('port', config.port);
+
+// Create and launch server.
+const server = http.createServer(api);
+server.listen(config.port);
+```
+
+The config object looks as follows:
+
+ - `rmlmapper.path`: path to the RMLMapper jar (required).
+ - `rmlmapper.version`: version of the used RMLMapper. This is shown on the main page of the API (required).
+ - `baseURL`: url of where the API will be available. This is shown on the main page of the API (default: http://localhost + port).
+ - `removeTempFolders`: if this is set true, temporary folders are removed once the execution of one call is done (default: true).
+ - `logLevel`: log level used by the logger (default: info).
+ - `port`: port of the server (default: 4000).
+ - `basePath`: the path preceding all routes (default: /).
+
 #### CLI
 - Install the server: `npm i -g @rmlio/rmlmapper-webapi`.
 - Start the server: `rmlmapper-webapi`.
@@ -24,13 +52,19 @@ The following paramaters can be used to configure the server:
 - `-b, --basePath [path]`: The path preceding all routes (default: /).
 - `-l, --logLevel [level]`: The log level used by the logger (default: info)
  - `-h, --help`: output usage information
-
+ 
+Parameters can also be set via a configuration file called `config.json`, 
+which is located in the current working directory,
+and contains same options as the [config object](#library) when using the package as library.
+An example can be found in `config_example.json`.
+The latest version of the RMLMapper is downloaded when running the server if no `rmlmapper.path` is given.
+The version is automatically determined.
 
 #### Docker
-- Build image: `docker build -t rmlmapper-webapi .`.
-- Run container: `docker run rmlmapper-webapi`.
+- Build image: `docker build -t rmlmapper-webapi .`
+- Run container: `docker run -p 4000:4000 rmlmapper-webapi`
 
-### Configuration file
+### Configuration object/file
 Parameters can also be set via a configuration file called `config.json`, 
 which is located in the current working directory,
 and contains the following settings:

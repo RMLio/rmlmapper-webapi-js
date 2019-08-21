@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+### Added
+- Main script to `package.json`
+- Instructions to use package as library
+- Default config to `app.js`
+
+### Fixed
+- Typos
+
 ## [0.1.2] - 2019-08-20
 
 ### Fixed

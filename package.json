@@ -7,6 +7,7 @@
     "test": "nyc mocha 'test/**/test.js'",
     "download:rmlmapper": "node ./lib/downloadrmlmappertocwd.js"
   },
+  "main": "app.js",
   "bin": {
     "rmlmapper-webapi": "./bin/cli.js"
   },

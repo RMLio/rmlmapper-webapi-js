@@ -5,12 +5,25 @@ const bodyParser = require('body-parser');
 const routes = require('./routes/index');
 
 /**
- * Create a app that can be used with an http.server.
- * @param loggerFormat: the logger format as specified by the morgan library.
+ * Creates an app that can be used with an http.server.
+ * @param config: the config object that specifies the details of the app.
  * @returns {*}
  */
 function createApp(config) {
+  // Set default in config.
+  config.port = config.port || 4000;
+  config.logLevel = config.logLevel || 'info';
+  config.baseURL = config.baseURL || 'http://localhost:' + config.port;
+  config.basePath = config.basePath || '/';
+  config.removeTempFolders = config.removeTempFolders === undefined || config.removeTempFolders;
+
+  if (!config.basePath.startsWith('/')) {
+    config.basePath = '/' + config.basePath;
+  }
+
+  // Set up app.
   const app = express();
+  app._basePath = config.basePath;
 
 // view engine setup
   app.set('views', path.join(__dirname, 'views'));
