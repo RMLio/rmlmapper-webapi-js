@@ -5,7 +5,7 @@
  */
 
 const path = require('path');
-const App = require('../app');
+const App = require('..');
 const http = require('http');
 const download = require('../lib/downloadrmlmapper');
 const fs = require('fs-extra');
@@ -26,7 +26,7 @@ program
   .option('--rmlmapper-version [version]', 'Version of the used RMLMapper.')
   .option('-t, --removeTempFolders', 'True if temp folders should be removed, else false (default: true).')
   .option('-b, --basePath [path]', 'The path preceding all routes (default: /).')
-  .option('-l, --logLevel [level]', 'The log level used by the logger (default: info)')
+  .option('-l, --logLevel [level]', 'The log level used by the logger (default: info).')
   .parse(process.argv);
 
 let server;
@@ -86,7 +86,7 @@ async function start() {
       }
     } else {
       version = fs.readFileSync(DEFAULT_RMLMAPPER_VERSION_PATH, 'utf-8');
-      logger.info(`Usig the default jar at ${DEFAULT_RMLMAPPER_PATH} (${version}).`);
+      logger.info(`Using the default jar at ${DEFAULT_RMLMAPPER_PATH} (${version}).`);
     }
 
     config.rmlmapper = {
@@ -129,11 +129,11 @@ function onError(error) {
   // handle specific listen errors with friendly messages
   switch (error.code) {
     case 'EACCES':
-      logger.error('Port ' + config.port + ' requires elevated privileges');
+      logger.error('Port ' + config.port + ' requires elevated privileges.');
       process.exit(1);
       break;
     case 'EADDRINUSE':
-      logger.error('Port ' + config.port + ' is already in use');
+      logger.error('Port ' + config.port + ' is already in use.');
       process.exit(1);
       break;
     default:
@@ -146,6 +146,6 @@ function onError(error) {
  */
 
 function onListening() {
-  logger.info('Listening on port ' + server.address().port);
+  logger.info('Listening on port ' + server.address().port + '.');
 }
 

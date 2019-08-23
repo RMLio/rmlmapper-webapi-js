@@ -5,7 +5,7 @@
 
 const config = require('./config');
 const assert = require('assert');
-const App = require('../../app');
+const App = require('../..');
 const http = require('http');
 const fs = require('fs-extra');
 const path = require('path');
@@ -51,5 +51,32 @@ describe('Test app.js', function() {
         done();
       });
     });
+  });
+
+  it('custom base path', () => {
+    const myConfig = JSON.parse(JSON.stringify(config));
+    myConfig.basePath = '/apple';
+
+    const app = App(myConfig);
+
+    assert.strictEqual(app._basePath, '/apple');
+  });
+
+  it('add / to custom base path', () => {
+    const myConfig = JSON.parse(JSON.stringify(config));
+    myConfig.basePath = 'apple';
+
+    const app = App(myConfig);
+
+    assert.strictEqual(app._basePath, '/apple');
+  });
+
+  it('default base path', () => {
+    const myConfig = JSON.parse(JSON.stringify(config));
+    delete myConfig.basePath;
+
+    const app = App(myConfig);
+
+    assert.strictEqual(app._basePath, '/');
   });
 });
