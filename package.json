@@ -26,8 +26,8 @@
     "yamljs": "^0.3.0"
   },
   "devDependencies": {
-    "mocha": "^6.1.4",
-    "nyc": "^14.1.1"
+    "mocha": "^7.1.2",
+    "nyc": "^15.0.1"
   },
   "repository": {
     "type": "git",
