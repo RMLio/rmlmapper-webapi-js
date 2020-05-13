@@ -138,8 +138,7 @@ describe('Test app.js', function () {
       res.on("end", function () {
         json = JSON.parse(json);
 
-        assert.strictEqual(json.message, `Error while executing the rules.`);
-        assert.strictEqual(json.log.indexOf('Triples Maps found') !== -1, true);
+        assert.strictEqual(json.message, `Expected entity but got @prex on line 1.`);
         done();
       });
       //done();
