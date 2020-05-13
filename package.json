@@ -3,7 +3,7 @@
   "description": "Web API for the RMLMapper",
   "version": "0.2.0",
   "scripts": {
-    "start": "node ./bin/www",
+    "start": "node ./bin/cli.js",
     "test": "nyc mocha 'test/**/test.js'",
     "download:rmlmapper": "node ./lib/downloadrmlmappertocwd.js"
   },
@@ -12,7 +12,7 @@
     "rmlmapper-webapi": "./bin/cli.js"
   },
   "dependencies": {
-    "@rmlio/rmlmapper-java-wrapper": "1.0.0",
+    "@rmlio/rmlmapper-java-wrapper": "1.0.1",
     "body-parser": "^1.18.3",
     "commander": "^2.20.0",
     "debug": "^4.1.1",

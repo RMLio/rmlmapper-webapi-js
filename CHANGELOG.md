@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 - Update RMLMapper wrapper (see [issue 23](https://gitlab.ilabt.imec.be/rml/util/rmlmapper-webapi-js/-/issues/23))
+- Update dev deps
 
 ## [0.2.0] - 2019-08-23
 
