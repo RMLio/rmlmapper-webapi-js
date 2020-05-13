@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+## [1.0.0] - 2020-05-13
+
+### Fixed
+- Update RMLMapper wrapper (see [issue 23](https://gitlab.ilabt.imec.be/rml/util/rmlmapper-webapi-js/-/issues/23))
+- Update dev deps
+
 ## [0.2.0] - 2019-08-23
 
 ### Added
@@ -110,6 +116,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - description to package.json
 
 
+[1.0.0]: https://github.com/RMLio/rmlmapper-webapi-js/compare/v0.2.0...v1.0.0
 [0.2.0]: https://github.com/RMLio/rmlmapper-webapi-js/compare/v0.1.2...v0.2.0
 [0.1.2]: https://github.com/RMLio/rmlmapper-webapi-js/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/RMLio/rmlmapper-webapi-js/compare/v0.1.0...v0.1.1
