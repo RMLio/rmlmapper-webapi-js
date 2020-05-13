@@ -53,7 +53,7 @@ function createRouter(config) {
       rmlmapper.execute(req.body.rml, options)
         .then(result => res.send(result))
         .catch(error => {
-          res.status(500).send({message: error.message, log: error.log});
+          res.status(500).send({message: error.message, log: error.stack});
         });
     }
   });
