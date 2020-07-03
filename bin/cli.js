@@ -33,7 +33,9 @@ let server;
 let config = {
   version: pkg.version
 };
-let configFile = {};
+let configFile = {
+  rmlmapper: {}
+};
 
 if (fs.pathExistsSync(configPath)) {
   configFile = require(configPath);
@@ -43,6 +45,18 @@ config.logLevel = program.logLevel || configFile.logLevel || 'info';
 config.port = parseInt(program.port) || parseInt(config.port) || 4000;
 config.baseURL = program.baseURL || configFile.baseURL || 'http://localhost:' + config.port;
 config.basePath = program.basePath || configFile.basePath || '/';
+config.rmlmapper = {};
+
+config.rmlmapper.path = program.rmlmapper;
+config.rmlmapper.version = program.rmlmapperVersion;
+
+if (!config.rmlmapper.path && configFile.rmlmapper) {
+  config.rmlmapper.path = configFile.rmlmapper.path;
+}
+
+if (!config.rmlmapper.version && configFile.rmlmapper) {
+  config.rmlmapper.version = configFile.rmlmapper.version;
+}
 
 if (!config.basePath.startsWith('/')) {
   config.basePath = '/' + config.basePath;
@@ -85,7 +99,7 @@ async function start() {
         process.exit(1);
       }
     } else {
-      version = fs.readFileSync(DEFAULT_RMLMAPPER_VERSION_PATH, 'utf-8');
+      version = fs.readFileSync(DEFAULT_RMLMAPPER_VERSION_PATH, 'utf-8').replace('\n', '');
       logger.info(`Using the default jar at ${DEFAULT_RMLMAPPER_PATH} (${version}).`);
     }
 
@@ -93,6 +107,12 @@ async function start() {
       path: DEFAULT_RMLMAPPER_PATH,
       version
     };
+  } else {
+    logger.info(`Using the RMLMapper jar at ${config.rmlmapper.path} (${config.rmlmapper.version}).`);
+  }
+
+  if (!config.rmlmapper.version) {
+    logger.info(`The version of the RMLMapper is not specified.`);
   }
 
   /**

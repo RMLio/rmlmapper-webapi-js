@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+### Fixed
+- CLI usage - options  (see [issue 4](https://github.com/RMLio/rmlmapper-webapi-js/issues/4))
+
 ## [1.0.0] - 2020-05-13
 
 ### Fixed
