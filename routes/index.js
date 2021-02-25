@@ -29,7 +29,7 @@ function createRouter(config) {
     config.rmlmapper.path = path.resolve(process.cwd(), config.rmlmapper.path);
   }
 
-  const rmlmapper = new RMLMapperWrapper(config.rmlmapper.path, config.tempFolder, true);
+  const rmlmapper = new RMLMapperWrapper(config.rmlmapper.path, config.tempFolder, true, {'Dfile.encoding': 'UTF-8'});
   const swaggerYAML = fs.readFileSync(path.resolve(__dirname, '../swagger.yaml'), 'utf-8');
   const swaggerObj = YAML.parse(swaggerYAML);
 
