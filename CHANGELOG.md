@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+## [2.0.0] - 2021-02-25
+
+### Changed
+- Default to UTF-8 for output encoding
+
 ## [1.0.1] - 2020-07-03
 
 ### Fixed
@@ -121,6 +126,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - description to package.json
 
 
+[2.0.0]: https://github.com/RMLio/rmlmapper-webapi-js/compare/v1.0.1...v2.0.0
 [1.0.1]: https://github.com/RMLio/rmlmapper-webapi-js/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/RMLio/rmlmapper-webapi-js/compare/v0.2.0...v1.0.0
 [0.2.0]: https://github.com/RMLio/rmlmapper-webapi-js/compare/v0.1.2...v0.2.0
