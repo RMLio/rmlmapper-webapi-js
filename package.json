@@ -1,7 +1,7 @@
 {
   "name": "@rmlio/rmlmapper-webapi",
   "description": "Web API for the RMLMapper",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "scripts": {
     "start": "node ./bin/cli.js",
     "test": "nyc mocha 'test/**/test.js'",
@@ -9,7 +9,7 @@
   },
   "main": "app.js",
   "bin": {
-    "rmlmapper-webapi": "./bin/cli.js"
+    "rmlmapper-webapi": "bin/cli.js"
   },
   "dependencies": {
     "@rmlio/rmlmapper-java-wrapper": "1.1.0",
