@@ -7,10 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+### Changed
+- Update dependencies
+
 ## [2.0.1] - 2021-03-05
 
 ### Changed
-
 - Node version in Dockerfile
 
 ## [2.0.0] - 2021-02-25

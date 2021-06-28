@@ -12,7 +12,7 @@
     "rmlmapper-webapi": "bin/cli.js"
   },
   "dependencies": {
-    "@rmlio/rmlmapper-java-wrapper": "1.1.0",
+    "@rmlio/rmlmapper-java-wrapper": "2.0.0",
     "body-parser": "^1.18.3",
     "commander": "^2.20.0",
     "debug": "^4.1.1",
@@ -21,13 +21,13 @@
     "fs-extra": "^7.0.1",
     "morgan": "^1.9.1",
     "n3": "^0.8.1",
-    "pug": "^2.0.4",
-    "winston": "^3.2.1",
+    "pug": "^3.0.2",
+    "winston": "^3.3.3",
     "yamljs": "^0.3.0"
   },
   "devDependencies": {
-    "mocha": "^7.1.2",
-    "nyc": "^15.0.1"
+    "mocha": "^9.0.1",
+    "nyc": "^15.1.0"
   },
   "repository": {
     "type": "git",
