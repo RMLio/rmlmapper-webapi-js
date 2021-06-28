@@ -42,7 +42,7 @@ function createRouter(config) {
     res.render('index', {swagger: JSON.stringify(swaggerObj)});
   });
 
-  router.post('/execute', function (req, res) {
+  router.post('/execute', async function (req, res) {
     res.type('json');
 
     if (!req.body.rml) {
@@ -50,11 +50,12 @@ function createRouter(config) {
     } else {
       const options = {sources, generateMetadata, serialization } = req.body;
 
-      rmlmapper.execute(req.body.rml, options)
-        .then(result => res.send(result))
-        .catch(error => {
-          res.status(500).send({message: error.message, log: error.stack});
-        });
+      try {
+        const result = await rmlmapper.execute(req.body.rml, options);
+        res.send(result);
+      } catch (error) {
+        res.status(500).send({message: error.message, log: error.stack});
+      }
     }
   });
 

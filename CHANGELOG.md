@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+### Added
+- Support Target (see [issue 27](https://gitlab.ilabt.imec.be/rml/util/rmlmapper-webapi-js/-/issues/27))
+
 ### Changed
 - Update dependencies
 
