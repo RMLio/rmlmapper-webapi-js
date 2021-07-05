@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+## [2.1.1] - 2021-07-05
+
+### Changed
+- Update dependencies
+
 ## [2.1.0] - 2021-06-28
 
 ### Added
@@ -139,6 +144,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - description to package.json
 
 
+[2.1.1]: https://github.com/RMLio/rmlmapper-webapi-js/compare/v2.1.0...v2.1.1
 [2.1.0]: https://github.com/RMLio/rmlmapper-webapi-js/compare/v2.0.1...v2.1.0
 [2.0.1]: https://github.com/RMLio/rmlmapper-webapi-js/compare/v2.0.0...v2.0.1
 [2.0.0]: https://github.com/RMLio/rmlmapper-webapi-js/compare/v1.0.1...v2.0.0
