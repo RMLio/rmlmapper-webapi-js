@@ -31,8 +31,9 @@ function createApp(config) {
 
   /* istanbul ignore next */
   // configure logger
-  if (config.loggerFormat) {
-    app.use(logger(config.loggerFormat));
+  if (config.logLevel) {
+    const temp = config.logLevel === 'debug' ? 'dev' : 'combined';
+    app.use(logger(temp));
   }
 
 // allow CORS

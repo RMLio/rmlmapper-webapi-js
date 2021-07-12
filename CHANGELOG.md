@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+### Fixed
+- Logging of Express
+
+### Changed
+- Ubuntu and Node.js version in Dockerfile
+
 ## [2.1.1] - 2021-07-05
 
 ### Changed
