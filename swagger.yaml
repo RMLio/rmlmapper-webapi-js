@@ -5,7 +5,9 @@ info:
   description: "This is a Web API around the RMLMapper. You are able to execute RML rules on different data sources. Optionally, you can also request for the metadata that is generated during the execution of the rules."
   title: "RMLMapper Web API"
   contact:
-    email: "pheyvaer.heyvaert@ugent.be"
+    name: RML.io
+    email: info@rml.io
+    url: https://rml.io/
 schemes:
 - "http"
 paths:
@@ -49,7 +51,7 @@ paths:
                     @prefix ql: <http://semweb.mmlab.be/ns/ql#> .
                     @prefix rmlt: <http://semweb.mmlab.be/ns/rml-target#> .
                     @prefix void: <http://rdfs.org/ns/void#> .
-                    @prefix formats: <https://www.w3.org/ns/formats/> .
+                    @prefix formats: <http://www.w3.org/ns/formats/> .
                     @base <http://example.com/base/> .
 
                     <TriplesMap1>
