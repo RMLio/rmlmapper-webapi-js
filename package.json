@@ -11,6 +11,7 @@
   "bin": {
     "rmlmapper-webapi": "bin/cli.js"
   },
+  "author": "Pieter Heyvaert (https://pieterheyvaert.com)",
   "dependencies": {
     "@rmlio/rmlmapper-java-wrapper": "2.0.1",
     "body-parser": "^1.18.3",

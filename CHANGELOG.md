@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+### Changed
+- Contact information
+- Email address Pieter Heyvaert
+
+### Fixed
+- Target example
+
 ## [2.1.2] - 2021-07-12
 
 ### Fixed
