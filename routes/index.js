@@ -5,7 +5,7 @@ const fs = require('fs-extra');
 const RMLMapperWrapper = require('@rmlio/rmlmapper-java-wrapper');
 const YAML = require('yamljs');
 
-const dir = __dirname.replace("/routes", "");
+const dir = __dirname.replace(path.sep + "routes", "");
 const defaultTempFolder = dir + path.sep + "tmp";
 
 function createRouter(config) {
