@@ -5,7 +5,7 @@
   "scripts": {
     "start": "node ./bin/cli.js",
     "test": "nyc mocha 'test/**/test.js'",
-    "download:rmlmapper": "node ./lib/downloadrmlmappertocwd.js"
+    "download:rmlmapper": "node ./cli/download-rmlmapper-cli.js"
   },
   "main": "app.js",
   "bin": {
@@ -13,6 +13,7 @@
   },
   "author": "Pieter Heyvaert (https://pieterheyvaert.com)",
   "dependencies": {
+    "@rmlio/fetch-rmlmapper-java": "0.0.3",
     "@rmlio/rmlmapper-java-wrapper": "2.0.1",
     "body-parser": "^1.18.3",
     "commander": "^2.20.0",

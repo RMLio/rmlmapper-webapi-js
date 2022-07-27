@@ -7,15 +7,12 @@
 const path = require('path');
 const App = require('..');
 const http = require('http');
-const download = require('../lib/downloadrmlmapper');
+const download = require('../lib/download-rmlmapper');
 const fs = require('fs-extra');
-const winston = require('winston');
 const logger = require('../lib/logger');
 const program = require('commander');
 const pkg = require('../package.json');
 
-const DEFAULT_RMLMAPPER_PATH = path.resolve(__dirname, '../rmlmapper.jar');
-const DEFAULT_RMLMAPPER_VERSION_PATH = path.resolve(__dirname, '../rmlmapper-version.txt');
 const configPath = path.resolve(process.cwd(), 'config.json');
 
 program
@@ -62,16 +59,6 @@ if (!config.basePath.startsWith('/')) {
   config.basePath = '/' + config.basePath;
 }
 
-logger.configure({
-  level: config.logLevel,
-  format: winston.format.json(),
-  transports: [
-    new winston.transports.Console({
-      format: winston.format.simple()
-    })
-  ]
-});
-
 // we do this if again, because the config needs to be read first before we can start the logger.
 if (fs.pathExistsSync(configPath)) {
   logger.info(`Using config file at ${configPath}.`);
@@ -86,25 +73,16 @@ async function start() {
 
   if (!config.rmlmapper || !config.rmlmapper.path) {
     logger.info('No path to an RMLMapper jar is defined.');
-    let version;
+    const { version, fullPath, cache } = await download(null, true);
 
-    if (!fs.existsSync(DEFAULT_RMLMAPPER_PATH)) {
-      try {
-        version = await download(DEFAULT_RMLMAPPER_PATH);
-        fs.writeFileSync(DEFAULT_RMLMAPPER_VERSION_PATH, version, 'utf-8');
-
-        logger.info(`Using the RMLMapper jar at ${DEFAULT_RMLMAPPER_PATH} (${version}).`);
-      } catch (e) {
-        console.error(e);
-        process.exit(1);
-      }
+    if (cache) {
+      logger.info(`Using the default jar at ${fullPath} (${version}).`);
     } else {
-      version = fs.readFileSync(DEFAULT_RMLMAPPER_VERSION_PATH, 'utf-8').replace('\n', '');
-      logger.info(`Using the default jar at ${DEFAULT_RMLMAPPER_PATH} (${version}).`);
+      logger.info(`Using the RMLMapper jar at ${fullPath} (${version}).`);
     }
 
     config.rmlmapper = {
-      path: DEFAULT_RMLMAPPER_PATH,
+      path: fullPath,
       version
     };
   } else {

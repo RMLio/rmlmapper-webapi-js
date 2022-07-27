@@ -54,7 +54,7 @@ function createRouter(config) {
         const result = await rmlmapper.execute(req.body.rml, options);
         res.send(result);
       } catch (error) {
-        res.status(500).send({message: error.message, log: error.stack});
+        res.status(500).send({message: error.message, log: error.log, stack: error.stack});
       }
     }
   });
