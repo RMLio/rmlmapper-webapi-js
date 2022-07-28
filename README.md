@@ -16,6 +16,7 @@
 - [Development](#development)
   - [Set-up](#set-up)
   - [Run tests](#run-tests)
+  - [Use](#use)
 - [License](#license)
 
 ## Requirements
@@ -128,6 +129,10 @@ The calls are also described using the [Open API specification](https://github.c
 
 - Run the tests: `npm test`.
 The test framework is [Mocha](https://mochajs.org/) and the code coverage is provided via [Istanbul](https://istanbul.js.org/).
+
+### Use
+
+- `npm start`
 
 ## License
 
