@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 
-- Relied on external dependency to download RMLMapper
+- Relies now on external dependency to download RMLMapper
 - Clarified how to download specific RMLMapper
 - More consistent naming of files and functions
 
