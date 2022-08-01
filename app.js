@@ -1,7 +1,9 @@
 const express = require('express');
 const path = require('path');
-const logger = require('morgan');
+const morgan = require('morgan');
 const bodyParser = require('body-parser');
+const rateLimit = require('express-rate-limit');
+const logger = require('./lib/logger');
 const routes = require('./routes/index');
 
 /**
@@ -25,7 +27,7 @@ function createApp(config) {
   const app = express();
   app._basePath = config.basePath;
 
-// view engine setup
+  // view engine setup
   app.set('views', path.join(__dirname, 'views'));
   app.set('view engine', 'pug');
 
@@ -33,10 +35,10 @@ function createApp(config) {
   // configure logger
   if (config.logLevel) {
     const temp = config.logLevel === 'debug' ? 'dev' : 'combined';
-    app.use(logger(temp));
+    app.use(morgan(temp));
   }
 
-// allow CORS
+  // allow CORS
   app.use(function (req, res, next) {
     // Website you wish to allow to connect
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -55,18 +57,38 @@ function createApp(config) {
     next();
   });
 
-// configure the body of the requests
+  // configure the body of the requests
   app.use(bodyParser.json({
     extended: false,
     limit: '50mb'
   }));
 
-// configure where to find public files
+  /* istanbul ignore next */
+  if (config.behindReverseProxy) {
+    // Enable if you're behind a reverse proxy (Heroku, Bluemix, AWS ELB, Nginx, etc)
+    // see https://expressjs.com/en/guide/behind-proxies.html
+    app.set('trust proxy', 1);
+  }
+
+  /* istanbul ignore next */
+  if (config.rateLimiter) {
+    const limiter = rateLimit({
+      windowMs: config.rateLimiter.window * 60 * 1000,
+      max: config.rateLimiter.max // limit each IP to "max" requests per windowMs
+    });
+
+    // apply to execute requests
+    app.use('/execute', limiter);
+
+    logger.info(`Rate limiter enabled: max ${config.rateLimiter.max} request per ${config.rateLimiter.window} minutes.`);
+  }
+
+  // configure where to find public files
   app.use(config.basePath, express.static(path.join(__dirname, 'public')));
-// add the routes
+  // add the routes
   app.use(config.basePath, routes(config));
 
-// catch 404 and forward to error handler
+  // catch 404 and forward to error handler
   app.use(function (req, res, next) {
     const err = new Error('Not Found');
     err.status = 404;

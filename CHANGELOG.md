@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Added RMLMapper error log to output
 - Updated dependencies
+- Rate limiter
+- Reverse proxy
 
 ### Changed
 

@@ -3,19 +3,21 @@
  * Ghent University - imec - IDLab
  */
 
-const config = require('./config');
 const assert = require('assert');
-const app = require('../..')(config);
 const http = require('http');
 const fs = require('fs-extra');
+const config = require('./config');
+const App = require('../../app');
 
 const PORT = 4000;
 
-describe('Test app.js', function () {
+describe('App.js', function() {
+
   this.timeout(5000);
   let server;
 
   before(() => {
+    const app = App(config);
     app.set('port', PORT);
     server = http.createServer(app);
     server.listen(PORT);

@@ -1,0 +1,16 @@
+{
+  "rmlmapper": {
+    "path": "rmlmapper.jar",
+    "version": "v4.3.3"
+  },
+  "urls" : {
+    "web-api": "http://localhost:4000"
+  },
+  "removeTempFolders": true,
+  "tempFolder": "tmp-test-rate-limiter",
+  "basePath": "/",
+  "rateLimiter": {
+    "window": 30,
+    "max": 1
+  }
+}

@@ -1,5 +1,4 @@
 const express = require('express');
-const router = express.Router();
 const path = require('path');
 const fs = require('fs-extra');
 const RMLMapperWrapper = require('@rmlio/rmlmapper-java-wrapper');
@@ -9,6 +8,8 @@ const dir = __dirname.replace("/routes", "");
 const defaultTempFolder = dir + path.sep + "tmp";
 
 function createRouter(config) {
+  const router = express.Router();
+
   /* istanbul ignore next */
   if (!config.tempFolder) {
     config.tempFolder = defaultTempFolder;

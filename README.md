@@ -71,15 +71,23 @@ The config object looks as follows:
 
 The following paramaters can be used to configure the server:
 
-- `-V, --version`: output the version number
-- `-p, --port [port]`: Port of the server (default: 4000).
-- `-e, --baseURL [url]`: Url of the server (default: http://localhost:4000).
-- `-r, --rmlmapper [path]`: Path to the RMLMapper jar (default: rmlmapper.jar).
-- `--rmlmapper-version [version]`: Version of the used RMLMapper.
-- `-t, --removeTempFolders`: True if temp folders should be removed, else false (default: true).
-- `-b, --basePath [path]`: The path preceding all routes (default: /).
-- `-l, --logLevel [level]`: The log level used by the logger (default: info)
-- `-h, --help`: output usage information
+```
+Usage: cli [options]
+
+Options:
+  -V, --version                    output the version number
+  -p, --port [port]                Port of the server (default: 4000).
+  -e, --baseURL [url]              Url of the server (default: http://localhost:4000).
+  -r, --rmlmapper [path]           Path to the RMLMapper jar (default: rmlmapper.jar).
+  --rmlmapper-version [version]    Version of the used RMLMapper.
+  -t, --removeTempFolders          True if temp folders should be removed, else false (default: true).
+  -b, --basePath [path]            The path preceding all routes (default: /).
+  -l, --logLevel [level]           The log level used by the logger (default: info).
+  -o, --behind-reverse-proxy       Enable if the server is behind a reverse proxy (e.g., NGINX).
+  --rate-limiter-window [minutes]  The window of the rate limiter (default: infinity).
+  --rate-limiter-max [integer]     The max requests allowed by the rate limiter (default: infinity).
+  -h, --help                       display help for command
+```
 
 Parameters can also be set via a configuration file called `config.json`, 
 which is located in the current working directory,

@@ -12,7 +12,7 @@ const path = require('path');
 
 let server;
 
-describe('Test app.js', function() {
+describe('Setup server', function() {
   this.timeout(5000);
 
   it('with non-existing temp folder', (done) => {

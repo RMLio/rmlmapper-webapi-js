@@ -17,13 +17,16 @@ const configPath = path.resolve(process.cwd(), 'config.json');
 
 program
   .version(pkg.version)
-  .option('-p, --port [port]', 'Port of the server (default: 4000).')
+  .option('-p, --port [port]', 'Port of the server (default: 4000).', parseInt)
   .option('-e, --baseURL [url]', 'Url of the server (default: http://localhost:4000).')
   .option('-r, --rmlmapper [path]', 'Path to the RMLMapper jar (default: rmlmapper.jar).')
   .option('--rmlmapper-version [version]', 'Version of the used RMLMapper.')
   .option('-t, --removeTempFolders', 'True if temp folders should be removed, else false (default: true).')
   .option('-b, --basePath [path]', 'The path preceding all routes (default: /).')
   .option('-l, --logLevel [level]', 'The log level used by the logger (default: info).')
+  .option('-o, --behind-reverse-proxy', 'Enable if the server is behind a reverse proxy (e.g., NGINX).')
+  .option('--rate-limiter-window [minutes]', 'The window of the rate limiter (default: infinity).', parseInt)
+  .option('--rate-limiter-max [integer]', 'The max requests allowed by the rate limiter (default: infinity).', parseInt)
   .parse(process.argv);
 
 let server;
@@ -39,7 +42,7 @@ if (fs.pathExistsSync(configPath)) {
 }
 
 config.logLevel = program.logLevel || configFile.logLevel || 'info';
-config.port = parseInt(program.port) || parseInt(config.port) || 4000;
+config.port = program.port || config.port || 4000;
 config.baseURL = program.baseURL || configFile.baseURL || 'http://localhost:' + config.port;
 config.basePath = program.basePath || configFile.basePath || '/';
 config.rmlmapper = {};
@@ -63,6 +66,25 @@ if (!config.basePath.startsWith('/')) {
 if (fs.pathExistsSync(configPath)) {
   logger.info(`Using config file at ${configPath}.`);
 }
+
+// Process rate limit arguments
+if ((program.rateLimiterWindow && !program.rateLimiterMax)
+  || (!program.rateLimiterWindow && program.rateLimiterMax)) {
+  logger.error(`Please provide both window and max of the rate limiter.`);
+  process.exit(1);
+} else {
+  const rateLimiterFromConfigFile = configFile.rateLimiter ? configFile.rateLimiter : {};
+  config.rateLimiter = {};
+
+  config.rateLimiter.window = program.rateLimiterWindow || rateLimiterFromConfigFile.window;
+  config.rateLimiter.max = program.rateLimiterMax || rateLimiterFromConfigFile.max;
+
+  if (!config.rateLimiter.window || !config.rateLimiter.max) {
+    config.rateLimiter = null;
+  }
+}
+
+config.behindReverseProxy = program.behindReverseProxy || configFile.behindReverseProxy || false;
 
 start();
 
