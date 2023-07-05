@@ -50,15 +50,15 @@ function createRouter(config) {
     } else {
       const options = {sources, generateMetadata, serialization } = req.body;
 
-      const java_vm_options = {'Dfile.encoding': 'UTF-8'};
+      const javaVMOptions = {'Dfile.encoding': 'UTF-8'};
 
       // Check if request has session timestamp in body. If so, add it to the JVM options
       // so that it can be used to create a file for stateful functions.
-      if (req.body.function_state_id) {
-        java_vm_options.DifState = path.join(config.tempFolder, req.body.function_state_id);
+      if (req.body.functionStateId) {
+        javaVMOptions.DifState = path.join(config.tempFolder, req.body.functionStateId);
       }
       try {
-        const rmlmapper = new RMLMapperWrapper(config.rmlmapper.path, config.tempFolder, true, java_vm_options);
+        const rmlmapper = new RMLMapperWrapper(config.rmlmapper.path, config.tempFolder, true, javaVMOptions);
         const result = await rmlmapper.execute(req.body.rml, options);
         res.send(result);
       } catch (error) {
