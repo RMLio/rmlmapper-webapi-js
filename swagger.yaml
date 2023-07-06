@@ -122,9 +122,10 @@ components:
         functionStateId:
           type: "string"
           example: "1688549879688"
-          description: "Optional. The user can use this key to identify the state used by stateful functions during the
-                        RML mapping process. Requests using the same `functionStateId` use the same state, which gets
-                        initialized during the first request."
+          description: "Optional. The caller of the request is responsible for choosing a value.
+                        It is used as a key to identify the state used by stateful functions during the
+                        RML mapping process. Requests with the same value for `functionStateId` use the
+                        same state, which gets initialized during the first request with that value."
         sources:
           type: "object"
           example: >
