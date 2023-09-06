@@ -30,6 +30,7 @@ function createRouter(config) {
     config.rmlmapper.path = path.resolve(process.cwd(), config.rmlmapper.path);
   }
 
+  const rmlmapper = new RMLMapperWrapper(config.rmlmapper.path, config.tempFolder, true, config.stateFolder, config.stateFolderTimeToLive,  {'Dfile.encoding': 'UTF-8'});
   const swaggerYAML = fs.readFileSync(path.resolve(__dirname, '../swagger.yaml'), 'utf-8');
   const swaggerObj = YAML.parse(swaggerYAML);
 
@@ -48,17 +49,8 @@ function createRouter(config) {
     if (!req.body.rml) {
       res.status(400).send({message: `The parameter "rml" is required.`});
     } else {
-      const options = {sources, generateMetadata, serialization } = req.body;
-
-      const javaVMOptions = {'Dfile.encoding': 'UTF-8'};
-
-      // Check if request has session timestamp in body. If so, add it to the JVM options
-      // so that it can be used to create a file for stateful functions.
-      if (req.body.functionStateId) {
-        javaVMOptions.DifState = path.join(config.tempFolder, req.body.functionStateId);
-      }
+      const options = {sources, generateMetadata, serialization, functionStateId } = req.body;
       try {
-        const rmlmapper = new RMLMapperWrapper(config.rmlmapper.path, config.tempFolder, true, javaVMOptions);
         const result = await rmlmapper.execute(req.body.rml, options);
         res.send(result);
       } catch (error) {
