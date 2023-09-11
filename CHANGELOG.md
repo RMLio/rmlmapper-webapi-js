@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+### Added
+
+- Added optional `stateFolder` and `stateFolderTimeToLive` parameters to configuration (`config.json`)
+- Added optional `functionStateId` parameter to request body.
+
+### Changed
+
+- Updated dependencies
+
 ## [2.2.1] - 2022-08-01
 
 ### Fixed
