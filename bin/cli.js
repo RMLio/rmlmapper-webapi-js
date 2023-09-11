@@ -27,6 +27,8 @@ program
   .option('-o, --behind-reverse-proxy', 'Enable if the server is behind a reverse proxy (e.g., NGINX).')
   .option('--rate-limiter-window [minutes]', 'The window of the rate limiter (default: infinity).', parseInt)
   .option('--rate-limiter-max [integer]', 'The max requests allowed by the rate limiter (default: infinity).', parseInt)
+  .option('--stateFolder [path]', 'Path for RMLMapper to keep state (default: tempFolder + "/function_state").', parseInt)
+  .option('--stateFolderTTL [seconds]', 'Minimal time to keep state used by RMLMapper (default: 600).', parseInt)
   .parse(process.argv);
 
 let server;
@@ -85,6 +87,10 @@ if ((program.rateLimiterWindow && !program.rateLimiterMax)
 }
 
 config.behindReverseProxy = program.behindReverseProxy || configFile.behindReverseProxy || false;
+
+// process RMLMapper state arguments
+config.stateFolder = program.stateFolder || configFile.stateFolder;
+config.stateFolderTimeToLive = program.stateFolderTTL || configFile.stateFolderTTL;
 
 start();
 

@@ -7,6 +7,8 @@
     "web-api": "http://localhost:4000"
   },
   "removeTempFolders": true,
-  "tempFolder": "tmp-test2",
-  "basePath": "/"
+  "tempFolder": "tmp-test-state",
+  "basePath": "/",
+  "stateFolder": "function-state",
+  "stateFolderTTL": "60"
 }
