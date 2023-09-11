@@ -5,7 +5,7 @@
   "scripts": {
     "start": "node ./bin/cli.js",
     "test": "nyc mocha 'test/**/test.js'",
-    "download:rmlmapper": "node ./cli/download-rmlmapper-cli.js"
+    "download:rmlmapper": "node ./bin/download-rmlmapper-cli.js"
   },
   "main": "app.js",
   "bin": {
