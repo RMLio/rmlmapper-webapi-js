@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+## [2.3.0] - 2023-09-12
+
 ### Added
 
 - Added optional `stateFolder` and `stateFolderTimeToLive` parameters to configuration (`config.json`)
@@ -190,6 +192,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - description to package.json
 
+[2.3.0]: https://github.com/RMLio/rmlmapper-webapi-js/compare/v2.2.1...v2.3.0
 [2.2.1]: https://github.com/RMLio/rmlmapper-webapi-js/compare/v2.2.0...v2.2.1
 [2.2.0]: https://github.com/RMLio/rmlmapper-webapi-js/compare/v2.1.3...v2.2.0
 [2.1.3]: https://github.com/RMLio/rmlmapper-webapi-js/compare/v2.1.2...v2.1.3
