@@ -1,6 +1,6 @@
 FROM node:20-alpine3.18
 
-RUN apk --no-cache add openjdk17-jre-headless tree
+RUN apk --no-cache add openjdk17-jre-headless
 
 ADD . /rmlmapper-webapi-js/
 
