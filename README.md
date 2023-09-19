@@ -99,7 +99,7 @@ The version is automatically determined.
 ### Docker
 
 - Build image: `docker build -t rmlmapper-webapi .`
-- Run container: `docker run -p 4000:4000 rmlmapper-webapi`
+- Run container: `docker container run -p 4000:4000 rmlmapper-webapi`
 
 ## Configuration object/file
 

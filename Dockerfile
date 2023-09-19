@@ -1,18 +1,14 @@
-FROM ubuntu:22.04
+FROM node:20-alpine3.18
 
-RUN apt-get update
-RUN apt-get install -y curl
-RUN curl -sL https://deb.nodesource.com/setup_14.x | bash -
-RUN apt-get install -y nodejs
-RUN apt-get install -y build-essential
-RUN apt-get install -y python
-RUN apt-get install -y default-jre
-RUN apt-get install -y git-core
+RUN apk --no-cache add openjdk17-jre-headless tree
 
 ADD . /rmlmapper-webapi-js/
 
 WORKDIR rmlmapper-webapi-js
-RUN npm install
+RUN npm install && \
+    wget --output-document=rmlmapper.jar https://github.com/RMLio/rmlmapper-java/releases/download/v6.2.1/rmlmapper-6.2.1-r368-all.jar && \
+    echo 'v6.2.1' > rmlmapper-version.txt
+
 
 #after boot
 ENTRYPOINT ["./bin/cli.js"]

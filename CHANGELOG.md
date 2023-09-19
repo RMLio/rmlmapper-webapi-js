@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+### Fixed
+- Dockerfile: start from official Node image.
+
 ## [2.3.1] - 2023-09-18
 
 ### Changed
