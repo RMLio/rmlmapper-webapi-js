@@ -33,8 +33,8 @@ The package can be used as a library, CLI, and via Docker.
 
 - Install dependencies: `npm install`.
 - The RMLMapper needs to be available in the root and called `rmlmapper.jar`.
-  Download via `node ./node_modules/@rmlio/rmlmapper-webapi/bin/download-rmlmapper-to-cwd [version]`.
-    - `version` is optional to get a specific version, e.g. `5.0.0` (default: latest)
+  Download it via `node bin/download-rmlmapper-cli.js [version]`.
+  - `version` is optional to get a specific version, e.g. `5.0.0` (default: latest)
 
 #### Usage
 
