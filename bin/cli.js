@@ -10,7 +10,7 @@ const http = require('http');
 const download = require('../lib/download-rmlmapper');
 const fs = require('fs-extra');
 const logger = require('../lib/logger');
-const program = require('commander');
+const {program} = require('commander');
 const pkg = require('../package.json');
 
 const configPath = path.resolve(process.cwd(), 'config.json');
@@ -28,8 +28,10 @@ program
   .option('--rate-limiter-window [minutes]', 'The window of the rate limiter (default: infinity).', parseInt)
   .option('--rate-limiter-max [integer]', 'The max requests allowed by the rate limiter (default: infinity).', parseInt)
   .option('--stateFolder [path]', 'Path for RMLMapper to keep state (default: tempFolder + "/function_state").', parseInt)
-  .option('--stateFolderTTL [seconds]', 'Minimal time to keep state used by RMLMapper (default: 600).', parseInt)
-  .parse(process.argv);
+  .option('--stateFolderTTL [seconds]', 'Minimal time to keep state used by RMLMapper (default: 600).', parseInt);
+program.parse();
+
+const options = program.opts();
 
 let server;
 let config = {
@@ -43,14 +45,14 @@ if (fs.pathExistsSync(configPath)) {
   configFile = require(configPath);
 }
 
-config.logLevel = program.logLevel || configFile.logLevel || 'info';
-config.port = program.port || config.port || 4000;
-config.baseURL = program.baseURL || configFile.baseURL || 'http://localhost:' + config.port;
-config.basePath = program.basePath || configFile.basePath || '/';
+config.logLevel = options.logLevel || configFile.logLevel || 'info';
+config.port = options.port || config.port || 4000;
+config.baseURL = options.baseURL || configFile.baseURL || 'http://localhost:' + config.port;
+config.basePath = options.basePath || configFile.basePath || '/';
 config.rmlmapper = {};
 
-config.rmlmapper.path = program.rmlmapper;
-config.rmlmapper.version = program.rmlmapperVersion;
+config.rmlmapper.path = options.rmlmapper;
+config.rmlmapper.version = options.rmlmapperVersion;
 
 if (!config.rmlmapper.path && configFile.rmlmapper) {
   config.rmlmapper.path = configFile.rmlmapper.path;
@@ -70,27 +72,27 @@ if (fs.pathExistsSync(configPath)) {
 }
 
 // Process rate limit arguments
-if ((program.rateLimiterWindow && !program.rateLimiterMax)
-  || (!program.rateLimiterWindow && program.rateLimiterMax)) {
+if ((options.rateLimiterWindow && !options.rateLimiterMax)
+  || (!options.rateLimiterWindow && options.rateLimiterMax)) {
   logger.error(`Please provide both window and max of the rate limiter.`);
   process.exit(1);
 } else {
   const rateLimiterFromConfigFile = configFile.rateLimiter ? configFile.rateLimiter : {};
   config.rateLimiter = {};
 
-  config.rateLimiter.window = program.rateLimiterWindow || rateLimiterFromConfigFile.window;
-  config.rateLimiter.max = program.rateLimiterMax || rateLimiterFromConfigFile.max;
+  config.rateLimiter.window = options.rateLimiterWindow || rateLimiterFromConfigFile.window;
+  config.rateLimiter.max = options.rateLimiterMax || rateLimiterFromConfigFile.max;
 
   if (!config.rateLimiter.window || !config.rateLimiter.max) {
     config.rateLimiter = null;
   }
 }
 
-config.behindReverseProxy = program.behindReverseProxy || configFile.behindReverseProxy || false;
+config.behindReverseProxy = options.behindReverseProxy || configFile.behindReverseProxy || false;
 
 // process RMLMapper state arguments
-config.stateFolder = program.stateFolder || configFile.stateFolder;
-config.stateFolderTimeToLive = program.stateFolderTTL || configFile.stateFolderTTL;
+config.stateFolder = options.stateFolder || configFile.stateFolder;
+config.stateFolderTimeToLive = options.stateFolderTTL || configFile.stateFolderTTL;
 
 start();
 
