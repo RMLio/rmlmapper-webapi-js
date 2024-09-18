@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+## [2.3.5] - 2024-09-18
+
 ### Changed
 - Updated RMLMapper version used in `Dockerfile` to 7.1.0
 
@@ -219,6 +221,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - description to package.json
 
+[2.3.5]: https://github.com/RMLio/rmlmapper-webapi-js/compare/v2.3.4...v2.3.5
 [2.3.4]: https://github.com/RMLio/rmlmapper-webapi-js/compare/v2.3.3...v2.3.4
 [2.3.3]: https://github.com/RMLio/rmlmapper-webapi-js/compare/v2.3.2...v2.3.3
 [2.3.2]: https://github.com/RMLio/rmlmapper-webapi-js/compare/v2.3.1...v2.3.2
