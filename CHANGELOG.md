@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+### Changed
+- Updated RMLMapper version used in `Dockerfile` to 7.1.0
+
 ## [2.3.4] - 2024-05-17
 
 ### Fixed
