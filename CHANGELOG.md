@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+## [2.3.6] - 2024-09-23
+
 ### Fixed
 - Update RMLMapper version used in `Dockerfile` to 7.1.2, fixing bug with stateful functions
 - Update rmlmapper-java-wrapper to 2.1.2, fixing possible collision of temporary processing directories.
@@ -225,6 +227,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - description to package.json
 
+[2.3.6]: https://github.com/RMLio/rmlmapper-webapi-js/compare/v2.3.5...v2.3.6
 [2.3.5]: https://github.com/RMLio/rmlmapper-webapi-js/compare/v2.3.4...v2.3.5
 [2.3.4]: https://github.com/RMLio/rmlmapper-webapi-js/compare/v2.3.3...v2.3.4
 [2.3.3]: https://github.com/RMLio/rmlmapper-webapi-js/compare/v2.3.2...v2.3.3
