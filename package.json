@@ -14,7 +14,7 @@
   "author": "Pieter Heyvaert (https://pieterheyvaert.com)",
   "dependencies": {
     "@rmlio/fetch-rmlmapper-java": "^0.1.0",
-    "@rmlio/rmlmapper-java-wrapper": "^2.1.1",
+    "@rmlio/rmlmapper-java-wrapper": "^2.1.2",
     "body-parser": "^1.20.2",
     "commander": "^12.0.0",
     "express": "^4.18.2",

@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+### Fixed
+- Update RMLMapper version used in `Dockerfile` to 7.1.2, fixing bug with stateful functions
+- Update rmlmapper-java-wrapper to 2.1.2, fixing possible collision of temporary processing directories.
+
 ## [2.3.5] - 2024-09-18
 
 ### Changed

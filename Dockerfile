@@ -6,8 +6,8 @@ ADD . /rmlmapper-webapi-js/
 
 WORKDIR rmlmapper-webapi-js
 RUN npm install && \
-    wget --output-document=rmlmapper.jar https://github.com/RMLio/rmlmapper-java/releases/download/v7.1.0/rmlmapper-7.1.0-r374-all.jar && \
-    echo 'v7.1.0' > rmlmapper-version.txt
+    wget --output-document=rmlmapper.jar https://github.com/RMLio/rmlmapper-java/releases/download/v7.1.2/rmlmapper-7.1.2-r374-all.jar && \
+    echo 'v7.1.2' > rmlmapper-version.txt
 
 
 #after boot
