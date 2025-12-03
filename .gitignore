@@ -75,6 +75,7 @@ mapdoc.rml
 result.ttl
 tmp
 .idea
+.vscode
 *.jar
 .nyc_output
 config.json

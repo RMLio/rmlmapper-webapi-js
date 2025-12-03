@@ -6,18 +6,42 @@
 <!-- omit in toc -->
 ## Table of contents
 
+- [Notes about work in progress on this branch](#notes-about-work-in-progress-on-this-branch)
+  - [Download RMLMapper](#download-rmlmapper)
+  - [Dependency on rmlmapper-java-wrapper](#dependency-on-rmlmapper-java-wrapper)
 - [Requirements](#requirements)
 - [Usage](#usage)
   - [Library](#library)
+    - [Set-up](#set-up)
+    - [Usage](#usage-1)
   - [CLI](#cli)
   - [Docker](#docker)
 - [Configuration object/file](#configuration-objectfile)
 - [How to make API calls](#how-to-make-api-calls)
 - [Development](#development)
-  - [Set-up](#set-up)
+  - [Set-up](#set-up-1)
   - [Run tests](#run-tests)
   - [Use](#use)
 - [License](#license)
+
+## Notes about work in progress on this branch
+
+### Download RMLMapper
+
+It seems that the instruction to download the RMLMapper is not working. See also [this issue on github](https://github.com/RMLio/rmlmapper-webapi-js/issues/24).
+
+Download RMLMapper v7.3.3 by hand, rename the jar to `rmlmapper.jar` and provide a file `rmlmapper-version.txt` with content `7.3.3`.
+
+### Dependency on rmlmapper-java-wrapper
+
+We depend on the development on a branch of `@rmlio/rmlmapper-java-wrapper`, hence `package.json` was changed to depend on that branch using the `npm i <git-remote-url#branch>` method.
+
+To update this dependency after each commit to that branch:
+
+```shell
+rm rf node_modules
+npm i
+```
 
 ## Requirements
 - Node.js
