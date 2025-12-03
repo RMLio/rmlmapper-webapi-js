@@ -31,7 +31,7 @@
 
 It seems that the instruction to download the RMLMapper is not working. See also [this issue on github](https://github.com/RMLio/rmlmapper-webapi-js/issues/24).
 
-Download RMLMapper v8.0.0 by hand, rename the jar to `rmlmapper.jar` and provide a file `rmlmapper-version.txt` with content `8.0.0`.
+Download RMLMapper v8.0.0 by hand, rename the jar to `rmlmapper.jar` and provide a file `rmlmapper-version.txt` with content `v8.0.0`.
 
 ### Dependency on rmlmapper-java-wrapper
 
