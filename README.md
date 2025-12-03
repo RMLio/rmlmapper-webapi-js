@@ -9,6 +9,7 @@
 - [Notes about work in progress on this branch](#notes-about-work-in-progress-on-this-branch)
   - [Download RMLMapper](#download-rmlmapper)
   - [Dependency on rmlmapper-java-wrapper](#dependency-on-rmlmapper-java-wrapper)
+  - [Running it](#running-it)
 - [Requirements](#requirements)
 - [Usage](#usage)
   - [Library](#library)
@@ -42,6 +43,10 @@ To update this dependency after each commit to that branch:
 rm rf node_modules
 npm i
 ```
+
+### Running it
+
+No new instructions: just run `npm start` to spin up a server `http://localhost:4000`.
 
 ## Requirements
 - Node.js
