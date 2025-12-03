@@ -40,7 +40,7 @@ We depend on the development on a branch of `@rmlio/rmlmapper-java-wrapper`, hen
 To update this dependency after each commit to that branch:
 
 ```shell
-rm rf node_modules
+rm -rf node_modules
 npm i
 ```
 
