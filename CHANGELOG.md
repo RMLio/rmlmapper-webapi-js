@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+## [2.3.7] - 2025-12-04
+
+### Fixed
+- Unable to download RMLMapper with the provided script (see [issue 24](https://github.com/RMLio/rmlmapper-webapi-js/issues/24))
+
 ## [2.3.6] - 2024-09-23
 
 ### Fixed
@@ -227,6 +232,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - description to package.json
 
+[2.3.7]: https://github.com/RMLio/rmlmapper-webapi-js/compare/v2.3.6...v2.3.7
 [2.3.6]: https://github.com/RMLio/rmlmapper-webapi-js/compare/v2.3.5...v2.3.6
 [2.3.5]: https://github.com/RMLio/rmlmapper-webapi-js/compare/v2.3.4...v2.3.5
 [2.3.4]: https://github.com/RMLio/rmlmapper-webapi-js/compare/v2.3.3...v2.3.4
