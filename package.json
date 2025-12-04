@@ -1,7 +1,7 @@
 {
   "name": "@rmlio/rmlmapper-webapi",
   "description": "Web API for the RMLMapper",
-  "version": "2.3.6",
+  "version": "2.3.7",
   "scripts": {
     "start":      "node ./bin/cli.js",
     "start-burp": "node ./bin/cli.js --supportBurp",
