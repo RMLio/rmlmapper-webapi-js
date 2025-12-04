@@ -29,14 +29,16 @@
 
 ### Dependency on rmlmapper-java-wrapper
 
-We depend on the development on the `feature-extend-for-rmlkgc` branch of `@rmlio/rmlmapper-java-wrapper`, hence `package.json` was changed to depend on that branch using the `npm i <git-remote-url#branch>` method.
+We depend on the development on the `feature-extend-for-rmlkgc` branch of `@rmlio/rmlmapper-java-wrapper`, hence `package.json` was changed.
 
-To update this dependency after each commit to that branch:
+We use a proven method to depend on specific commit in that branch. Proceed as follows to update this dependency.
 
-```shell
-rm -rf node_modules
-npm i
-```
+1. Find the appropriate commit hash on <https://github.com/RMLio/rmlmapper-java-wrapper-js/tree/feature-extend-for-rmlkgc>.
+   You can do that by clicking the `x commits ahead` link and then click on the "Copy the full SHA" icon in the commit of your choice.
+2. Paste that commit hash after the `#` in `package.json`, on the line `"@rmlio/rmlmapper-java-wrapper": "https://github.com/RMLio/rmlmapper-java-wrapper-js#1ca2898f71a4610f366bc00fc8550eef71e95e7d",`,
+   replacing any preceeding commit hash there.
+3. Execute `npm install`.
+4. Commit and push the changes to `package.json` and `package-lock.json`.
 
 ### Extension to support mapping engine BURP in addition to rmlmapper
 
