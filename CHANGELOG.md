@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+### Fixed
+- Unable to download RMLMapper with the provided script (see [issue 24](https://github.com/RMLio/rmlmapper-webapi-js/issues/24))
+
 ## [2.3.6] - 2024-09-23
 
 ### Fixed
