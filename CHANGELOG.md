@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+### Added
+
+- Support for mapping engine BURP.
+
 ## [2.3.6] - 2024-09-23
 
 ### Fixed

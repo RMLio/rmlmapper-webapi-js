@@ -3,7 +3,8 @@
   "description": "Web API for the RMLMapper",
   "version": "2.3.6",
   "scripts": {
-    "start": "node ./bin/cli.js",
+    "start":      "node ./bin/cli.js",
+    "start-burp": "node ./bin/cli.js --supportBurp",
     "test": "nyc mocha 'test/**/test.js'",
     "download:rmlmapper": "node ./bin/download-rmlmapper-cli.js"
   },

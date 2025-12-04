@@ -6,9 +6,9 @@
 <!-- omit in toc -->
 ## Table of contents
 
-- [Notes about work in progress on this branch](#notes-about-work-in-progress-on-this-branch)
-  - [Download RMLMapper](#download-rmlmapper)
+- [Notes about this feature-extend-for-rmlkgc branch](#notes-about-this-feature-extend-for-rmlkgc-branch)
   - [Dependency on rmlmapper-java-wrapper](#dependency-on-rmlmapper-java-wrapper)
+  - [Extension to support mapping engine BURP in addition to rmlmapper](#extension-to-support-mapping-engine-burp-in-addition-to-rmlmapper)
   - [Running it](#running-it)
 - [Requirements](#requirements)
 - [Usage](#usage)
@@ -25,17 +25,11 @@
   - [Use](#use)
 - [License](#license)
 
-## Notes about work in progress on this branch
-
-### Download RMLMapper
-
-It seems that the instruction to download the RMLMapper is not working. See also [this issue on github](https://github.com/RMLio/rmlmapper-webapi-js/issues/24).
-
-Download RMLMapper v8.0.0 by hand, rename the jar to `rmlmapper.jar` and provide a file `rmlmapper-version.txt` with content `v8.0.0`.
+## Notes about this feature-extend-for-rmlkgc branch
 
 ### Dependency on rmlmapper-java-wrapper
 
-We depend on the development on a branch of `@rmlio/rmlmapper-java-wrapper`, hence `package.json` was changed to depend on that branch using the `npm i <git-remote-url#branch>` method.
+We depend on the development on the `feature-extend-for-rmlkgc` branch of `@rmlio/rmlmapper-java-wrapper`, hence `package.json` was changed to depend on that branch using the `npm i <git-remote-url#branch>` method.
 
 To update this dependency after each commit to that branch:
 
@@ -44,9 +38,27 @@ rm -rf node_modules
 npm i
 ```
 
+### Extension to support mapping engine BURP in addition to rmlmapper
+
+To support RMLKGC, aka "new RML", we need to use [BURP](https://github.com/kg-construct/BURP), more specific its branch `kgc-2025-conformance`.
+But to keep supporting RMLIO, aka "old RML", we also need to continue using rmlmapper.
+
+The code in this branch is hacked in such a way that it supports both mapping engines.
+Let it be the start of a conversion of this repo into an "any mapping engine webapi js".
+
+You'll find most of the code hacks by searching the word `supportBurp`.
+
+The contract for BURP support:
+
+- Commandline switch `--supportBurp` must be added in the call to `./bin/cli.js`.
+- The correct version of [BURP](https://github.com/kg-construct/BURP) must be built and `burp.jar` must be copied to the current directory.
+- A file `burp-version.txt` ust be provided (due to the lack of a suited release, current contents can be `branch: kgc-2025-conformance` or the like.
+- By default, the `/execute` endpoint targets rmlmapper. To address BURP, the request body must be extended with a property `"engine": "burp"`.
+
 ### Running it
 
-No new instructions: just run `npm start` to spin up a server `http://localhost:4000`.
+- `npm start` spins up a server `http://localhost:4000` without support for BURP (same as before).
+- `npm run start-burp` spins up a server `http://localhost:4000` with support for BURP.
 
 ## Requirements
 - Node.js

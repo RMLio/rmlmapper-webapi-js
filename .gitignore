@@ -80,4 +80,4 @@ tmp
 .nyc_output
 config.json
 !/test/**/config.json
-rmlmapper-version.txt
+*-version.txt

@@ -8,6 +8,7 @@ const path = require('path');
 const App = require('..');
 const http = require('http');
 const download = require('../lib/download-rmlmapper');
+const findBurp = require('../lib/find-burp');
 const fs = require('fs-extra');
 const logger = require('../lib/logger');
 const {program} = require('commander');
@@ -28,7 +29,8 @@ program
   .option('--rate-limiter-window [minutes]', 'The window of the rate limiter (default: infinity).', parseInt)
   .option('--rate-limiter-max [integer]', 'The max requests allowed by the rate limiter (default: infinity).', parseInt)
   .option('--stateFolder [path]', 'Path for RMLMapper to keep state (default: tempFolder + "/function_state").', parseInt)
-  .option('--stateFolderTTL [seconds]', 'Minimal time to keep state used by RMLMapper (default: 600).', parseInt);
+  .option('--stateFolderTTL [seconds]', 'Minimal time to keep state used by RMLMapper (default: 600).', parseInt)
+  .option('--supportBurp', 'True if BURP should be supported, else false (default: false).');
 program.parse();
 
 const options = program.opts();
@@ -94,6 +96,8 @@ config.behindReverseProxy = options.behindReverseProxy || configFile.behindRever
 config.stateFolder = options.stateFolder || configFile.stateFolder;
 config.stateFolderTimeToLive = options.stateFolderTTL || configFile.stateFolderTTL;
 
+config.supportBurp = options.supportBurp || false;
+
 start();
 
 async function start() {
@@ -122,6 +126,16 @@ async function start() {
   if (!config.rmlmapper.version) {
     logger.info(`The version of the RMLMapper is not specified.`);
   }
+
+  if (config.supportBurp) {
+    logger.info('BURP support is enabled.');
+    const { version, fullPath } =  findBurp();
+    logger.info(`Using the BURP jar at ${fullPath} (${version}).`);
+    config.burp = {
+      path: fullPath,
+      version
+    };
+  };
 
   /**
    * Get port from environment and store in Express.

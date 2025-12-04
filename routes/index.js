@@ -3,6 +3,7 @@ const path = require('path');
 const fs = require('fs-extra');
 const RMLMapperWrapper = require('@rmlio/rmlmapper-java-wrapper');
 const YAML = require('yamljs');
+const logger = require('../lib/logger');
 
 const dir = path.join(__dirname, '../');
 const defaultTempFolder = dir + path.sep + "tmp";
@@ -31,6 +32,21 @@ function createRouter(config) {
   }
 
   const rmlmapper = new RMLMapperWrapper(config.rmlmapper.path, config.tempFolder, true, config.stateFolder, config.stateFolderTimeToLive,  {'Dfile.encoding': 'UTF-8'});
+  let burp;
+  if (config.supportBurp) {
+    config.burpTempFolder = path.join(config.tempFolder, 'burp');
+    if (!fs.existsSync(config.burpTempFolder)) {
+      fs.mkdirSync(config.burpTempFolder);
+    }
+    config.burpStateFolder = path.join(config.burpTempFolder, 'function_state');
+    if (!fs.existsSync(config.burpStateFolder)) {
+      fs.mkdirSync(config.burpStateFolder);
+    }
+    config.burpStateFolderTimeToLive = config.stateFolderTimeToLive;
+    // note that the RMLMapperWrapper version in use is hacked to supports burp (final parameter true)
+    burp = new RMLMapperWrapper(config.burp.path, config.burpTempFolder, true, config.burpStateFolder, config.burpStateFolderTimeToLive, { 'Dfile.encoding': 'UTF-8' }, true);
+  }
+
   const swaggerYAML = fs.readFileSync(path.resolve(__dirname, '../swagger.yaml'), 'utf-8');
   const swaggerObj = YAML.parse(swaggerYAML);
 
@@ -51,7 +67,14 @@ function createRouter(config) {
     } else {
       const options = {sources, generateMetadata, serialization, functionStateId } = req.body;
       try {
-        const result = await rmlmapper.execute(req.body.rml, options);
+        let result;
+        if (config.supportBurp && req.body.engine && req.body.engine === 'burp') {
+          logger.info('Calling mapping engine BURP.');
+          result = await burp.execute(req.body.rml, options);
+        } else {
+          logger.info('Calling mapping engine RMLMapper.');
+          result = await rmlmapper.execute(req.body.rml, options);
+        }
         res.send(result);
       } catch (error) {
         res.status(500).send({message: error.message, log: error.log, stack: error.stack});
