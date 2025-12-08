@@ -57,6 +57,8 @@ The contract for BURP support:
 - A file `burp-version.txt` ust be provided (due to the lack of a suited release, current contents can be `branch: kgc-2025-conformance` or the like.
 - By default, the `/execute` endpoint targets rmlmapper. To address BURP, the request body must be extended with a property `"engine": "burp"`.
 
+There are not tests for BURP support.
+
 ### Running it
 
 - `npm start` spins up a server `http://localhost:4000` without support for BURP (same as before).
