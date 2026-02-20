@@ -31,7 +31,7 @@ function createRouter(config) {
     config.rmlmapper.path = path.resolve(process.cwd(), config.rmlmapper.path);
   }
 
-  const rmlmapper = new RMLMapperWrapper(config.rmlmapper.path, config.tempFolder, true, config.stateFolder, config.stateFolderTimeToLive,  {'Dfile.encoding': 'UTF-8'});
+  const rmlmapper = new RMLMapperWrapper(config.rmlmapper.path, config.tempFolder, true, config.stateFolder, config.stateFolderTimeToLive, { 'Dfile.encoding': 'UTF-8' });
   let burp;
   if (config.supportBurp) {
     config.burpTempFolder = path.join(config.tempFolder, 'burp');
@@ -51,33 +51,49 @@ function createRouter(config) {
   const swaggerObj = YAML.parse(swaggerYAML);
 
   swaggerObj.servers = [
-    {url : `${config.baseURL}${config.basePath}`}
+    { url: `${config.baseURL}${config.basePath}` }
   ];
   swaggerObj.info.version = config.version;
 
   router.get('/', function (req, res) {
-    res.render('index', {swagger: JSON.stringify(swaggerObj)});
+    res.render('index', { swagger: JSON.stringify(swaggerObj) });
   });
 
   router.post('/execute', async function (req, res) {
     res.type('json');
 
     if (!req.body.rml) {
-      res.status(400).send({message: `The parameter "rml" is required.`});
+      res.status(400).send({ message: `The parameter "rml" is required.` });
     } else {
-      const options = {sources, generateMetadata, serialization, functionStateId } = req.body;
+      const options = { sources, generateMetadata, serialization, functionStateId } = req.body;
       try {
-        let result;
-        if (config.supportBurp && req.body.engine && req.body.engine === 'burp') {
-          logger.info('Calling mapping engine BURP.');
-          result = await burp.execute(req.body.rml, options);
-        } else {
-          logger.info('Calling mapping engine RMLMapper.');
-          result = await rmlmapper.execute(req.body.rml, options);
-        }
+        logger.info('Calling mapping engine RMLMapper.');
+        const result = await rmlmapper.execute(req.body.rml, options);
         res.send(result);
       } catch (error) {
-        res.status(500).send({message: error.message, log: error.log, stack: error.stack});
+        res.status(500).send({ message: error.message, log: error.log, stack: error.stack });
+      }
+    }
+  });
+
+  router.post('/executeBurp', async function (req, res) {
+    res.type('json');
+
+    if (!config.supportBurp) {
+      res.status(400).send({ message: `BURP support is not enabled on this server.` });
+      return;
+    }
+
+    if (!req.body.rml) {
+      res.status(400).send({ message: `The parameter "rml" is required.` });
+    } else {
+      const options = { sources, generateMetadata, serialization, functionStateId } = req.body;
+      try {
+        logger.info('Calling mapping engine BURP.');
+        const result = await burp.execute(req.body.rml, options);
+        res.send(result);
+      } catch (error) {
+        res.status(500).send({ message: error.message, log: error.log, stack: error.stack });
       }
     }
   });

@@ -109,6 +109,28 @@ paths:
           description: "invalid input"
         500:
           description: "Internal server error during execution of RML rules"
+  /executeBurp:
+    post:
+      summary: "Execute RML rules using BURP"
+      description: "Execute RMLKGC mappings using the BURP engine. This endpoint is available only when the server was started with BURP support."
+      requestBody:
+        description: The RML rules in Turtle format.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Execute"
+      responses:
+        200:
+          description: "The generated RDF is returned. Optionally, with the metadata of the generation."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExecuteOutput"
+        400:
+          description: "invalid input or BURP not supported"
+        500:
+          description: "Internal server error during execution of RML rules"
 components:
   schemas:
     Execute:

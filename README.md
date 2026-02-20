@@ -6,24 +6,24 @@
 <!-- omit in toc -->
 ## Table of contents
 
-- [Notes about this feature-extend-for-rmlkgc branch](#notes-about-this-feature-extend-for-rmlkgc-branch)
-  - [Dependency on rmlmapper-java-wrapper](#dependency-on-rmlmapper-java-wrapper)
-  - [Extension to support mapping engine BURP in addition to rmlmapper](#extension-to-support-mapping-engine-burp-in-addition-to-rmlmapper)
-  - [Running it](#running-it)
-- [Requirements](#requirements)
-- [Usage](#usage)
-  - [Library](#library)
-    - [Set-up](#set-up)
-    - [Usage](#usage-1)
-  - [CLI](#cli)
-  - [Docker](#docker)
-- [Configuration object/file](#configuration-objectfile)
-- [How to make API calls](#how-to-make-api-calls)
-- [Development](#development)
-  - [Set-up](#set-up-1)
-  - [Run tests](#run-tests)
-  - [Use](#use)
-- [License](#license)
+* [Notes about this feature-extend-for-rmlkgc branch](#notes-about-this-feature-extend-for-rmlkgc-branch)
+  * [Dependency on rmlmapper-java-wrapper](#dependency-on-rmlmapper-java-wrapper)
+  * [Extension to support mapping engine BURP in addition to rmlmapper](#extension-to-support-mapping-engine-burp-in-addition-to-rmlmapper)
+  * [Running it](#running-it)
+* [Requirements](#requirements)
+* [Usage](#usage)
+  * [Library](#library)
+    * [Set-up](#set-up)
+    * [Usage](#usage-1)
+  * [CLI](#cli)
+  * [Docker](#docker)
+* [Configuration object/file](#configuration-objectfile)
+* [How to make API calls](#how-to-make-api-calls)
+* [Development](#development)
+  * [Set-up](#set-up-1)
+  * [Run tests](#run-tests)
+  * [Use](#use)
+* [License](#license)
 
 ## Notes about this feature-extend-for-rmlkgc branch
 
@@ -52,21 +52,22 @@ You'll find most of the code hacks by searching the word `supportBurp`.
 
 The contract for BURP support:
 
-- Commandline switch `--supportBurp` must be added in the call to `./bin/cli.js`.
-- The correct version of [BURP](https://github.com/kg-construct/BURP) must be built and `burp.jar` must be copied to the current directory.
-- A file `burp-version.txt` ust be provided (due to the lack of a suited release, current contents can be `branch: kgc-2025-conformance` or the like.
-- By default, the `/execute` endpoint targets rmlmapper. To address BURP, the request body must be extended with a property `"engine": "burp"`.
+* Commandline switch `--supportBurp` must be added in the call to `./bin/cli.js`.
+* The correct version of [BURP](https://github.com/kg-construct/BURP) must be built and `burp.jar` must be copied to the current directory.
+* A file `burp-version.txt` ust be provided (due to the lack of a suited release, current contents can be `branch: kgc-2025-conformance` or the like.
+* By default, the `/execute` endpoint targets rmlmapper. To use BURP, call the `/executeBurp` endpoint instead (available when the server is started with `--supportBurp`).
 
 There are not tests for BURP support.
 
 ### Running it
 
-- `npm start` spins up a server `http://localhost:4000` without support for BURP (same as before).
-- `npm run start-burp` spins up a server `http://localhost:4000` with support for BURP.
+* `npm start` spins up a server `http://localhost:4000` without support for BURP (same as before).
+* `npm run start-burp` spins up a server `http://localhost:4000` with support for BURP.
 
 ## Requirements
+
 - Node.js
-- Java VM
+* Java VM
 
 ## Usage
 
@@ -76,10 +77,10 @@ The package can be used as a library, CLI, and via Docker.
 
 #### Set-up
 
-- Install dependencies: `npm install`.
-- The RMLMapper needs to be available in the root and called `rmlmapper.jar`.
+* Install dependencies: `npm install`.
+* The RMLMapper needs to be available in the root and called `rmlmapper.jar`.
   Download it via `node bin/download-rmlmapper-cli.js [version]`.
-  - `version` is optional to get a specific version, e.g. `5.0.0` (default: latest)
+  * `version` is optional to get a specific version, e.g. `5.0.0` (default: latest)
 
 #### Usage
 
@@ -100,19 +101,19 @@ server.listen(config.port);
 
 The config object looks as follows:
 
- - `rmlmapper.path`: path to the RMLMapper jar (required).
- - `rmlmapper.version`: version of the used RMLMapper. This is shown on the main page of the API (required).
- - `baseURL`: url of where the API will be available. This is shown on the main page of the API (default: http://localhost + port).
- - `removeTempFolders`: if this is set true, temporary folders are removed once the execution of one call is done (default: true).
- - `logLevel`: log level used by the logger (default: info).
- - `port`: port of the server (default: 4000).
- - `basePath`: the path preceding all routes (default: /).
+* `rmlmapper.path`: path to the RMLMapper jar (required).
+* `rmlmapper.version`: version of the used RMLMapper. This is shown on the main page of the API (required).
+* `baseURL`: url of where the API will be available. This is shown on the main page of the API (default: <http://localhost> + port).
+* `removeTempFolders`: if this is set true, temporary folders are removed once the execution of one call is done (default: true).
+* `logLevel`: log level used by the logger (default: info).
+* `port`: port of the server (default: 4000).
+* `basePath`: the path preceding all routes (default: /).
 
 ### CLI
 
-- Install the server: `npm i -g @rmlio/rmlmapper-webapi`.
-- Start the server: `rmlmapper-webapi`.
-- The server is available at `http://localhost:4000` (if port is unchanged).
+* Install the server: `npm i -g @rmlio/rmlmapper-webapi`.
+* Start the server: `rmlmapper-webapi`.
+* The server is available at `http://localhost:4000` (if port is unchanged).
 
 The following paramaters can be used to configure the server:
 
@@ -134,7 +135,7 @@ Options:
   -h, --help                       display help for command
 ```
 
-Parameters can also be set via a configuration file called `config.json`, 
+Parameters can also be set via a configuration file called `config.json`,
 which is located in the current working directory,
 and contains same options as the [config object](#library) when using the package as library.
 An example can be found in `config_example.json`.
@@ -143,22 +144,22 @@ The version is automatically determined.
 
 ### Docker
 
-- Build image: `docker build -t rmlmapper-webapi .`
-- Run container: `docker container run -p 4000:4000 rmlmapper-webapi`
+* Build image: `docker build -t rmlmapper-webapi .`
+* Run container: `docker container run -p 4000:4000 rmlmapper-webapi`
 
 ## Configuration object/file
 
-Parameters can also be set via a configuration file called `config.json`, 
+Parameters can also be set via a configuration file called `config.json`,
 which is located in the current working directory,
 and contains the following settings:
 
-- `rmlmapper.path`: path to the RMLMapper jar.
-- `rmlmapper.version`: version of the used RMLMapper. This is shown on the main page of the API.
-- `baseURL`: url of where the API will be available. This is shown on the main page of the API.
-- `removeTempFolders`: if this is set true, temporary folders are removed once the execution of one call is done.
-- `logLevel`: log level used by the logger (default: info).
-- `port`: port of the server (default: 4000).
-- `basePath`: the path preceding all routes (default: /).
+* `rmlmapper.path`: path to the RMLMapper jar.
+* `rmlmapper.version`: version of the used RMLMapper. This is shown on the main page of the API.
+* `baseURL`: url of where the API will be available. This is shown on the main page of the API.
+* `removeTempFolders`: if this is set true, temporary folders are removed once the execution of one call is done.
+* `logLevel`: log level used by the logger (default: info).
+* `port`: port of the server (default: 4000).
+* `basePath`: the path preceding all routes (default: /).
 
 An example can be found in `config_example.json`.
 The latest version of the RMLMapper is downloaded when running the server if no `rmlmapper.path` is given.
@@ -173,21 +174,21 @@ The calls are also described using the [Open API specification](https://github.c
 
 ### Set-up
 
-- Install dependencies: `npm install`.
-- The RMLMapper needs to be available in the root and called `rmlmapper.jar`.
+* Install dependencies: `npm install`.
+* The RMLMapper needs to be available in the root and called `rmlmapper.jar`.
   Download via `npm run download:rmlmapper [version]`.
-    - `version` is optional to get a specific version, e.g. `5.0.0` (default: latest)
+  * `version` is optional to get a specific version, e.g. `5.0.0` (default: latest)
 
 ### Run tests
 
-- Run the tests: `npm test`.
+* Run the tests: `npm test`.
 The test framework is [Mocha](https://mochajs.org/) and the code coverage is provided via [Istanbul](https://istanbul.js.org/).
 
 ### Use
 
-- `npm start`
+* `npm start`
 
 ## License
 
-This code is copyrighted by [Ghent University – imec](http://idlab.ugent.be/) and 
+This code is copyrighted by [Ghent University – imec](http://idlab.ugent.be/) and
 released under the [MIT license](http://opensource.org/licenses/MIT).
