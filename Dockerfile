@@ -13,4 +13,4 @@ RUN npm install && \
 
 
 #after boot
-ENTRYPOINT ["./bin/cli.js --supportBurp"]
+ENTRYPOINT ["./bin/cli.js", "--supportBurp"]
