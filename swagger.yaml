@@ -25,10 +25,10 @@ paths:
                 type: string
   /execute:
     post:
-      summary: "Execute RML rules"
+      summary: "Execute RML.rmlio rules using RMLMapper."
       description: ""
       requestBody:
-        description: The RML rules in Turtle format.
+        description: The RML.rmlio rules in Turtle format.
         required: true
         content:
           application/json:
@@ -111,22 +111,28 @@ paths:
           description: "Internal server error during execution of RML rules"
   /executeBurp:
     post:
-      summary: "Execute RML rules using BURP"
-      description: "Execute RMLKGC mappings using the BURP engine. This endpoint is available only when the server was started with BURP support."
+      summary: "Execute RML.kgc rules using BURP."
+      description: ""
       requestBody:
-        description: The RML rules in Turtle format.
+        description: The RML.kgc rules in Turtle format.
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Execute"
+              $ref: "#/components/schemas/ExecuteBurp"
+            examples:
+              RMLBURP-basic:
+                value: 
+                  rml: "@prefix rml: <http://w3id.org/rml/> . @prefix map: <http://mapping.example.com/> . @prefix foaf: <http://xmlns.com/foaf/0.1/> . @prefix ex: <http://example.com/> . map:map_person_000 rml:logicalSource map:source_000 ; rml:subjectMap [ rml:template \"http://example.com/{firstname}\" ; rml:class foaf:Person ] ; rml:predicateObjectMap [ rml:predicate ex:name ; rml:objectMap [ rml:reference \"firstname\" ] ] . map:source_000 rml:iterator \"$.persons[*]\" ; rml:referenceFormulation rml:JSONPath ; rml:source map:source_000_fp . map:source_000_fp a rml:RelativePathSource ; rml:path \"data.json\" ."
+                  sources:
+                    data.json: "{     \"persons\": [         {             \"firstname\": \"John\",             \"lastname\": \"Doe\"         },         {             \"firstname\": \"Jane\",             \"lastname\": \"Smith\"         },         {             \"firstname\": \"Sarah\",             \"lastname\": \"Bladinck\"         }     ] }"
       responses:
         200:
           description: "The generated RDF is returned. Optionally, with the metadata of the generation."
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ExecuteOutput"
+                $ref: "#/components/schemas/ExecuteBurpOutput"
         400:
           description: "invalid input or BURP not supported"
         500:
@@ -169,3 +175,23 @@ components:
         metadata:
           type: "string"
           example: null
+    ExecuteBurp:
+      type: "object"
+      properties:
+        rml:
+          type: "string"
+          description: "RML rules to map data from `sources` to RDF, in Turtle syntax. The rules should be compatible with the BURP engine."
+          example: "@prefix rml: <https://w3id.org/rml/> . @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> . @prefix foaf: <http://xmlns.com/foaf/0.1/> . @prefix ex: <http://example.com/> . @prefix map: <http://mapping.example.com/> . map:PersonsTriplesMap a rml:TriplesMap ; rml:logicalSource [ rml:source [ a rml:RelativePathSource ; rml:path \"data.json\" ; ] ; rml:referenceFormulation rml:JSONPath ; rml:iterator \"$.persons[*]\" ] ; rml:subjectMap [ rml:template \"http://example.com/{firstname}\" ] ; rml:predicateObjectMap [ rml:predicate rdf:type ; rml:objectMap [ rml:constant foaf:Person ; rml:termType rml:IRI ] ] ; rml:predicateObjectMap [ rml:predicate foaf:givenName ; rml:objectMap [ rml:reference \"firstname\" ] ] ."
+        sources:
+          type: "object"
+          example: >
+            {
+              "data.json": "{     \"persons\": [         {             \"firstname\": \"John\",             \"lastname\": \"Doe\"         },         {             \"firstname\": \"Jane\",             \"lastname\": \"Smith\"         },         {             \"firstname\": \"Sarah\",             \"lastname\": \"Bladinck\"         }     ] }"
+            }
+    ExecuteBurpOutput:
+      type: "object"
+      properties:
+        output:
+          type: "string"
+          example: "<http://example.com/John> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Person>.\n<http://example.com/John> <http://example.com/name> \"John\".\n<http://example.com/Jane> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Person>.\n<http://example.com/Jane> <http://example.com/name> \"Jane\".\n<http://example.com/Sarah> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Person>.\n<http://example.com/Sarah> <http://example.com/name> \"Sarah\".\n"
+           
