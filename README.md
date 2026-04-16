@@ -42,8 +42,8 @@ We use a proven method to depend on specific commit in that branch. Proceed as f
 
 ### Extension to support mapping engine BURP in addition to rmlmapper
 
-To support RMLKGC, aka "new RML", we need to use [BURP](https://github.com/kg-construct/BURP), more specific its branch `kgc-2025-conformance`.
-But to keep supporting RMLIO, aka "old RML", we also need to continue using rmlmapper.
+To support [RML.kgc](https://kg-construct.github.io/rml-resources/portal/), the latest KGC Community RML version, we use [BURP](https://github.com/kg-construct/BURP), more specific its branch `kgc-2025-conformance` commit `5b68450`.
+But to keep supporting [RML.rmlio](https://rml.io/specs/rml/), the initial RML.io-published RML version, we also continue using rmlmapper.
 
 The code in this branch is hacked in such a way that it supports both mapping engines.
 Let it be the start of a conversion of this repo into an "any mapping engine webapi js".
